@@ -3,9 +3,13 @@ FUBlogHub for FPT student
 
 # To run the project
 - Clone the project
+- Config .env file
 - Run `npm install`
 - Run `npm build`
 - Run `npm run dev`
+
+# Swagger
+- Default: http://localhost:4000/api-docs/
 
 # Features
 - Fundamental of Express: routing, middleware, sending response and more
