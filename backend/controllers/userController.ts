@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import * as base from './baseController';
-const AppError = require('../utils/appError');
+import AppError from "../utils/appError";
 import {promisify} from "util";
 const User = require('../models/userModel');
-const { createNewAccessToken } = require('../services/tokenService');
+const { createNewAccessToken } = require('../services/createNewAccessToken');
+const jwt = require('jsonwebtoken');
 
 export const deleteMe = async (req: Request, res: Response, next: NextFunction) => {
     try {

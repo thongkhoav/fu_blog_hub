@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-dotenv.config({
-    path: './.env'
-});
+require("dotenv").config();
 
 process.on('uncaughtException', err => {
     console.log('UNCAUGHT EXCEPTION!!! shutting down...');
@@ -11,7 +8,7 @@ process.on('uncaughtException', err => {
 });
 
 const app = require('./app');
-
+const port = process.env.PORT || 4000;
 const databaseUrl = process.env.DATABASE_URL
 
 // Connect the database
@@ -23,7 +20,6 @@ mongoose.connect(databaseUrl, {
 });
 
 // Start the server
-const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`Application is running on port ${port}`);
 });

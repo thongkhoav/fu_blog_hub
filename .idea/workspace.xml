@@ -5,9 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2d61dc28-b95f-4d19-80ae-72da0f07fe77" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/models/blogCategoryModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/blogModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/blogSeriesModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/blogTagModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/bookmarkModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/categoryModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/commentModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/expLogModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/followUserModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/levelModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/likeModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/notificationModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/reportModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/tagModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/models/userBookmarkModel.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/services/createNewAccessToken.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/swagger/swagger-user-doc.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/.eslintrc.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/controllers/authController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/authController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/controllers/baseController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/baseController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/controllers/userController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/userController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dist/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dist/controllers/authController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/controllers/authController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dist/controllers/baseController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/controllers/baseController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dist/controllers/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/controllers/userController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dist/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/dist/utils/appError.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/dist/utils/appError.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/models/userModel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/userModel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/services/tokenService.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/utils/appError.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/utils/appError.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -18,6 +49,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
+        <option value="tsconfig.json" />
         <option value="TypeScript File" />
       </list>
     </option>
@@ -27,6 +59,9 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2VEZv5vt5OS5RsXYVcaA9BIicag" />
   <component name="ProjectViewState">
@@ -39,20 +74,23 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/baominh/07_Fall_2023/FUBlogHub&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/baominh/07_Fall_2023/FUBlogHub/backend/models&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Applications/WebStorm.app/Contents/plugins/javascript-impl/jsLanguageServicesImpl/external&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/baominh/07_Fall_2023/FUBlogHub/backend/node_modules/typescript/lib&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/models" />
       <recent name="$PROJECT_DIR$/frontend" />
       <recent name="$PROJECT_DIR$/backend" />
     </key>
@@ -95,7 +133,13 @@
       <workItem from="1694405253360" duration="24922000" />
       <workItem from="1694564245831" duration="3737000" />
       <workItem from="1694568791222" duration="708000" />
-      <workItem from="1694825243128" duration="72000" />
+      <workItem from="1694825243128" duration="769000" />
+      <workItem from="1695043424158" duration="3251000" />
+      <workItem from="1695054009758" duration="6980000" />
+      <workItem from="1695112650226" duration="3719000" />
+      <workItem from="1695116452917" duration="1958000" />
+      <workItem from="1695118518887" duration="4978000" />
+      <workItem from="1695203867302" duration="4861000" />
     </task>
     <servers />
   </component>

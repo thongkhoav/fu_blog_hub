@@ -8,15 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getOne = exports.createOne = exports.updateOne = exports.deleteOne = void 0;
-const AppError = require('../utils/appError');
+const appError_1 = __importDefault(require("../utils/appError"));
 const APIFeatures = require('../utils/apiFeatures');
 const deleteOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const doc = yield Model.findByIdAndDelete(req.params.id);
         if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'));
+            return next(new appError_1.default(404, 'fail', 'No document found with that id'));
         }
         res.status(204).json({
             status: 'success',
@@ -35,7 +38,7 @@ const updateOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 
             runValidators: true,
         });
         if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'));
+            return next(new appError_1.default(404, 'fail', 'No document found with that id'));
         }
         res.status(200).json({
             status: 'success',
@@ -68,7 +71,7 @@ const getOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 0, 
     try {
         const doc = yield Model.findById(req.params.id);
         if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'));
+            return next(new appError_1.default(404, 'fail', 'No document found with that id'));
         }
         res.status(200).json({
             status: 'success',

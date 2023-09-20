@@ -1,9 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from "express";
+
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const AppError = require("../utils/appError");
-const { createNewAccessToken, createNewRefreshToken } = require('../services/tokenService');
+import AppError from "../utils/appError";
+const { createNewAccessToken, createNewRefreshToken } = require('../services/createNewAccessToken');
+
+
 exports.login = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body;
