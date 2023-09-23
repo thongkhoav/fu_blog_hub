@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -9,10 +12,9 @@ const hpp = require('hpp');
 const cors = require('cors');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
-const swaggerUserDoc = require('./swagger/swagger-user-doc');
 const userRoutes = require('./routes/userRoutes');
 const { globalErrHandler } = require('./controllers/errorController');
-const AppError = require('./utils/appError');
+const appError_1 = __importDefault(require("./utils/appError"));
 const app = express();
 // Allow Cross-Origin requests
 app.use(cors());
@@ -38,7 +40,7 @@ app.use(hpp());
 // Routes
 app.use('/api/v1/users', userRoutes);
 app.use(globalErrHandler);
-const serverUrl = process.env.SERVER_URL || `http://localhost:${process.env.PORT || 4000}`;
+const serverUrl = process.env.NODE_ENV === 'production' ? '' : process.env.SW_SERVER_URL;
 // Swagger
 const swaggerOptions = {
     definition: {
@@ -69,7 +71,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, { explorer: true }));
 // handle undefined Routes
 app.use('*', (req, res, next) => {
-    const err = new AppError(404, 'fail', 'undefined route');
+    const err = new appError_1.default(404, 'fail', 'undefined route');
     next(err);
 });
 module.exports = app;

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-const AppError = require('../utils/appError');
+import AppError from "../utils/appError";
 const APIFeatures = require('../utils/apiFeatures');
 import { Document } from 'mongoose'; // Assuming you are using Mongoose for MongoDB
 

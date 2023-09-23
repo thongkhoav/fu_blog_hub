@@ -3,6 +3,7 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
 interface IUser extends Document {
+    levelId: Schema.Types.ObjectId;
     name: string;
     email: string;
     address?: string;
@@ -10,12 +11,72 @@ interface IUser extends Document {
     passwordConfirm: string;
     role: 'admin' | 'teacher' | 'student';
     active: boolean;
-
+    isVerifiedEmail: boolean;
+    username: string;
+    createdAt: Date;
+    updatedAt: Date;
+    avatar?: string;
+    coverAvatar?: string;
+    bannedReason?: string;
+    exp?: number;
+    numBlog?: number;
+    numLike?: number;
+    numComment?: number;
+    numFollower?: number;
+    userTitle?: string;
+    facebook?: string;
+    instagram?: string;
     correctPassword(typedPassword: string, originalPassword: string): Promise<boolean>;
 }
 
+
 let userSchema: Schema<IUser>;
 userSchema = new mongoose.Schema({
+    levelId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Level'
+    },
+    facebook: {
+        type: String,
+        default: null,
+    },
+    instagram: {
+        type: String,
+        default: null,
+    },
+    numFollower: {
+        type: Number,
+        default: 0
+    },
+    numComment: {
+        type: Number,
+        default: 0,
+    },
+    numLike: {
+        type: Number,
+        default: 0,
+    },
+    numBlog: {
+        type: Number,
+        default: 0,
+    },
+    exp: {
+        type: Number,
+        default: 0,
+    },
+    bannedReason: {
+        type: String,
+        default: null,
+    },
+    userTitle: {
+        type: String,
+        default: null,
+    },
+    username: {
+      type: String,
+      required: [true, 'Please fill your username'],
+    },
     name: {
         type: String,
         required: [true, 'Please fill your name'],
@@ -58,7 +119,11 @@ userSchema = new mongoose.Schema({
         default: true,
         select: false,
     },
-});
+},
+{
+        timestamps: true
+    }
+);
 
 // Encrypt the password using 'bcryptjs'
 // Mongoose -> Document Middleware

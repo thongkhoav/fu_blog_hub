@@ -31,13 +31,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNewAccessToken = exports.deleteUser = exports.updateUser = exports.getUser = exports.getAllUsers = exports.deleteMe = void 0;
 const base = __importStar(require("./baseController"));
-const AppError = require('../utils/appError');
+const appError_1 = __importDefault(require("../utils/appError"));
 const util_1 = require("util");
 const User = require('../models/userModel');
-const { createNewAccessToken } = require('../services/tokenService');
+const { createNewAccessToken } = require('../services/createNewAccessToken');
+const jwt = require('jsonwebtoken');
 const deleteMe = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield User.findByIdAndUpdate(req.user.id, {
@@ -68,13 +72,13 @@ const getNewAccessToken = (req, res, next) => __awaiter(void 0, void 0, void 0, 
             refeshToken = req.headers.authorization.split(" ")[1];
         }
         if (!refeshToken) {
-            return next(new AppError(401, "fail", "You are not logged in! Please login in to continue"));
+            return next(new appError_1.default(401, "fail", "You are not logged in! Please login in to continue"));
         }
         // 2) Verify token
         const decode = yield (0, util_1.promisify)(jwt.verify)(refeshToken, process.env.REFRESH_TOKEN_SIGN_SECRET);
         const user = yield User.findById(decode.id);
         if (!user) {
-            return next(new AppError(404, 'fail', 'No user found with that id'));
+            return next(new appError_1.default(404, 'fail', 'No user found with that id'));
         }
         const newAccessToken = createNewAccessToken(user);
         res.status(200).json({
