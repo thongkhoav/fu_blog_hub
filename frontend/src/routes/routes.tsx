@@ -1,15 +1,17 @@
-import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import ProductRoutes from "./BlogRoutes";
 import LoginRoutes from "./LoginRoutes";
-import HomeRoutes from "./HomeRoutes";
+import HomeRoutes from "./UserRoutes";
+import AuthProvider from "~/contexts/AuthProvider";
+import AdminRoutes from "./AdminRoutes";
 
-export default function Routes() {
+export default function AppRoutes() {
   return (
     <BrowserRouter>
-      <HomeRoutes />
-      <ProductRoutes />
-      <LoginRoutes />
+      <AuthProvider>
+        <HomeRoutes />
+        <LoginRoutes />
+        <AdminRoutes />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -10,7 +10,7 @@ interface BlogDetail {
 }
 
 function BlogDetail() {
-  const params: { idProduct: string } = useParams();
+  const { idBlog } = useParams<{ idBlog: string }>();
   const [blogDetail, setBlogDetail] = useState<BlogDetail>({
     id: "",
     title: "",
@@ -18,17 +18,19 @@ function BlogDetail() {
     createdAt: ""
   });
   useEffect(() => {
-    const { idProduct } = params;
     // fetch blog
-  }, [params]);
+    try {
+    } catch (error) {}
+  }, [idBlog]);
   return (
-    <MainLayout>
+    <>
+      blog detail
       {blogDetail && (
         <>
           <h2>{blogDetail.title}</h2>
         </>
       )}
-    </MainLayout>
+    </>
   );
 }
 

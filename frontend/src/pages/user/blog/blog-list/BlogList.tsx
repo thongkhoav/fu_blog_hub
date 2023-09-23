@@ -9,27 +9,27 @@ interface ProductItem {
   createdAt: string;
 }
 
-const ProductList = () => {
+const BlogList = () => {
   const [blogList, setBlogList] = useState<ProductItem[]>([]);
   useEffect(() => {
     // fetch blog list
   }, []);
 
   return (
-    <MainLayout>
-      <h2>Product List</h2>
+    <>
+      <h2>blog List</h2>
       {blogList.map((product, index) => (
         <tr key={product.id}>
           <td>{product.createdAt}</td>
           <td>
-            <Link className="btn btn-primary" to={PATH.PRODUCT + `/${product.id}`}>
+            <Link className="btn btn-primary" to={PATH.BLOG + `/${product.id}`}>
               <td>{product.title}</td>
             </Link>
           </td>
         </tr>
       ))}
-    </MainLayout>
+    </>
   );
 };
 
-export default ProductList;
+export default BlogList;

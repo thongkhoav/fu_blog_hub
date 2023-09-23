@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import "./login.scss";
-import { useHistory } from "react-router-dom";
 import { PATH } from "src/utils/constants/paths";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const history = useHistory();
+  // const history = useHistory();
   const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
   };
