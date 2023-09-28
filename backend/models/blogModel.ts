@@ -11,7 +11,7 @@ export interface IBlog extends Document {
    slug: string;
    contentRaw: string;
    contentHTML: string;
-   status: 'public' | 'private' | 'removed' | 'waiting' | 'draft';
+   status: 'public' | 'private' | 'removed' | 'waiting' | 'draft' | 'banned';
    numChar: number;
    numWord: number;
    numView: number;
@@ -59,7 +59,7 @@ blogSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['public', 'private', 'removed', 'waiting', 'draft'],
+        enum: ['public', 'private', 'removed', 'waiting', 'draft', 'banned'],
         required: true,
         default: 'draft'
     },

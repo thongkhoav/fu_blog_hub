@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import AppError from "../utils/appError";
-
+const Blog = require('../models/blogModel');
 
 const APIFeatures = require('../utils/apiFeatures');
-import { Document } from 'mongoose'; // Assuming you are using Mongoose for MongoDB
 
 export const deleteOne = (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
     try {
