@@ -1,6 +1,4 @@
-import {Express, NextFunction} from "express";
-
-const express = require('express');
+import express, { Request, Response, NextFunction } from "express";
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -11,6 +9,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const userRoutes = require('./routes/userRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 const { globalErrHandler } = require('./controllers/errorController');
 import AppError from './utils/appError';
 const app = express();
@@ -47,6 +46,7 @@ app.use(hpp());
 
 // Routes
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/blogs', blogRoutes);
 
 
 app.use(globalErrHandler);

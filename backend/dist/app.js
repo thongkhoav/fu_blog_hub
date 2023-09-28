@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require('express');
+const express_1 = __importDefault(require("express"));
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -13,9 +13,10 @@ const cors = require('cors');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const userRoutes = require('./routes/userRoutes');
+const blogRoutes = require('./routes/blogRoutes');
 const { globalErrHandler } = require('./controllers/errorController');
 const appError_1 = __importDefault(require("./utils/appError"));
-const app = express();
+const app = (0, express_1.default)();
 // Allow Cross-Origin requests
 app.use(cors());
 // Set security HTTP headers
@@ -28,7 +29,7 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 // Body parser, reading data from body into req.body
-app.use(express.json({
+app.use(express_1.default.json({
     limit: '15kb'
 }));
 // Data sanitization against Nosql query injection
@@ -39,9 +40,8 @@ app.use(xss());
 app.use(hpp());
 // Routes
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/blogs', blogRoutes);
 app.use(globalErrHandler);
-const serverUrl = process.env.NODE_ENV === 'production' ? '' : process.env.SW_SERVER_URL;
-// Swagger
 const swaggerOptions = {
     definition: {
         openapi: "3.1.0",
@@ -50,11 +50,6 @@ const swaggerOptions = {
             version: "0.1.0",
             description: "This is a simple CRUD API application made with Express and documented with Swagger",
         },
-        servers: [
-            {
-                url: serverUrl,
-            },
-        ],
         components: {
             securitySchemes: {
                 BeerToken: {

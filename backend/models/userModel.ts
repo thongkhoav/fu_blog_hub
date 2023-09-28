@@ -34,7 +34,6 @@ let userSchema: Schema<IUser>;
 userSchema = new mongoose.Schema({
     levelId: {
         type: Schema.Types.ObjectId,
-        required: true,
         ref: 'Level'
     },
     facebook: {

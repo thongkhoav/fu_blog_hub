@@ -30,10 +30,6 @@ expLogSchema = new mongoose.Schema({
         type: String,
         enum: ['blog', 'comment', 'like', 'other', 'report'],
     },
-    point: {
-        type: Number,
-        default: 0
-    },
     received: {
         type: Boolean,
         default: false

@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 const URLSlug = require("mongoose-slug-generator");
 mongoose.plugin(URLSlug);
 
-interface IBlog extends Document {
+export interface IBlog extends Document {
    userId: Schema.Types.ObjectId;
    blogSeriesId: Schema.Types.ObjectId;
    tags: Schema.Types.ObjectId;
@@ -11,9 +11,7 @@ interface IBlog extends Document {
    slug: string;
    contentRaw: string;
    contentHTML: string;
-   contentPreview: string;
-   status: 'public' | 'private' | 'draft';
-   isDeleted: boolean;
+   status: 'public' | 'private' | 'removed' | 'waiting' | 'draft';
    numChar: number;
    numWord: number;
    numView: number;
@@ -25,6 +23,7 @@ interface IBlog extends Document {
    lockComment: boolean;
    hideComment: boolean;
    rankPoint: number;
+   avatar: string;
 }
 
 let blogSchema: Schema<IBlog>;
@@ -37,13 +36,11 @@ blogSchema = new mongoose.Schema({
     },
     blogSeriesId: {
         type: Schema.Types.ObjectId,
-        required: true,
         ref: 'BlogSeries'
     },
     title: {
         type: String,
         required: true,
-
     },
     description: {
         type: String,
@@ -51,9 +48,7 @@ blogSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        required: true,
-        unique: true,
-        slug: "title"
+        slug: ['title', '_id']
     },
     contentRaw: {
         type: String,
@@ -61,20 +56,12 @@ blogSchema = new mongoose.Schema({
     },
     contentHTML: {
         type: String,
-        required: true
-    },
-    contentPreview: {
-        type: String,
-        required: true
     },
     status: {
         type: String,
-        enum: ['public', 'private', 'draft'],
-        required: true
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
+        enum: ['public', 'private', 'removed', 'waiting', 'draft'],
+        required: true,
+        default: 'draft'
     },
     numChar: {
         type: Number,
@@ -124,11 +111,6 @@ blogSchema = new mongoose.Schema({
     timestamps: true,
 })
 
-blogSchema.pre('save', async function (next) {
-    this.slug = this.title.split(" ").join("-");
-    next();
-})
-
-const Blog = mongoose.model('BlogCategory', blogSchema);
+const Blog = mongoose.model('Blog', blogSchema);
 
 module.exports = Blog;

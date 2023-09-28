@@ -4,7 +4,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 import AppError from "../utils/appError";
-const { createNewAccessToken, createNewRefreshToken } = require('../services/createNewAccessToken');
+const { createNewAccessToken, createRefreshToken } = require('../services/createNewAccessToken');
 
 
 exports.login = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,7 +31,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
 
         // 3) All correct, send jwt to client
         const token = createNewAccessToken(user);
-        const refreshToken = createNewRefreshToken(user);
+        const refreshToken = createRefreshToken(user);
 
         // Remove the password from the output
         user.password = undefined;
@@ -52,6 +52,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
 exports.signup = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = await User.create({
+            username: req.body.username,
             name: req.body.name,
             email: req.body.email,
             password: req.body.password,
@@ -60,7 +61,7 @@ exports.signup = async (req: Request, res: Response, next: NextFunction) => {
         });
 
         const token = createNewAccessToken(user);
-        const refreshToken = createNewRefreshToken(user);
+        const refreshToken = createRefreshToken(user);
 
         user.password = undefined;
 

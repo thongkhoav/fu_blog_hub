@@ -5,7 +5,6 @@ interface IReport extends Document {
     userId: Schema.Types.ObjectId;
     blogId: Schema.Types.ObjectId;
     commentId: Schema.Types.ObjectId;
-    type: string;
     content: string;
     removed: boolean;
     resolved: boolean;
@@ -32,10 +31,6 @@ reportSchema = new mongoose.Schema({
     commentId: {
         type: Schema.Types.ObjectId,
         ref: 'Comment',
-    },
-    type: {
-        type: String,
-        enum: ['blog', 'comment', 'user', 'other'],
     },
     content:{
         type: String,
