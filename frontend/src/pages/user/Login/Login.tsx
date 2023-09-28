@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import "./login.scss";
 import { PATH } from "src/utils/constants/paths";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname;
   // const history = useHistory();
   const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(event.target.value);
@@ -27,6 +31,7 @@ const Login = () => {
     //       setError(err.payload.message);
     //     });
     // }
+    navigate(from || PATH.HOME, { replace: true });
   };
 
   return (

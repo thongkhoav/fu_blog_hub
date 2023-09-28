@@ -6,6 +6,7 @@ import {
   clearUserData,
   getAccessToken,
   getRefreshToken,
+  getUserData,
   setUserData,
   updateAccessToken
 } from "~/utils/helpers/auth";
@@ -22,6 +23,7 @@ const ACCESS_TOKEN_EXPIRES_TIME = 1000 * 60 * 5; // 5 mins
 function AuthProvider({ children }: any) {
   const localAccessToken = getAccessToken() || null;
   const refreshToken = getRefreshToken() || null;
+  const user = getUserData() || null;
   const navigate = useNavigate();
   const location = useLocation();
   const [isFirstMounted, setIsFirstMounted] = useState(true);
@@ -74,6 +76,7 @@ function AuthProvider({ children }: any) {
   const value = useMemo(
     () => ({
       token: localAccessToken,
+      user,
       onLogin: handleLogin,
       onLogout: handleLogout
     }),

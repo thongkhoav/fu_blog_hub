@@ -1,0 +1,22 @@
+export enum ButtonTitle {
+  LOGIN = "Login",
+  LOGOUT = "Logout",
+  REGISTER = "Register",
+  CREATE = "Create",
+  EDIT = "Edit",
+  DELETE = "Delete",
+  CANCEL = "Cancel",
+  SAVE = "Save",
+  SUBMIT = "Submit",
+  BACK = "Back",
+  VIEW = "View",
+  APPROVE = "Approve",
+  REJECT = "Reject",
+  PUBLISH = "Publish",
+  UNPUBLISH = "Unpublish",
+  BAN = "Ban",
+  ADD = "Add",
+  REMOVE = "Remove",
+  ADD_TAG = "Add Tag",
+  ADD_CATEGORY = "Add Category"
+}

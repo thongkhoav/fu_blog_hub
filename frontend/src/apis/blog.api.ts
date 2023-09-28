@@ -1,1 +1,16 @@
-export {};
+import axios, { AxiosResponse } from "axios";
+import BlogDetail from "~/pages/user/blog/blog-detail/BlogDetail";
+import { HOST } from "~/utils/constants";
+import { BlogItem } from "~/utils/models/blog.model";
+
+interface HighlightBlogsRes extends AxiosResponse {
+  data: {
+    highlightBlogs: BlogItem[];
+  };
+}
+
+export const getHighlightBlogsApi = async (refreshToken: string): Promise<HighlightBlogsRes> =>
+  await axios.get(`${HOST}/api/blogs/highlight`);
+
+export const getBlogDetailApi = async (idBlog: string) =>
+  await axios.get<BlogDetail>(`${HOST}/api/blogs/${idBlog}`);

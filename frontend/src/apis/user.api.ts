@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { HOST } from "~/utils/constants";
 
 interface User {
   id: number;
@@ -22,8 +23,6 @@ interface AccessTokenRes extends AxiosResponse {
     accessToken: string;
   };
 }
-
-const HOST = process.env.hostname;
 
 export const loginApi = async (body: ReqLogin): Promise<UserLoginRes> =>
   await axios.post(`${HOST}/api/user/login`, body);

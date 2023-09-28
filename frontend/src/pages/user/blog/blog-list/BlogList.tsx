@@ -16,8 +16,9 @@ const BlogList = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <h2>blog List</h2>
+      <p>filter theo 1 cate hoặc 1 tag, 1 blog có {">"}=1 tag</p>
       {blogList.map((product, index) => (
         <tr key={product.id}>
           <td>{product.createdAt}</td>
@@ -28,7 +29,7 @@ const BlogList = () => {
           </td>
         </tr>
       ))}
-    </>
+    </div>
   );
 };
 

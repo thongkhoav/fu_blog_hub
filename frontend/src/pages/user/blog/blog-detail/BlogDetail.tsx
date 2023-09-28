@@ -25,11 +25,12 @@ function BlogDetail() {
   return (
     <>
       blog detail
-      {blogDetail && (
-        <>
-          <h2>{blogDetail.title}</h2>
-        </>
-      )}
+      {/* hình thumbnail trên cùng */}
+      {/* phần thông tin nhỏ */}
+      {/* divider */}
+      {/* content */}
+      {/* blog tương tự */}
+      {/* comment */}
     </>
   );
 }
