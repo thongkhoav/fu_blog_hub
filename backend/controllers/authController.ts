@@ -4,7 +4,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 import AppError from "../utils/appError";
-const { createNewAccessToken, createRefreshToken } = require('../services/createNewAccessToken');
+const { createNewAccessToken, createRefreshToken } = require('../services/createToken');
 
 
 exports.login = async (req: Request, res: Response, next: NextFunction) => {
