@@ -1,8 +1,11 @@
 export const PATH = {
   HOME: "/",
-  BLOG: "/blog",
+  BLOG: "/blogs",
   WAITING_BLOGS: "/waiting-blogs",
-  LOGIN: "/login"
+  WRITE_BLOG: "/write-blog",
+  EDIT_BLOG: "/edit-blog",
+  LOGIN: "/login",
+  PROFILE: "/profile"
 };
 
 export const ADMIN_PATH = {
@@ -16,6 +19,15 @@ export const ADMIN_PATH = {
   MANAGE_TAG: "manage-tag",
   CREATE_TAG: "create-tag",
   EDIT_TAG: "edit-tag"
+};
+
+export const navigateUserTo = (path: string, id?: string) => {
+  if (path) {
+    if (id) {
+      path = path + "/" + id;
+    }
+  } else path = "";
+  return path;
 };
 
 export const navigateAdminTo = (path: string, id?: string) => {

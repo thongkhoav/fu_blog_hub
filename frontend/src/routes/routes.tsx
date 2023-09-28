@@ -8,9 +8,9 @@ export default function AppRoutes() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <AdminRoutes />
         <HomeRoutes />
         <LoginRoutes />
-        <AdminRoutes />
       </AuthProvider>
     </BrowserRouter>
   );

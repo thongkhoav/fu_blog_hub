@@ -1,11 +1,6 @@
 import { useState } from "react";
 import "./manage-blog.scss";
-
-interface BlogItem {
-  id: string;
-  title: string;
-  introduction: string;
-}
+import { BlogItem } from "~/utils/models/blog.model";
 
 const ManageBlog = () => {
   const [blogs, setBlogs] = useState<BlogItem[]>([]);

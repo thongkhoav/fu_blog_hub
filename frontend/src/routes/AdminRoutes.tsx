@@ -4,6 +4,7 @@ import { ADMIN_PATH } from "src/utils/constants/paths";
 import Loading from "src/components/Loading/Loading";
 import ProtectedRoute from "~/contexts/ProtectedRoute";
 import AdminLayout from "~/layouts/AdminLayout";
+import { Role } from "~/utils/models/user.model";
 const ManageBlog = lazy(() => import("~/pages/admin/manage-blog/ManageBlog"));
 const ManageUser = lazy(() => import("~/pages/admin/manage-user/ManageUser"));
 const ManageCategory = lazy(() => import("~/pages/admin/manage-category/ManageCategory"));
@@ -18,7 +19,7 @@ export default function AdminRoutes() {
       <Route
         path={ADMIN_PATH.ADMIN_PATH}
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={[Role.ADM]}>
             <AdminLayout />
           </ProtectedRoute>
         }
