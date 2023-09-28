@@ -62,9 +62,9 @@ export default function HomeRoutes() {
       <Route
         path="/"
         element={
-          <ProtectedRoute allowedRoles={[Role.MTR, Role.STU]}>
+          // <ProtectedRoute allowedRoles={[Role.MTR, Role.STU]}>
             <MainLayout />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         }
       >
         <Route
