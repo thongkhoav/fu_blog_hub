@@ -7,11 +7,12 @@ import { Role } from "~/utils/models/user.model";
 import ProtectedRoute from "~/contexts/ProtectedRoute";
 import WriteBlog from "~/pages/user/write-blog/WriteBlog";
 import { ButtonTitle } from "~/utils/constants/buttonTitle";
-import UserViewBlogLayout from "~/layouts/UserViewBlogLayout";
+import BlogRelatedLayout from "~/layouts/BlogRelatedLayout";
 const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogList = lazy(() => import("~/pages/user/blog/blog-list/BlogList"));
 const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail"));
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));
+const Profile = lazy(() => import("~/pages/user/profile/Profile"));
 
 export default function HomeRoutes() {
   return (
@@ -25,26 +26,28 @@ export default function HomeRoutes() {
             </Suspense>
           )}
         />
-        <Route path={PATH.BLOG} element={<UserViewBlogLayout />}>
-          <Route
-            index
-            Component={() => (
-              <Suspense fallback={<Loading />}>
+
+        <Route
+          path={PATH.BLOG}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <BlogRelatedLayout>
                 <BlogList />
-              </Suspense>
-            )}
-          />
-        </Route>
-        <Route path={PATH.BLOG} element={<UserViewBlogLayout isBlogDetail={true} />}>
-          <Route
-            path=":idBlog"
-            Component={() => (
-              <Suspense fallback={<Loading />}>
+              </BlogRelatedLayout>
+            </Suspense>
+          )}
+        />
+
+        <Route
+          path={PATH.BLOG + "/:idBlog"}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <BlogRelatedLayout isBlogDetail={true}>
                 <BlogDetail />
-              </Suspense>
-            )}
-          />
-        </Route>
+              </BlogRelatedLayout>
+            </Suspense>
+          )}
+        />
 
         <Route
           path={PATH.WAITING_BLOGS}
@@ -54,6 +57,15 @@ export default function HomeRoutes() {
                 <WaitingBlogList />
               </Suspense>
             </ProtectedRoute>
+          )}
+        />
+
+        <Route
+          path={PATH.PROFILE + "/:idUser"}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <Profile />
+            </Suspense>
           )}
         />
       </Route>
@@ -80,6 +92,14 @@ export default function HomeRoutes() {
           Component={() => (
             <Suspense fallback={<Loading />}>
               <WriteBlog mode={ButtonTitle.EDIT} />
+            </Suspense>
+          )}
+        />
+        <Route
+          path={PATH.PROFILE + "/me"}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <Profile isUserProfile={true} />
             </Suspense>
           )}
         />

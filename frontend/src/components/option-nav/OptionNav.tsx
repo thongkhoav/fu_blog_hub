@@ -3,20 +3,9 @@ import { Link } from "react-router-dom";
 import { PATH, navigateUserTo } from "~/utils/constants";
 import { BiUpArrow, BiDownArrow, BiBookmark, BiCommentDetail } from "react-icons/bi";
 import { MdOutlineReportProblem } from "react-icons/md";
-import { Dropdown, Space, Tooltip } from "antd";
+import { Dropdown, Modal, Button, Tooltip } from "antd";
 
 import type { MenuProps } from "antd";
-
-const reportItems: MenuProps["items"] = [
-  {
-    key: "1",
-    label: "report blog"
-  },
-  {
-    key: "2",
-    label: "report user"
-  }
-];
 
 interface Category {
   _id: string;
@@ -99,11 +88,36 @@ function OptionNav({ isBlogDetail = false }) {
   const [categories, setCategories] = useState<Category[]>(categoriess);
   const [tags, setTags] = useState<Tag[]>(tagsData);
   const [point, setPoint] = useState<number>(15);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const reportItems: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <span onClick={showModal}>Report blog</span>
+    },
+    {
+      key: "2",
+      label: <span>Report user</span>
+    }
+  ];
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div className=" flex-1 m-5 mr-0">
       {/* (blog detail) chứa avt author ở giữa, 2 nút trên dưới để trừ +- điểm, trái bookmark, phải go to comment */}
       {isBlogDetail && (
         <>
+          <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <p>report</p>
+          </Modal>
           <div className="flex px-4 gap-7 relative">
             <Tooltip title="Bookmark">
               <BiBookmark className="absolute right-3 top-3 text-2xl cursor-pointer" />
@@ -130,16 +144,12 @@ function OptionNav({ isBlogDetail = false }) {
                 />
                 <span>Shakespear</span>
               </Link>
-              <div className="flex">
+              <div className="flex gap-3">
                 <Tooltip title="Go to comments">
                   <BiCommentDetail className="text-2xl cursor-pointer" />
                 </Tooltip>
                 <Dropdown menu={{ items: reportItems }}>
-                  <a onClick={e => e.preventDefault()}>
-                    <Space>
-                      <MdOutlineReportProblem className="text-2xl cursor-pointer" />
-                    </Space>
-                  </a>
+                  <MdOutlineReportProblem className="text-2xl cursor-pointer" />
                 </Dropdown>
               </div>
             </div>

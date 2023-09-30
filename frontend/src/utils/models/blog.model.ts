@@ -4,6 +4,16 @@ interface BlogItemAuthor {
   levelColor: string;
   avatar: string;
 }
+
+export interface BlogNavItem {
+  id: string;
+  title: string;
+  thumbnail: string;
+  category: string;
+  createAt?: Date;
+  author: BlogItemAuthor;
+}
+
 export interface BlogItem {
   id: string;
   title: string;

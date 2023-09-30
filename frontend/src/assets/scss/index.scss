@@ -8,4 +8,21 @@ body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
+  background-color: inherit;
+}
+
+@layer base {
+  button, [type='button'], [type='reset'], [type='submit'] {
+    // background-color: #1677ff;
+  }
+}
+
+
+button:where(:not([class^="ant"])),
+[type='button']:where(:not([class^="ant"])),
+[type='reset']:where(:not([class^="ant"])),
+[type='submit']:where(:not( [class^="ant"])) {
+    -webkit-appearance: button;
+    background-color: transparent;
+    background-image: none;
 }
