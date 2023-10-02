@@ -1,0 +1,51 @@
+.modal_container {
+  max-height: 90% !important;
+  overflow: auto;
+
+  .btn-primary {
+    background: transparent;
+    border-color: #13daff;
+    color: #13daff;
+    span {
+      color: #13daff !important;
+    }
+    &:hover {
+      background: #13daff;
+      color: #fff;
+      border-color: #13daff !important;
+      span {
+        color: #fff !important;
+      }
+      a {
+        color: #fff;
+      }
+    }
+  }
+
+  .btn-reject {
+    background: transparent;
+    border-color: #ff6e6e !important;
+    color: #ff6e6e;
+    span {
+      color: #ff6e6e !important;
+    }
+    &:hover {
+      background: #ff6e6e;
+      color: #fff;
+      border-color: #ff6e6e;
+      span {
+        color: #fff !important;
+      }
+      a {
+        color: #fff;
+      }
+    }
+  }
+}
+.modal_container::-webkit-scrollbar {
+  width: 3px;
+}
+.modal_container::-webkit-scrollbar-thumb {
+  background: rgba(106, 186, 255, 0.733);
+  border-radius: 50px;
+}

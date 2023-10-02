@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import MainLayout from "src/layouts/MainLayout";
 import { Link } from "react-router-dom";
 import { PATH } from "src/utils/constants/paths";
-import { Card, Col, Modal, Row, Tabs } from "antd";
+import { Button, Card, Col, Modal, Row, Tabs, Tag } from "antd";
+import ModalBlog from "./modal-blog/ModalBlog";
 
 interface WaitingBlogItem {
   id: number;
@@ -20,7 +21,7 @@ const waitingBlogItems: WaitingBlogItem[] = [
     intro: "Đây là bài viết số 1",
     thumbnail:
       "https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg",
-    createdAt: "2023-10-02T12:00:00Z",
+    createdAt: "20-10-2022 12:33:00",
     status: "waiting"
   },
   {
@@ -28,7 +29,7 @@ const waitingBlogItems: WaitingBlogItem[] = [
     title: "Bài viết 2",
     intro: "Đây là bài viết số 2",
     thumbnail: "https://tingenz.com/wp-content/uploads/2022/10/hinh-anh-con-khi-cuoi-6-min.jpg",
-    createdAt: "2023-10-01T14:30:00Z",
+    createdAt: "20-10-2022 12:33:00",
     status: "edit"
   },
   {
@@ -37,70 +38,26 @@ const waitingBlogItems: WaitingBlogItem[] = [
     intro: "Đây là bài viết số 3",
     thumbnail:
       "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
+    createdAt: "20-10-2022 12:33:00",
     status: "waiting"
   },
   {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
+    id: 4,
+    title: "Bài viết 4",
+    intro: "Đây là bài viết số 4",
     thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
+      "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
+    createdAt: "20-10-2022 12:33:00",
+    status: "edit"
   },
   {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
+    id: 5,
+    title: "Bài viết 5",
+    intro:
+      "Đây là bài v3e sdsố 5 2 123 asd e1 eqsd 123e sdssd 123 eqsd 123e sd asd e1 eqsd 123e sd",
     thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
+      "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
+    createdAt: "20-10-2022 12:33:00",
     status: "waiting"
   }
 ];
@@ -109,7 +66,7 @@ const WaitingBlogList = () => {
   const [blogList, setBlogList] = useState<WaitingBlogItem[]>([]);
   const [keyTab, setKeyTab] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [blogDetail, setBlogDetail] = useState({});
 
   const handleApprovalBlog = () => {
     setIsModalOpen(false);
@@ -122,54 +79,69 @@ const WaitingBlogList = () => {
 
   return (
     <>
-      <h2>Product List</h2>
       <Tabs
         defaultActiveKey="all"
         centered
         items={[
           {
-            label: "All",
+            label: <div style={{ color: "black" }}>All</div>,
             key: "all"
           },
           {
-            label: "Waiting",
+            label: <div style={{ color: "#ff7373" }}>Waiting</div>,
             key: "waiting"
           },
           {
-            label: "Edit",
+            label: <div style={{ color: "#0c98ff" }}>Edit</div>,
             key: "edit"
           }
         ]}
         onChange={(key: string) => {
-          setKeyTab(key)
+          setKeyTab(key);
         }}
       />
-      <Row gutter={[12, 12]} style={{ margin: '6px' }}>
+      <Row gutter={[12, 12]} style={{ margin: "6px" }}>
         {blogList &&
-          blogList.filter((item) => keyTab === 'all' ? item : item.status === keyTab).map((product, index) =>
-            <>
-              <Col span={4}>
-                <Card
-                  onClick={() => {
-                    setIsModalOpen(true);
-                  }}
-                  key={index}
-                  hoverable
-                  cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
-                >
-                  <Card.Meta title={product.title} description={product.intro} />
-                </Card>
-              </Col>
-            </>
-          )
-        }
+          blogList
+            .filter(item => (keyTab === "all" ? item : item.status === keyTab))
+            .map((product, index) => (
+              <>
+                <Col span={4}>
+                  <Card
+                    style={{
+                      height: "300px",
+                      background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
+                    }}
+                    onClick={() => {
+                      setBlogDetail(product);
+                      setIsModalOpen(true);
+                    }}
+                    key={index}
+                    hoverable
+                    cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
+                  >
+                    <Card.Meta title={product.title} />
+                    <p
+                      style={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        color: "#4f4f4fab",
+                        marginTop: "6px"
+                      }}
+                    >
+                      {product.intro}
+                    </p>
+                  </Card>
+                </Col>
+              </>
+            ))}
       </Row>
-
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleApprovalBlog} onCancel={() => setIsModalOpen(false)}>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
+      <ModalBlog
+        blogDetail={blogDetail}
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+      />
     </>
   );
 };
