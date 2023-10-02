@@ -56,6 +56,69 @@ const waitingBlogItems: WaitingBlogItem[] = [
       "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
     createdAt: "20-10-2022 12:33:00",
     status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
   }
 ];
 
@@ -64,6 +127,10 @@ const WaitingBlogList = () => {
   const [keyTab, setKeyTab] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogDetail, setBlogDetail] = useState({});
+
+  const handleApprovalBlog = () => {
+    setIsModalOpen(false);
+  };
 
   const handleApprovalBlog = () => {
     setIsModalOpen(false);
