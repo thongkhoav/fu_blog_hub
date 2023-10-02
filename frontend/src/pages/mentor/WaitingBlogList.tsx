@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import MainLayout from "src/layouts/MainLayout";
+import { Link } from "react-router-dom";
+import { PATH } from "src/utils/constants/paths";
 import { Button, Card, Col, Modal, Row, Tabs, Tag } from "antd";
 import ModalBlog from "./modal-blog/ModalBlog";
 
@@ -58,66 +61,22 @@ const waitingBlogItems: WaitingBlogItem[] = [
     status: "waiting"
   },
   {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
+    id: 4,
+    title: "Bài viết 4",
+    intro: "Đây là bài viết số 4",
     thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
+      "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
+    createdAt: "20-10-2022 12:33:00",
+    status: "edit"
   },
   {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
+    id: 5,
+    title: "Bài viết 5",
+    intro:
+      "Đây là bài v3e sdsố 5 2 123 asd e1 eqsd 123e sdssd 123 eqsd 123e sd asd e1 eqsd 123e sd",
     thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
-    status: "waiting"
-  },
-  {
-    id: 3,
-    title: "Bài viết 3",
-    intro: "Đây là bài viết số 3",
-    thumbnail:
-      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
-    createdAt: "2023-09-30T10:15:00Z",
+      "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
+    createdAt: "20-10-2022 12:33:00",
     status: "waiting"
   }
 ];
@@ -127,14 +86,6 @@ const WaitingBlogList = () => {
   const [keyTab, setKeyTab] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogDetail, setBlogDetail] = useState({});
-
-  const handleApprovalBlog = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleApprovalBlog = () => {
-    setIsModalOpen(false);
-  };
 
   useEffect(() => {
     setBlogList(waitingBlogItems);
