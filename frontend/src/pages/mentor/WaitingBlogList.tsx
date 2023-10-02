@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import MainLayout from "src/layouts/MainLayout";
 import { Link } from "react-router-dom";
 import { PATH } from "src/utils/constants/paths";
-import { Card, Col, Row, Tabs } from "antd";
+import { Card, Col, Modal, Row, Tabs } from "antd";
 
 interface WaitingBlogItem {
   id: number;
@@ -39,13 +39,81 @@ const waitingBlogItems: WaitingBlogItem[] = [
       "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
     createdAt: "2023-09-30T10:15:00Z",
     status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
+  },
+  {
+    id: 3,
+    title: "Bài viết 3",
+    intro: "Đây là bài viết số 3",
+    thumbnail:
+      "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
+    createdAt: "2023-09-30T10:15:00Z",
+    status: "waiting"
   }
 ];
 
 const WaitingBlogList = () => {
   const [blogList, setBlogList] = useState<WaitingBlogItem[]>([]);
   const [keyTab, setKeyTab] = useState("all");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
+
+  const handleApprovalBlog = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     setBlogList(waitingBlogItems);
@@ -76,23 +144,32 @@ const WaitingBlogList = () => {
           setKeyTab(key)
         }}
       />
-      <Row gutter={[12, 12]} style={{margin:'6px'}}>
+      <Row gutter={[12, 12]} style={{ margin: '6px' }}>
         {blogList &&
-              blogList.filter((item)=>keyTab==='all' ? item: item.status===keyTab).map((product, index) =>
-              <>
-                <Col span={4}>
-                  <Card
-                    key={index}
-                    hoverable
-                    cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
-                  >
-                    <Card.Meta title={product.title} description={product.intro} />
-                  </Card>
-                </Col>
-              </>
-            ) 
-          }
+          blogList.filter((item) => keyTab === 'all' ? item : item.status === keyTab).map((product, index) =>
+            <>
+              <Col span={4}>
+                <Card
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                  key={index}
+                  hoverable
+                  cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
+                >
+                  <Card.Meta title={product.title} description={product.intro} />
+                </Card>
+              </Col>
+            </>
+          )
+        }
       </Row>
+
+      <Modal title="Basic Modal" open={isModalOpen} onOk={handleApprovalBlog} onCancel={() => setIsModalOpen(false)}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
     </>
   );
 };
