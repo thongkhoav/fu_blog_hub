@@ -3,7 +3,7 @@ import * as base from "./baseController";
 import AppError from "../utils/appError";
 import { promisify } from "util";
 const User = require("../models/userModel");
-const { createNewAccessToken } = require("../services/createNewAccessToken");
+const { createNewAccessToken } = require("../services/createToken");
 const jwt = require("jsonwebtoken");
 
 export const deleteMe = async (

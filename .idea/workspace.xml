@@ -4,7 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="2d61dc28-b95f-4d19-80ae-72da0f07fe77" name="Changes" comment="" />
+=======
+    <list default="true" id="ccafc2bf-d623-40eb-88dd-2f0427005d30" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/user/write-blog/EditorJS.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/utils/constants/uploadPlugin.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/backend/server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/Home/Home.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/home/Home.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/Home/highlight-blogs/HighlightBlogs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/home/highlight-blogs/HighlightBlogs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/Home/latest-blogs/LatesBlogs.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/home/latest-blogs/LatesBlogs.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/write-blog/WriteBlog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/write-blog/WriteBlog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/user/write-blog/write-blog.scss" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/user/write-blog/write-blog.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/LoginRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/LoginRoutes.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/UserRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/UserRoutes.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/constants/common.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/constants/common.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/constants/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/constants/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/utils/constants/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/utils/constants/server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/tsconfig.json" afterDir="false" />
+    </list>
+>>>>>>> create-blog
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,8 +41,6 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
-        <option value="tsconfig.json" />
         <option value="TypeScript File" />
       </list>
     </option>
@@ -25,14 +51,12 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
-  </component>
-  <component name="ProjectId" id="2VEZv5vt5OS5RsXYVcaA9BIicag" />
+  <component name="ProjectId" id="2W34CBegTqK4YWgXnGPu2iTKhss" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -86,40 +110,39 @@
       <method v="2" />
     </configuration>
   </component>
+=======
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging create-blog&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/baominh/07_Fall_2023/FUBlogHub/backend/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+>>>>>>> create-blog
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="2d61dc28-b95f-4d19-80ae-72da0f07fe77" name="Changes" comment="" />
-      <created>1694403427495</created>
+      <changelist id="ccafc2bf-d623-40eb-88dd-2f0427005d30" name="Changes" comment="" />
+      <created>1695947799837</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1694403427495</updated>
-      <workItem from="1694403429789" duration="1795000" />
-      <workItem from="1694405253360" duration="24922000" />
-      <workItem from="1694564245831" duration="3737000" />
-      <workItem from="1694568791222" duration="708000" />
-      <workItem from="1694825243128" duration="769000" />
-      <workItem from="1695043424158" duration="3251000" />
-      <workItem from="1695054009758" duration="6980000" />
-      <workItem from="1695112650226" duration="3719000" />
-      <workItem from="1695116452917" duration="1958000" />
-      <workItem from="1695118518887" duration="4978000" />
-      <workItem from="1695203867302" duration="4861000" />
+      <updated>1695947799837</updated>
+      <workItem from="1695947800959" duration="1700000" />
+      <workItem from="1696216116181" duration="10828000" />
+      <workItem from="1696322916804" duration="898000" />
+      <workItem from="1696323876014" duration="1377000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
 </project>

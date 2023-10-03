@@ -11,14 +11,20 @@ const swaggerUi = require('swagger-ui-express');
 const userRoutes = require('./routes/userRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const { globalErrHandler } = require('./controllers/errorController');
+const multer = require('multer');
+
 import AppError from './utils/appError';
+import path from "path";
+import {Callback} from "mongoose";
 const app = express();
 
 // Allow Cross-Origin requests
 app.use(cors());
 
 // Set security HTTP headers
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}));
 
 // Limit request from the same API
 const limiter = rateLimit({
@@ -43,10 +49,33 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(hpp());
 
+// Multer config
+const storage = multer.diskStorage({
+    destination: './uploads/',
+    filename: function (req:Request, file:any, cb:Callback) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+
+const upload = multer({ storage });
 
 // Routes
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/blogs', blogRoutes);
+app.use('/image', express.static(path.join(__dirname, 'uploads')));
+
+app.post('/api/upload', upload.single('image'), (req:any, res:any) => {
+    if (!req.file) {
+        return res.status(400).send('No image uploaded.');
+    }
+    const imageUrl = `http://localhost:4000/image/${req.file.filename}`;
+    res.json({
+        "success" : 1,
+        "file": {
+            "url": imageUrl
+        }
+    });
+});
 
 
 app.use(globalErrHandler);

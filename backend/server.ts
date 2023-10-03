@@ -1,3 +1,6 @@
+import {Callback} from "mongoose";
+import path from "path";
+
 const mongoose = require('mongoose');
 require("dotenv").config();
 
@@ -10,6 +13,7 @@ process.on('uncaughtException', err => {
 const app = require('./app');
 const port = process.env.PORT || 4000;
 const databaseUrl = process.env.DATABASE_URL
+
 
 // Connect the database
 mongoose.connect(databaseUrl, {

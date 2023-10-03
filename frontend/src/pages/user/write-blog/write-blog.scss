@@ -1,0 +1,72 @@
+h1 {
+  display: block;
+  font-size: 30px;
+  line-height: 3rem;
+  font-weight: bold;
+}
+
+h2 {
+  display: block;
+  font-size: 23px;
+  line-height: 3rem;
+  font-weight: bold;
+}
+
+h3 {
+  display: block;
+  font-size: 20px; /* Đặt kích thước chữ cho tiêu đề h3 */
+  line-height: 2.5rem; /* Đặt khoảng cách giữa các dòng cho tiêu đề h3 */
+  font-weight: bold; /* Đặt độ đậm cho tiêu đề h3 */
+}
+
+h4 {
+  display: block;
+  font-size: 18px; /* Đặt kích thước chữ cho tiêu đề h4 */
+  line-height: 2.5rem; /* Đặt khoảng cách giữa các dòng cho tiêu đề h4 */
+  font-weight: bold; /* Đặt độ đậm cho tiêu đề h4 */
+}
+
+h5 {
+  display: block;
+  font-size: 16px; /* Đặt kích thước chữ cho tiêu đề h5 */
+  line-height: 2.5rem; /* Đặt khoảng cách giữa các dòng cho tiêu đề h5 */
+  font-weight: bold; /* Đặt độ đậm cho tiêu đề h5 */
+}
+
+h6 {
+  display: block;
+  font-size: 14px; /* Đặt kích thước chữ cho tiêu đề h6 */
+  line-height: 2.5rem; /* Đặt khoảng cách giữa các dòng cho tiêu đề h6 */
+  font-weight: bold; /* Đặt độ đậm cho tiêu đề h6 */
+}
+
+.ant-upload-select{
+  width: 100% !important;
+  height: 200px !important;
+}
+
+.ant-modal{
+  top: 10px !important;
+}
+
+.ant-modal-content{
+  width: 100% !important;
+  margin: auto;
+}
+
+.ck-toolbar{
+  border: none !important;
+}
+
+.ck-content{
+  border: none !important;
+}
+
+.ck{
+  box-shadow: none !important;
+}
+
+.ck-toolbar__items{
+  justify-content: center;
+  gap: 30px;
+}
