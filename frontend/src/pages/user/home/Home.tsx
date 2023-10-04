@@ -1,8 +1,9 @@
-import OptionNav from "~/components/option-nav/OptionNav";
+import OptionNav from "~/components/blog-info-side/BlogInfoSide";
 import HighlightBlogs from "./highlight-blogs/HighlightBlogs";
 import { BlogItem } from "~/utils/models/blog.model";
 import { useState } from "react";
 import LatestBlogs from "./latest-blogs/LatesBlogs";
+import OptionSideHome from "./option-side-home/OptionSideHome";
 
 const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 
@@ -72,7 +73,7 @@ export default function Home() {
           <div className="flex-[2] bg-slate-300 h-80">
             {/* danh sách blog theo chủ để đã chọn lúc mới đăng nhập hoặc có thể setting */}
           </div>
-          <OptionNav />
+          <OptionSideHome />
         </div>
       </div>
     </div>

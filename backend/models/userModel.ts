@@ -1,153 +1,169 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
-import validator from 'validator';
-import bcrypt from 'bcryptjs';
+import mongoose, { Document, Model, Schema } from "mongoose";
+import validator from "validator";
+import bcrypt from "bcryptjs";
 
-interface IUser extends Document {
-    levelId: Schema.Types.ObjectId;
-    name: string;
-    email: string;
-    address?: string;
-    password: string;
-    passwordConfirm: string;
-    role: 'admin' | 'teacher' | 'student';
-    active: boolean;
-    isVerifiedEmail: boolean;
-    username: string;
-    createdAt: Date;
-    updatedAt: Date;
-    avatar?: string;
-    coverAvatar?: string;
-    bannedReason?: string;
-    exp?: number;
-    numBlog?: number;
-    numLike?: number;
-    numComment?: number;
-    numFollower?: number;
-    userTitle?: string;
-    facebook?: string;
-    instagram?: string;
-    correctPassword(typedPassword: string, originalPassword: string): Promise<boolean>;
+interface IBan extends Document {
+  bannedReason: string;
+  bannedAt: Date;
+  bannedUntil: Date;
 }
 
+let banSchema: Schema<IBan>;
+banSchema = new mongoose.Schema(
+  {
+    bannedReason: {
+      type: String,
+      default: null,
+    },
+    bannedUntil: {
+      type: Date,
+      default: null,
+    },
+    bannedAt: {
+      type: Date,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+interface IUser extends Document {
+  levelId: Schema.Types.ObjectId;
+  fullName: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  role: "admin" | "mentor" | "student";
+  active: boolean;
+  isVerifiedEmail: boolean;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
+  avatar?: string;
+  coverAvatar?: string;
+  ban?: Schema;
+  numBlog?: number;
+  numComment?: number;
+  numFollower?: number;
+  //   numFollowing?: number;
+  userTitle?: string;
+  facebook?: string;
+  instagram?: string;
+  correctPassword(
+    typedPassword: string,
+    originalPassword: string
+  ): Promise<boolean>;
+}
 
 let userSchema: Schema<IUser>;
-userSchema = new mongoose.Schema({
+userSchema = new mongoose.Schema(
+  {
     levelId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Level'
+      type: Schema.Types.ObjectId,
+      ref: "Level",
     },
     facebook: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     instagram: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     numFollower: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     numComment: {
-        type: Number,
-        default: 0,
-    },
-    numLike: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     numBlog: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
-    exp: {
-        type: Number,
-        default: 0,
-    },
-    bannedReason: {
-        type: String,
-        default: null,
+    ban: {
+      type: banSchema,
+      default: null,
     },
     userTitle: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     username: {
       type: String,
-      required: [true, 'Please fill your username'],
+      required: [true, "Please fill your username"],
     },
-    name: {
-        type: String,
-        required: [true, 'Please fill your name'],
+    fullName: {
+      type: String,
+      required: [true, "Please fill your name"],
     },
     email: {
-        type: String,
-        required: [true, 'Please fill your email'],
-        unique: true,
-        lowercase: true,
-        validate: [validator.isEmail, 'Please provide a valid email'],
-    },
-    address: {
-        type: String,
-        trim: true,
+      type: String,
+      required: [true, "Please fill your email"],
+      unique: true,
+      lowercase: true,
+      validate: [validator.isEmail, "Please provide a valid email"],
     },
     password: {
-        type: String,
-        required: [true, 'Please fill your password'],
-        minLength: 6,
-        select: false,
+      type: String,
+      required: [true, "Please fill your password"],
+      minLength: 6,
+      select: false,
     },
     passwordConfirm: {
-        type: String,
-        required: [true, 'Please fill your password confirm'],
-        validate: {
-            validator: function (el: string) {
-                // "this" works only on create and save
-                return el === (this as any).password;
-            },
-            message: 'Your password and confirmation password are not the same',
+      type: String,
+      required: [true, "Please fill your password confirm"],
+      validate: {
+        validator: function (el: string) {
+          // "this" works only on create and save
+          return el === (this as any).password;
         },
+        message: "Your password and confirmation password are not the same",
+      },
     },
     role: {
-        type: String,
-        enum: ['admin', 'teacher', 'student'],
-        default: 'student',
+      type: String,
+      enum: ["admin", "mentor", "student"],
+      default: "student",
     },
     active: {
-        type: Boolean,
-        default: true,
-        select: false,
+      type: Boolean,
+      default: true,
+      select: false,
     },
-},
-{
-        timestamps: true
-    }
+  },
+  {
+    timestamps: true,
+  }
 );
 
 // Encrypt the password using 'bcryptjs'
 // Mongoose -> Document Middleware
-userSchema.pre<IUser>('save', async function (next) {
-    // Check the password if it is modified
-    if (!this.isModified('password')) {
-        return next();
-    }
+userSchema.pre<IUser>("save", async function (next) {
+  // Check the password if it is modified
+  if (!this.isModified("password")) {
+    return next();
+  }
 
-    // Hashing the password
-    this.password = await bcrypt.hash(this.password, 12);
+  // Hashing the password
+  this.password = await bcrypt.hash(this.password, 12);
 
-    // Delete passwordConfirm field
-    this.passwordConfirm = '';
-    next();
+  // Delete passwordConfirm field
+  this.passwordConfirm = "";
+  next();
 });
 
 // This is Instance Method that is gonna be available on all documents in a certain collection
 userSchema.methods.correctPassword = async function (
-    typedPassword: string,
-    originalPassword: string,
+  typedPassword: string,
+  originalPassword: string
 ): Promise<boolean> {
-    return await bcrypt.compare(typedPassword, originalPassword);
+  return await bcrypt.compare(typedPassword, originalPassword);
 };
 
-const User: Model<IUser> = mongoose.model<IUser>('User', userSchema);
+const User: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 
 module.exports = User;

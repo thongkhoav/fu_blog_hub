@@ -4,7 +4,9 @@ import { ADMIN_PATH } from "src/utils/constants/paths";
 import Loading from "src/components/Loading/Loading";
 import ProtectedRoute from "~/contexts/ProtectedRoute";
 import AdminLayout from "~/layouts/AdminLayout";
-import { Role } from "~/utils/models/user.model";
+import ReportUser from "~/pages/admin/reports/report-user/ReportUser";
+import ReportBlog from "~/pages/admin/reports/report-blog/ReportBlog";
+import ReportComment from "~/pages/admin/reports/report-comment/ReportComment";
 const ManageBlog = lazy(() => import("~/pages/admin/manage-blog/ManageBlog"));
 const ManageUser = lazy(() => import("~/pages/admin/manage-user/ManageUser"));
 const ManageCategory = lazy(() => import("~/pages/admin/manage-category/ManageCategory"));
@@ -19,11 +21,19 @@ export default function AdminRoutes() {
       <Route
         path={ADMIN_PATH.ADMIN_PATH}
         element={
-          <ProtectedRoute allowedRoles={[Role.ADM]}>
-            <AdminLayout />
-          </ProtectedRoute>
+          // <ProtectedRoute allowedRoles={[Role.ADM]}>
+          <AdminLayout />
+          // </ProtectedRoute>
         }
       >
+        <Route
+          index
+          element={
+            <Suspense fallback={<Loading />}>
+              <ManageUser />
+            </Suspense>
+          }
+        />
         <Route
           path={ADMIN_PATH.MANAGE_BLOG}
           element={
@@ -85,6 +95,30 @@ export default function AdminRoutes() {
           element={
             <Suspense fallback={<Loading />}>
               <CreateCategory mode="edit" />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ADMIN_PATH.REPORT_USER}
+          element={
+            <Suspense fallback={<Loading />}>
+              <ReportUser />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ADMIN_PATH.REPORT_BLOG}
+          element={
+            <Suspense fallback={<Loading />}>
+              <ReportBlog />
+            </Suspense>
+          }
+        />
+        <Route
+          path={ADMIN_PATH.REPORT_COMMENT}
+          element={
+            <Suspense fallback={<Loading />}>
+              <ReportComment />
             </Suspense>
           }
         />

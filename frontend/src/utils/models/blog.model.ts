@@ -1,3 +1,13 @@
+export interface Category {
+  _id: string;
+  name: string;
+}
+
+export interface Tag {
+  _id: string;
+  name: string;
+}
+
 interface BlogItemAuthor {
   id: string;
   name: string;

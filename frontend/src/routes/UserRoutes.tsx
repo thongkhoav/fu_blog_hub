@@ -7,9 +7,8 @@ import { Role } from "~/utils/models/user.model";
 import ProtectedRoute from "~/contexts/ProtectedRoute";
 import WriteBlog from "~/pages/user/write-blog/WriteBlog";
 import { ButtonTitle } from "~/utils/constants/buttonTitle";
-import BlogRelatedLayout from "~/layouts/BlogRelatedLayout";
 const Home = lazy(() => import("~/pages/user/home/Home"));
-const BlogList = lazy(() => import("~/pages/user/blog/blog-list/BlogList"));
+const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail"));
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));
 const Profile = lazy(() => import("~/pages/user/profile/Profile"));
@@ -31,9 +30,7 @@ export default function HomeRoutes() {
           path={PATH.BLOG}
           Component={() => (
             <Suspense fallback={<Loading />}>
-              <BlogRelatedLayout>
-                <BlogList />
-              </BlogRelatedLayout>
+              <BlogListPage />
             </Suspense>
           )}
         />
@@ -42,9 +39,7 @@ export default function HomeRoutes() {
           path={PATH.BLOG + "/:idBlog"}
           Component={() => (
             <Suspense fallback={<Loading />}>
-              <BlogRelatedLayout isBlogDetail={true}>
-                <BlogDetail />
-              </BlogRelatedLayout>
+              <BlogDetail />
             </Suspense>
           )}
         />

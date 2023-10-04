@@ -10,7 +10,7 @@ interface User {
 const ManageUser = () => {
   const [users, setUsers] = useState<User[]>([]);
 
-  return <div>user list both banned and active</div>;
+  return <div className="h-[2000px]">user list both banned and active</div>;
 };
 
 export default ManageUser;

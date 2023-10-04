@@ -1,6 +1,5 @@
-import { Outlet } from "react-router-dom";
-import BlogsNav from "~/components/blogs-side/BlogsSide";
-import OptionNav from "~/components/option-nav/OptionNav";
+import BlogsSide from "~/components/blogs-side/BlogsSide";
+import OptionNav from "~/components/blog-info-side/BlogInfoSide";
 
 export default function BlogRelatedLayout({
   isBlogDetail = false,
@@ -10,10 +9,9 @@ export default function BlogRelatedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex mt-5 gap-5 justify-between max-w-[1500px]">
-      <OptionNav isBlogDetail={isBlogDetail} />
-      <div className="flex-[2] bg-gray-400">{children}</div>
-      {isBlogDetail && <BlogsNav />}
+    <div className="flex mx-auto mt-5 gap-5 justify-between max-w-[1200px]">
+      {children}
+      {isBlogDetail && <BlogsSide />}
     </div>
   );
 }
