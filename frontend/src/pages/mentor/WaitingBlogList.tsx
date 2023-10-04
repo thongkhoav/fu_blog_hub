@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
-import MainLayout from "src/layouts/MainLayout";
-import { Link } from "react-router-dom";
-import { PATH } from "src/utils/constants/paths";
-import { Button, Card, Col, Modal, Row, Tabs, Tag } from "antd";
+import { useEffect, useState } from "react";
+import { Card, Col, Row, Tabs } from "antd";
 import ModalBlog from "./modal-blog/ModalBlog";
 
 interface WaitingBlogItem {
@@ -68,10 +65,6 @@ const WaitingBlogList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogDetail, setBlogDetail] = useState({});
 
-  const handleApprovalBlog = () => {
-    setIsModalOpen(false);
-  };
-
   useEffect(() => {
     setBlogList(waitingBlogItems);
     // fetch blog list
@@ -105,43 +98,36 @@ const WaitingBlogList = () => {
           blogList
             .filter(item => (keyTab === "all" ? item : item.status === keyTab))
             .map((product, index) => (
-              <>
-                <Col span={4}>
-                  <Card
+              <Col span={4} key={index}>
+                <Card
+                  style={{
+                    height: "300px",
+                    background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
+                  }}
+                  onClick={() => {
+                    setBlogDetail(product);
+                    setIsModalOpen(true);
+                  }}
+                  hoverable
+                  cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
+                >
+                  <Card.Meta title={product.title} />
+                  <p
                     style={{
-                      height: "300px",
-                      background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      color: "#4f4f4fab",
+                      marginTop: "6px"
                     }}
-                    onClick={() => {
-                      setBlogDetail(product);
-                      setIsModalOpen(true);
-                    }}
-                    key={index}
-                    hoverable
-                    cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
                   >
-                    <Card.Meta title={product.title} />
-                    <p
-                      style={{
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        color: "#4f4f4fab",
-                        marginTop: "6px"
-                      }}
-                    >
-                      {product.intro}
-                    </p>
-                  </Card>
-                </Col>
-              </>
+                    {product.intro}
+                  </p>
+                </Card>
+              </Col>
             ))}
       </Row>
-      <ModalBlog
-        blogDetail={blogDetail}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-      />
+      <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 };
