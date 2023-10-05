@@ -2,7 +2,7 @@ import { Button, Col, Modal, Row } from "antd";
 import React from "react";
 import "./modal-blog.scss";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
-export default function ModalBlog({ blogDetail, onCancel, ...props }) {
+export default function ModalBlog({ blogDetail, onCancel, ...props }: any) {
   const modalTitle = (
     <Row>
       <Col span={6}>
