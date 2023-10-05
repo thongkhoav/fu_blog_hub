@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from "react";
-import MainLayout from "src/layouts/MainLayout";
-import { Link } from "react-router-dom";
-import { PATH } from "src/utils/constants/paths";
 import { Button, Card, Col, Modal, Row, Tabs, Tag } from "antd";
 import ModalBlog from "./modal-blog/ModalBlog";
 

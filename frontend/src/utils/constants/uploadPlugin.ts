@@ -1,9 +1,9 @@
-import {HOST} from "~/utils/constants/server";
+import { HOST } from "~/utils/constants/server";
 import { UploadAdapter, FileLoader } from "@ckeditor/ckeditor5-upload/src/filerepository";
 import axios from "axios";
-import {Editor} from "@ckeditor/ckeditor5-core";
-import {RcFile} from "antd/es/upload";
-import {message} from "antd";
+import { Editor } from "@ckeditor/ckeditor5-core";
+import { RcFile } from "antd/es/upload";
+import { message } from "antd";
 
 function uploadAdapter(loader: FileLoader): UploadAdapter {
   return {
@@ -34,23 +34,23 @@ function uploadAdapter(loader: FileLoader): UploadAdapter {
 }
 function uploadPlugin(editor: Editor) {
   // @ts-ignore
-  editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+  editor.plugins.get("FileRepository").createUploadAdapter = loader => {
     return uploadAdapter(loader);
   };
 }
 export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result as string));
+  reader.addEventListener("load", () => callback(reader.result as string));
   reader.readAsDataURL(img);
 };
 export const beforeUpload = (file: RcFile) => {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
   if (!isJpgOrPng) {
-    message.error('You can only upload JPG/PNG file!');
+    message.error("You can only upload JPG/PNG file!");
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    message.error("Image must smaller than 2MB!");
   }
   return isJpgOrPng && isLt2M;
 };
