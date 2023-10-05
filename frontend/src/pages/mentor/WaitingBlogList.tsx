@@ -41,7 +41,7 @@ const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 4,
     title: "Bài viết 4",
-    intro: "Đây là bài viết số 4",
+    intro: "Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4",
     thumbnail:
       "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
     createdAt: "20-10-2022 12:33:00",
