@@ -2,7 +2,7 @@ import { Button, Col, Modal, Row } from "antd";
 import React from "react";
 import "./modal-blog.scss";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
-export default function ModalBlog({ blogDetail, onCancel, ...props }: any) {
+export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
   const modalTitle = (
     <Row>
       <Col span={6}>
@@ -14,19 +14,32 @@ export default function ModalBlog({ blogDetail, onCancel, ...props }: any) {
       <Col span={18} style={{ textAlign: "right" }}>
         <Button
           className="btn-reject"
-          onClick={() => {
-            onCancel();
-          }}
           icon={<CloseOutlined />}
+          onClick={() => {
+            handleReject();
+          }}
         >
           Reject
         </Button>
-        <Button className="btn-primary" style={{ marginLeft: "6px" }} icon={<CheckOutlined />}>
+        <Button
+          className="btn-primary"
+          style={{ marginLeft: "6px" }}
+          icon={<CheckOutlined />}
+          onClick={() => {
+            handleAccept();
+          }}
+        >
           Accept
         </Button>
       </Col>
     </Row>
   );
+  const handleReject = () => {
+    onClose();
+  };
+  const handleAccept = () => {
+    onClose();
+  };
   return (
     <>
       <Modal
@@ -35,7 +48,7 @@ export default function ModalBlog({ blogDetail, onCancel, ...props }: any) {
         title={modalTitle}
         centered
         width={"70%"}
-        onCancel={onCancel}
+        onCancel={onClose}
         footer={false}
         {...props}
       >

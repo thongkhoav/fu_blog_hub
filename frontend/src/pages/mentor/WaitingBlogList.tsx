@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Tabs } from "antd";
+import { Avatar, Card, Col, Row, Tabs } from "antd";
 import ModalBlog from "./modal-blog/ModalBlog";
 
 interface WaitingBlogItem {
@@ -46,16 +46,6 @@ const waitingBlogItems: WaitingBlogItem[] = [
       "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
     createdAt: "20-10-2022 12:33:00",
     status: "edit"
-  },
-  {
-    id: 5,
-    title: "Bài viết 5",
-    intro:
-      "Đây là bài v3e sdsố 5 2 123 asd e1 eqsd 123e sdssd 123 eqsd 123e sd asd e1 eqsd 123e sd",
-    thumbnail:
-      "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
-    createdAt: "20-10-2022 12:33:00",
-    status: "waiting"
   }
 ];
 
@@ -97,40 +87,40 @@ const WaitingBlogList = () => {
           setKeyTab(key);
         }}
       />
-      <Row gutter={[12, 12]} style={{ margin: "6px" }}>
+      <div className="grid grid-cols-4 gap-4">
         {blogList &&
           blogList
             .filter(item => (keyTab === "all" ? item : item.status === keyTab))
             .map((product, index) => (
-              <Col span={4} key={index}>
-                <Card
-                  style={{
-                    height: "300px",
-                    background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
-                  }}
-                  onClick={() => {
-                    setBlogDetail(product);
-                    setIsModalOpen(true);
-                  }}
-                  hoverable
-                  cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
-                >
-                  <Card.Meta title={product.title} />
-                  <p
-                    style={{
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      color: "#4f4f4fab",
-                      marginTop: "6px"
-                    }}
-                  >
-                    {product.intro}
-                  </p>
-                </Card>
-              </Col>
+              <Card
+                key={index}
+                style={{
+                  width: "100%",
+                  height: "340px",
+                  background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
+                }}
+                onClick={() => {
+                  setBlogDetail(product);
+                  setIsModalOpen(true);
+                }}
+                hoverable
+                cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
+              >
+                <div className="flex items-center" style={{ margin: "-10px 0 10px 0" }}>
+                  <Avatar src="https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg" />
+                  <div className="ml-2">
+                    <p className="font-bold">Nguyen Van A</p>
+                    <p className="font-light text-sm">{product.createdAt}</p>
+                  </div>
+                </div>
+                <p className="font-bold mt-4">{product.title}</p>
+                <p className="whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 mt-1">
+                  {product.intro}
+                </p>
+              </Card>
             ))}
-      </Row>
+      </div>
+
       <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
