@@ -12,9 +12,9 @@ function ProtectedRoute({ allowedRoles = [], redirectPath = "/login", children }
   const { token, user } = useAuth();
   const location = useLocation();
 
-  if (!token || !user?.userRoles.find(role => allowedRoles?.includes(role))) {
-    return <Navigate to={redirectPath} replace state={{ from: location }} />;
-  }
+  // if (!token || !user?.userRoles.find(role => allowedRoles?.includes(role))) {
+  //   return <Navigate to={redirectPath} replace state={{ from: location }} />;
+  // }
 
   return children || <Outlet />;
 }
