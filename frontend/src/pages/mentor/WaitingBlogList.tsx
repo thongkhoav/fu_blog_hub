@@ -46,6 +46,15 @@ const waitingBlogItems: WaitingBlogItem[] = [
       "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
     createdAt: "20-10-2022 12:33:00",
     status: "edit"
+  },
+  {
+    id: 5,
+    title: "Bài viết 5",
+    intro: "Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4",
+    thumbnail:
+      "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
+    createdAt: "20-10-2022 12:33:00",
+    status: "edit"
   }
 ];
 
@@ -54,10 +63,6 @@ const WaitingBlogList = () => {
   const [keyTab, setKeyTab] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [blogDetail, setBlogDetail] = useState({});
-
-  const handleApprovalBlog = () => {
-    setIsModalOpen(false);
-  };
 
   useEffect(() => {
     setBlogList(waitingBlogItems);
@@ -87,18 +92,16 @@ const WaitingBlogList = () => {
           setKeyTab(key);
         }}
       />
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 mb-4">
         {blogList &&
           blogList
             .filter(item => (keyTab === "all" ? item : item.status === keyTab))
             .map((product, index) => (
               <Card
                 key={index}
-                style={{
-                  width: "100%",
-                  height: "340px",
-                  background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
-                }}
+                className={`w-full h-340 ${
+                  product.status === "waiting" ? "bg-red-100" : "bg-sky-50"
+                }`}
                 onClick={() => {
                   setBlogDetail(product);
                   setIsModalOpen(true);
@@ -120,7 +123,6 @@ const WaitingBlogList = () => {
               </Card>
             ))}
       </div>
-
       <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
