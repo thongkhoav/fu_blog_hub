@@ -14,8 +14,9 @@ interface WaitingBlogItem {
 const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 1,
-    title: "Bài viết 1",
-    intro: "Đây là bài viết số 1",
+    title:
+      "Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1",
+    intro: "Đây là bài số 1",
     thumbnail:
       "https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg",
     createdAt: "20-10-2022 12:33:00",
@@ -99,9 +100,7 @@ const WaitingBlogList = () => {
             .map((product, index) => (
               <Card
                 key={index}
-                className={`w-full h-340 ${
-                  product.status === "waiting" ? "bg-red-100" : "bg-sky-50"
-                }`}
+                className={`${product.status === "waiting" ? "bg-red-100" : "bg-sky-50"}`}
                 onClick={() => {
                   setBlogDetail(product);
                   setIsModalOpen(true);
@@ -116,10 +115,8 @@ const WaitingBlogList = () => {
                     <p className="font-light text-sm">{product.createdAt}</p>
                   </div>
                 </div>
-                <p className="font-bold mt-4">{product.title}</p>
-                <p className="whitespace-nowrap overflow-hidden text-ellipsis text-gray-500 mt-1">
-                  {product.intro}
-                </p>
+                <div className="font-bold mt-4 line-clamp-2">{product.title}</div>
+                <p className="line-clamp-2 text-gray-500 mt-1">{product.intro}</p>
               </Card>
             ))}
       </div>

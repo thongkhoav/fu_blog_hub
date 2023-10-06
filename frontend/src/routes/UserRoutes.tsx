@@ -7,7 +7,7 @@ import { Role } from "~/utils/models/user.model";
 import ProtectedRoute from "~/contexts/ProtectedRoute";
 import WriteBlog from "~/pages/user/write-blog/WriteBlog";
 import { ButtonTitle } from "~/utils/constants/buttonTitle";
-const Home = lazy(() => import("~/pages/user/Home/Home"));
+const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail"));
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));
