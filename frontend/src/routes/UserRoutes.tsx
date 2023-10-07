@@ -12,6 +12,9 @@ const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogList = lazy(() => import("~/pages/user/blog/blog-list/BlogList"));
 const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail"));
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));
+const Profile = lazy(() => import("~/pages/user/profile/Profile"));
+const Posts = lazy(() => import("~/pages/user/profile/Posts"));
+const Series = lazy(() => import("~/pages/user/profile/Series"));
 
 export default function HomeRoutes() {
   return (
@@ -56,14 +59,30 @@ export default function HomeRoutes() {
             </ProtectedRoute>
           )}
         />
-      </Route>
 
+        <Route
+          path={PATH.PROFILE}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <Profile />
+            </Suspense>
+          )}
+        >
+          <Route index element={<Posts />} />
+          <Route path="series" element={<Series />} />
+          <Route path="follower" element={<Posts />} />
+          <Route path="following" element={<Posts />} />
+          <Route path="love" element={<Posts />} />
+          <Route path="series" element={<Posts />} />
+          <Route path="comment" element={<Posts />} />
+        </Route>
+      </Route>
       {/* protected routes - role student and mentor */}
       <Route
         path="/"
         element={
           // <ProtectedRoute allowedRoles={[Role.MTR, Role.STU]}>
-            <MainLayout />
+          <MainLayout />
           // </ProtectedRoute>
         }
       >

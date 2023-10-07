@@ -1,6 +1,5 @@
 import { ButtonTitle } from "~/utils/constants/buttonTitle";
 import "./write-blog.scss";
-import EditorJS from '@editorjs/editorjs';
 import {useRef} from "react";
 import ReactEditor from "~/pages/user/write-blog/EditorJS";
 
