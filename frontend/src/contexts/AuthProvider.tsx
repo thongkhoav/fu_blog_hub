@@ -23,6 +23,14 @@ function AuthProvider({ children }: any) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    if (userGlobal != null) {
+      if (userGlobal?.role === Role.ADM) {
+        navigate("/admin");
+      }
+    }
+  }, []);
+
   const handleLogin = async (email: string, password: string) => {
     try {
       const user = await loginApi({
@@ -45,7 +53,7 @@ function AuthProvider({ children }: any) {
   };
 
   const handleLogout = async () => {
-    if (userGlobal.data.role === Role.ADM) {
+    if (userGlobal.role === Role.ADM) {
       navigate("/login");
     }
     clearUserData();

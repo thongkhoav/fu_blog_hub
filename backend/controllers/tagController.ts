@@ -30,6 +30,22 @@ export const createTag = async (
 
 export const getOneTag = base.getOne(Tag);
 export const deleteTag = base.deleteOne(Tag);
-export const getAllTag = base.getAll(Tag);
+export const getAllTag = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const doc = await Tag.find();
+
+    res.status(200).json({
+      status: "success",
+      results: doc.length,
+      data: doc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateTag = base.updateOne(Tag);

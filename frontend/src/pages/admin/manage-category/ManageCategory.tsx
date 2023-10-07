@@ -87,7 +87,7 @@ const ManageCategory = () => {
         className="text-center"
         onClick={() => toast.success("Add new tag successfully", toastOption)}
       >
-        Tag list
+        Category list
       </Typography.Title>
       <Space align="center" size="middle" className="my-5">
         <Input
