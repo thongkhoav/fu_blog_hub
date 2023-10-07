@@ -19,40 +19,33 @@ let categorySchema;
 categorySchema = new mongoose_1.default.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     numBlog: {
         type: Number,
-        default: 0
+        default: 0,
     },
-    order: {
-        type: Number,
-        default: 0
-    },
-    removed: {
+    status: {
         type: Boolean,
-        default: false
-    },
-    description: {
-        type: String
+        default: false,
     },
     slug: {
         type: String,
         unique: true,
         required: true,
-        slug: "name"
+        slug: "name",
     },
     avatar: {
-        type: String
-    }
+        type: String,
+    },
 }, {
-    timestamps: true // Thêm thời gian tạo và cập nhật tự động
+    timestamps: true, // Thêm thời gian tạo và cập nhật tự động
 });
-categorySchema.pre('save', function (next) {
+categorySchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         this.slug = this.name.split(" ").join("-");
         next();
     });
 });
-const Category = mongoose_1.default.model('Category', categorySchema);
+const Category = mongoose_1.default.model("Category", categorySchema);
 exports.default = Category;

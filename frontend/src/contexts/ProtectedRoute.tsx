@@ -9,10 +9,10 @@ interface Props {
 }
 
 function ProtectedRoute({ allowedRoles = [], redirectPath = "/login", children }: Props) {
-  const { token, user } = useAuth();
+  const { token, userGlobal } = useAuth();
   const location = useLocation();
 
-  if (!token || !user?.userRoles.find(role => allowedRoles?.includes(role))) {
+  if (!token || !allowedRoles?.includes(userGlobal.role as Role)) {
     return <Navigate to={redirectPath} replace state={{ from: location }} />;
   }
 

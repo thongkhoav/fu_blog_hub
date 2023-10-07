@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 
 interface IComment extends Document {
   userId: Schema.Types.ObjectId;
-  commentId: Schema.Types.ObjectId;
+  children: Schema.Types.ObjectId[];
   blogId: Schema.Types.ObjectId;
   content: string;
   status: boolean;
@@ -17,10 +17,7 @@ commentSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    commentId: {
-      type: Schema.Types.ObjectId,
-      ref: "Comment",
-    },
+    children: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     blogId: {
       type: Schema.Types.ObjectId,
       ref: "Blog",
@@ -36,7 +33,7 @@ commentSchema = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   {

@@ -14,6 +14,7 @@ import { ADMIN_PATH, navigateAdminTo } from "~/utils/constants";
 import { Link } from "react-router-dom";
 import { AiOutlineComment } from "react-icons/ai";
 import Meta from "antd/es/card/Meta";
+import { useAuth } from "~/utils/helpers";
 
 const { Sider } = Layout;
 
@@ -52,6 +53,7 @@ const items: SideBarItemProps[] = [
 
 function AdminLayout() {
   const [openKeys, setOpenKeys] = useState([]);
+  const { onLogout } = useAuth();
 
   // const items = [
   //   // Your menu items here
@@ -114,11 +116,15 @@ function AdminLayout() {
             )
           )}
         </Menu>
-        <Button type="primary" style={{ position: "absolute", bottom: 10, right: 0, left: 0 }}>
+        <Button
+          type="primary"
+          style={{ position: "absolute", bottom: 10, right: 0, left: 0 }}
+          onClick={onLogout}
+        >
           Logout
         </Button>
       </Sider>
-      <Layout className="site-layout" style={{ marginLeft: 200 }}>
+      <Layout className="site-layout" style={{ marginLeft: 220 }}>
         <Outlet />
       </Layout>
     </Layout>

@@ -1,10 +1,34 @@
-import {getNewAccessToken} from "../controllers/userController";
+import { getNewAccessToken } from "../controllers/userController";
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const userController = require('../controllers/userController');
-const authController = require('./../controllers/authController');
+const userController = require("../controllers/userController");
+const authController = require("./../controllers/authController");
 
+/**
+ * @swagger
+ * /api/v1/users/refresh-token:
+ *   get:
+ *     summary: Lấy Beer token mới
+ *     description: Lấy Beer token mới từ Beer token cũ và yêu cầu Beer token để xác thực.
+ *     tags: [Users]
+ *     security:
+ *       - BeerToken: []  # Sử dụng Beer token để xác thực
+ *     responses:
+ *       '200':
+ *         description: Beer token mới đã được tạo thành công
+ *       '401':
+ *         description: Không có quyền truy cập hoặc Beer token không hợp lệ
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Thông báo lỗi.
+ */
+router.post("/refresh-token", userController.getNewAccessToken);
 
 /**
  * @swagger
@@ -57,7 +81,7 @@ const authController = require('./../controllers/authController');
  *                   type: string
  *                   description: Thông báo lỗi.
  */
-router.post('/login', authController.login);
+router.post("/login", authController.login);
 
 /**
  * @swagger
@@ -120,9 +144,9 @@ router.post('/login', authController.login);
  *                   type: string
  *                   description: Thông báo lỗi.
  */
-router.post('/signup', authController.signup);
+router.post("/signup", authController.signup);
 
-// Protect all routes after this middleware
+// PROTECT ALL ROUTES AFTER THIS MIDDLEWARE
 router.use(authController.protect);
 
 /**
@@ -148,44 +172,17 @@ router.use(authController.protect);
  *                   type: string
  *                   description: Thông báo lỗi.
  */
-router.delete('/deleteMe', userController.deleteMe);
-
-/**
- * @swagger
- * /api/v1/users/refresh-token:
- *   get:
- *     summary: Lấy Beer token mới
- *     description: Lấy Beer token mới từ Beer token cũ và yêu cầu Beer token để xác thực.
- *     tags: [Users]
- *     security:
- *       - BeerToken: []  # Sử dụng Beer token để xác thực
- *     responses:
- *       '200':
- *         description: Beer token mới đã được tạo thành công
- *       '401':
- *         description: Không có quyền truy cập hoặc Beer token không hợp lệ
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   description: Thông báo lỗi.
- */
-router.get('/refresh-token', userController.getNewAccessToken);
+router.delete("/deleteMe", userController.deleteMe);
 
 // Only admin have permission to access for the below APIs
-router.use(authController.restrictTo('admin'));
+router.use(authController.restrictTo("admin"));
+
+router.route("/").get(userController.getAllUsers);
 
 router
-    .route('/')
-    .get(userController.getAllUsers);
-
-router
-    .route('/:id')
-    .get(userController.getUser)
-    .patch(userController.updateUser)
-    .delete(userController.deleteUser);
+  .route("/:id")
+  .get(userController.getUser)
+  .patch(userController.updateUser)
+  .delete(userController.deleteUser);
 
 module.exports = router;

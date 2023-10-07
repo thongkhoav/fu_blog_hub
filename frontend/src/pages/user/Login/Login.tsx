@@ -1,18 +1,19 @@
 import React, { useState } from "react";
-import "./login.scss";
+import styles from "./login.module.scss";
 import { PATH } from "src/utils/constants/paths";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "~/utils/helpers";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname;
-  // const history = useHistory();
-  const handleUsername = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const { onLogin } = useAuth();
+  const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
   };
 
   const handlePassword = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,43 +22,46 @@ const Login = () => {
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // if (!loading) {
-    //   const payload = { username, password };
-    //   login(payload)
-    //     .then(res => {
-    //       history.push(PATH.HOME);
-    //     })
-    //     .catch(err => {
-    //       setError(err.payload.message);
-    //     });
-    // }
-    navigate(from || PATH.HOME, { replace: true });
+    try {
+      await onLogin(email, password);
+    } catch (error) {}
   };
 
   return (
-    <div className="container">
-      <div className="min-vh-100 row">
-        <div className="col-md-6 m-auto">
-          <form className="p-5 rounded-sm shadow text-center" onSubmit={submit}>
-            <h1 className="mb-4">Login</h1>
-            <p className="text-muted">Please enter your login and password!</p>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <div
+        className={`${styles.loginBlock} max-w-md w-full bg-white p-8 rounded-lg flex flex-col items-center`}
+      >
+        <h1 className="text-2xl font-bold mb-8">Login</h1>
+        <form onSubmit={submit}>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold shad">Email</label>
             <input
-              type="text"
-              placeholder="Username"
-              onChange={handleUsername}
-              className="form-control form-control-lg mb-4"
+              type="email"
+              onChange={handleEmail}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+              required
             />
+          </div>
+          <div className="mb-4">
+            <label className="block mb-2 font-semibold">Password</label>
             <input
               type="password"
-              placeholder="Password"
               onChange={handlePassword}
-              className="form-control form-control-lg mb-4"
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500"
+              required
             />
-            {error && <div className="mb-3 text-danger text-xl-center">{error}</div>}
-            <button type="submit" className="btn btn-block btn-info btn-lg">
-              Login
-            </button>
-          </form>
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded hover:bg-indigo-600 mb-4 "
+          >
+            Login
+          </button>
+        </form>
+        <p className="text-gray-500 text-center text-sm">Or login with</p>
+        <div className=" p-2 inline-block rounded-full cursor-pointer border border-slate-700">
+          <FcGoogle className="text-lg" />
         </div>
       </div>
     </div>

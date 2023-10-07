@@ -39,37 +39,33 @@ let blogSeriesSchema;
 blogSeriesSchema = new mongoose_1.default.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
-        type: String
+        type: String,
     },
     slug: {
         type: String,
         unique: true,
         required: true,
-        slug: "name"
+        slug: "name",
     },
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: "User",
     },
     numBlog: {
         type: Number,
-        default: 0
+        default: 0,
     },
-    order: {
-        type: Number,
-        default: 0
-    }
 });
-blogSeriesSchema.pre('save', function (next) {
+blogSeriesSchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         this.slug = this.name.split(" ").join("-");
         next();
     });
 });
-const BlogSeriesModel = mongoose_1.default.model('BlogSeries', blogSeriesSchema);
+const BlogSeriesModel = mongoose_1.default.model("BlogSeries", blogSeriesSchema);
 // @ts-ignore
 module.exports = BlogSeriesModel;

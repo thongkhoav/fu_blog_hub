@@ -1,20 +1,28 @@
 import { useContext } from "react";
+import { LoginUser } from "~/apis/user.api";
 import { AuthContext } from "~/contexts/AuthContext";
 
-export type TUser = {
-  accessToken: string;
-  refreshToken: string;
-};
+// export type TUser = {
+//   accessToken: string;
+//   refreshToken: string;
+// };
 
 export const useAuth = () => useContext(AuthContext);
 
 export const getUserData = () => {
-  if (typeof Storage === "undefined") return {};
-  return JSON.parse(localStorage.getItem("user") || "{}");
+  let user;
+  if (typeof Storage === "undefined") {
+    user = {};
+  }
+  user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (Object.keys(user).length === 0) {
+    return null;
+  }
+  return user;
 };
 
-export const setUserData = (user: Partial<TUser>) => {
-  if (user?.constructor.name !== "Object") {
+export const setUserData = (user: Partial<LoginUser>) => {
+  if (!user || typeof user !== "object") {
     throw new Error("No valid data found");
   }
   if (Object.keys(user).length === 0) {

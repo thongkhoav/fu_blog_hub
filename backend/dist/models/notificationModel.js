@@ -29,18 +29,25 @@ notificationSchema = new mongoose_1.default.Schema({
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        ref: 'User'
+        ref: "User",
     },
-    read: {
+    readed: {
         type: Boolean,
-        default: false
+        default: false,
     },
     url: {
         type: String,
         required: true,
-    }
+    },
+    content: {
+        type: String,
+        required: true,
+        validator: function (v) {
+            return v.length <= 150 && v.length >= 1;
+        },
+    },
 }, {
-    timestamps: true
+    timestamps: true,
 });
-const Notification = mongoose_1.default.model('Notification', notificationSchema);
+const Notification = mongoose_1.default.model("Notification", notificationSchema);
 module.exports = Notification;

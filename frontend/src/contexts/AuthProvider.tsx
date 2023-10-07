@@ -2,15 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AuthContext, IAuthContext } from "./AuthContext";
 import {
-  TUser,
   clearUserData,
   getAccessToken,
   getRefreshToken,
   getUserData,
-  setUserData,
-  updateAccessToken
+  setUserData
 } from "~/utils/helpers/auth";
-import { getAccessTokenApi, logoutApi } from "~/apis/user.api";
+import { loginApi, logoutApi } from "~/apis/user.api";
+import { Role } from "~/utils/models/user.model";
 
 interface LocationState {
   from: {
@@ -18,69 +17,54 @@ interface LocationState {
   };
 }
 
-const ACCESS_TOKEN_EXPIRES_TIME = 1000 * 60 * 5; // 5 mins
-
 function AuthProvider({ children }: any) {
   const localAccessToken = getAccessToken() || null;
-  const refreshToken = getRefreshToken() || null;
-  const user = getUserData() || null;
+  const [userGlobal, setUserGlobal] = useState(getUserData());
   const navigate = useNavigate();
   const location = useLocation();
-  const [isFirstMounted, setIsFirstMounted] = useState(true);
 
-  const handleLogin = (userData: Partial<TUser>) => {
-    setUserData(userData);
-    const origin = (location.state as LocationState)?.from?.pathname || "/home";
-    navigate(origin);
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      const user = await loginApi({
+        email,
+        password
+      });
+      setUserData(user.data);
+      setUserGlobal(user.data);
+      console.log(user.data.role);
+
+      if (user.data.role === Role.ADM) {
+        navigate("/admin");
+        return;
+      }
+      const origin = (location.state as LocationState)?.from?.pathname || "/home";
+      navigate(origin);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleLogout = async () => {
-    clearUserData();
-    // Also remove user's refresh token from server
-    await logoutApi(refreshToken);
-    navigate("/login");
-  };
-
-  async function updateRefreshtoken() {
-    const response = await getAccessTokenApi(refreshToken);
-
-    if (response.status === 200) {
-      const { accessToken } = response.data;
-      updateAccessToken(accessToken);
-    } else {
-      clearUserData();
+    if (userGlobal.data.role === Role.ADM) {
       navigate("/login");
-      window.location.reload();
     }
-    if (isFirstMounted) {
-      setIsFirstMounted(false);
-    }
-  }
+    clearUserData();
+    setUserGlobal(null);
 
-  useEffect(() => {
-    if (refreshToken) {
-      // Check on the first render
-      if (isFirstMounted) {
-        updateRefreshtoken();
-      }
-
-      // Keep checking after a certain time
-      const intervalId = setInterval(() => {
-        updateRefreshtoken();
-      }, ACCESS_TOKEN_EXPIRES_TIME);
-      return () => clearInterval(intervalId);
-    }
-    return undefined;
-  }, [localAccessToken]);
+    // Also remove user's refresh token from server
+    // await logoutApi(refreshToken); // do not create logout api yet
+    // navigate("/login");
+  };
 
   const value = useMemo(
     () => ({
       token: localAccessToken,
-      user,
+      userGlobal,
+      setUserGlobal,
       onLogin: handleLogin,
       onLogout: handleLogout
     }),
-    [localAccessToken]
+    [localAccessToken, userGlobal]
   ) as IAuthContext;
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

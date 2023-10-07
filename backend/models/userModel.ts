@@ -30,15 +30,12 @@ banSchema = new mongoose.Schema(
 );
 
 interface IUser extends Document {
-  levelId: Schema.Types.ObjectId;
   fullName: string;
   email: string;
   password: string;
-  passwordConfirm: string;
   role: "admin" | "mentor" | "student";
-  active: boolean;
+  active: boolean; // account only login at 1 time
   isVerifiedEmail: boolean;
-  username: string;
   createdAt: Date;
   updatedAt: Date;
   avatar?: string;
@@ -47,7 +44,7 @@ interface IUser extends Document {
   numBlog?: number;
   numComment?: number;
   numFollower?: number;
-  //   numFollowing?: number;
+  numFollowing?: number;
   userTitle?: string;
   facebook?: string;
   instagram?: string;
@@ -60,22 +57,29 @@ interface IUser extends Document {
 let userSchema: Schema<IUser>;
 userSchema = new mongoose.Schema(
   {
-    levelId: {
-      type: Schema.Types.ObjectId,
-      ref: "Level",
-    },
-    facebook: {
+    avatar: {
       type: String,
-      default: null,
+      default:
+        "https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png",
     },
-    instagram: {
+    coverAvatar: {
       type: String,
-      default: null,
+      default:
+        "https://www.englishclub.com/images/esl-wallpaper/1920x1200/ESL-Wallpaper-1920x1200-2.jpg",
+    },
+    isVerifiedEmail: {
+      type: Boolean,
+      default: false,
     },
     numFollower: {
       type: Number,
       default: 0,
     },
+    numFollowing: {
+      type: Number,
+      default: 0,
+    },
+
     numComment: {
       type: Number,
       default: 0,
@@ -91,10 +95,6 @@ userSchema = new mongoose.Schema(
     userTitle: {
       type: String,
       default: null,
-    },
-    username: {
-      type: String,
-      required: [true, "Please fill your username"],
     },
     fullName: {
       type: String,
@@ -113,17 +113,6 @@ userSchema = new mongoose.Schema(
       minLength: 6,
       select: false,
     },
-    passwordConfirm: {
-      type: String,
-      required: [true, "Please fill your password confirm"],
-      validate: {
-        validator: function (el: string) {
-          // "this" works only on create and save
-          return el === (this as any).password;
-        },
-        message: "Your password and confirmation password are not the same",
-      },
-    },
     role: {
       type: String,
       enum: ["admin", "mentor", "student"],
@@ -133,6 +122,14 @@ userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       select: false,
+    },
+    facebook: {
+      type: String,
+      default: null,
+    },
+    instagram: {
+      type: String,
+      default: null,
     },
   },
   {
@@ -150,9 +147,6 @@ userSchema.pre<IUser>("save", async function (next) {
 
   // Hashing the password
   this.password = await bcrypt.hash(this.password, 12);
-
-  // Delete passwordConfirm field
-  this.passwordConfirm = "";
   next();
 });
 

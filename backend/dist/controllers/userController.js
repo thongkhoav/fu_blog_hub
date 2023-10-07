@@ -39,16 +39,16 @@ exports.getNewAccessToken = exports.deleteUser = exports.updateUser = exports.ge
 const base = __importStar(require("./baseController"));
 const appError_1 = __importDefault(require("../utils/appError"));
 const util_1 = require("util");
-const User = require('../models/userModel');
-const { createNewAccessToken } = require('../services/createNewAccessToken');
-const jwt = require('jsonwebtoken');
+const User = require("../models/userModel");
+const { createNewAccessToken } = require("../services/createToken");
+const jwt = require("jsonwebtoken");
 const deleteMe = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield User.findByIdAndUpdate(req.user.id, {
             active: false,
         });
         res.status(204).json({
-            status: 'success',
+            status: "success",
             data: null,
         });
     }
@@ -66,23 +66,27 @@ exports.deleteUser = base.deleteOne(User);
 const getNewAccessToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // 1) check if the token is there
-        let refeshToken;
-        if (req.headers.authorization &&
-            req.headers.authorization.startsWith("Bearer")) {
-            refeshToken = req.headers.authorization.split(" ")[1];
-        }
-        if (!refeshToken) {
+        let refreshToken = req.body.refreshToken;
+        // console.log(refeshToken, process.env.REFRESH_TOKEN_SIGN_SECRET);
+        // if (
+        //   req.headers.authorization &&
+        //   req.headers.authorization.startsWith("Bearer")
+        // ) {
+        //   refeshToken = req.headers.authorization.split(" ")[1];
+        // }
+        if (!refreshToken) {
             return next(new appError_1.default(401, "fail", "You are not logged in! Please login in to continue"));
         }
         // 2) Verify token
-        const decode = yield (0, util_1.promisify)(jwt.verify)(refeshToken, process.env.REFRESH_TOKEN_SIGN_SECRET);
+        const decode = yield (0, util_1.promisify)(jwt.verify)(refreshToken, process.env.REFRESH_TOKEN_SIGN_SECRET);
         const user = yield User.findById(decode.id);
         if (!user) {
-            return next(new appError_1.default(404, 'fail', 'No user found with that id'));
+            console.log("No user found with that id");
+            return next(new appError_1.default(404, "fail", "No user found with that id"));
         }
         const newAccessToken = createNewAccessToken(user);
         res.status(200).json({
-            status: 'success',
+            status: "success",
             token: newAccessToken,
         });
     }

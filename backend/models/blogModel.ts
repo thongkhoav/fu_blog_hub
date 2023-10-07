@@ -15,6 +15,7 @@ enum BlogState {
 export interface IBlog extends Document {
   userId: Schema.Types.ObjectId;
   blogSeriesId: Schema.Types.ObjectId;
+  blogCateId: Schema.Types.ObjectId;
   tags: Schema.Types.ObjectId;
   title: string;
   description: string;
@@ -26,7 +27,6 @@ export interface IBlog extends Document {
   numWord: number;
   numView: number;
   numComment: number;
-  numShare: number;
   numUpVote: number;
   numDownVote: number;
   hideComment: boolean;
@@ -45,6 +45,10 @@ blogSchema = new mongoose.Schema(
     blogSeriesId: {
       type: Schema.Types.ObjectId,
       ref: "BlogSeries",
+    },
+    blogCateId: {
+      type: Schema.Types.ObjectId,
+      ref: "Categories",
     },
     title: {
       type: String,
@@ -84,10 +88,6 @@ blogSchema = new mongoose.Schema(
       default: 0,
     },
     numComment: {
-      type: Number,
-      default: 0,
-    },
-    numShare: {
       type: Number,
       default: 0,
     },
