@@ -90,7 +90,7 @@ const WaitingBlogList = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <Tabs
         defaultActiveKey="all"
         centered
@@ -147,7 +147,7 @@ const WaitingBlogList = () => {
             ))}
       </Row>
       <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </>
+    </div>
   );
 };
 

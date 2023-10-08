@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PATH, navigateUserTo } from "~/utils/constants";
+import { PATH, userPath } from "~/utils/constants";
 import { BiUpArrow, BiDownArrow, BiBookmark, BiCommentDetail } from "react-icons/bi";
 import { MdOutlineReportProblem } from "react-icons/md";
 import { Dropdown, Modal, Button, Tooltip } from "antd";

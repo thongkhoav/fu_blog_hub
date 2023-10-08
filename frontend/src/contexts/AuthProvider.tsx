@@ -10,6 +10,7 @@ import {
 } from "~/utils/helpers/auth";
 import { loginApi, logoutApi } from "~/apis/user.api";
 import { Role } from "~/utils/models/user.model";
+import { PATH } from "~/utils/constants";
 
 interface LocationState {
   from: {
@@ -29,7 +30,7 @@ function AuthProvider({ children }: any) {
         navigate("/admin");
       }
     }
-  }, []);
+  }, [userGlobal]);
 
   const handleLogin = async (email: string, password: string) => {
     try {
@@ -45,7 +46,7 @@ function AuthProvider({ children }: any) {
         navigate("/admin");
         return;
       }
-      const origin = (location.state as LocationState)?.from?.pathname || "/home";
+      const origin = (location.state as LocationState)?.from?.pathname || PATH.HOME;
       navigate(origin);
     } catch (error) {
       console.log(error);
