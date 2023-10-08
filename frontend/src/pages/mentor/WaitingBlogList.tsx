@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Card, Col, Row, Tabs } from "antd";
+
+import { Avatar, Card, Col, Row, Tabs } from "antd";
+
 import ModalBlog from "./modal-blog/ModalBlog";
 
 interface WaitingBlogItem {
@@ -14,8 +16,9 @@ interface WaitingBlogItem {
 const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 1,
-    title: "Bài viết 1",
-    intro: "Đây là bài viết số 1",
+    title:
+      "1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết",
+    intro: "Đây là bài số 1",
     thumbnail:
       "https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg",
     createdAt: "20-10-2022 12:33:00",
@@ -41,7 +44,7 @@ const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 4,
     title: "Bài viết 4",
-    intro: "Đây là bài viết số 4",
+    intro: "Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4",
     thumbnail:
       "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
     createdAt: "20-10-2022 12:33:00",
@@ -57,25 +60,6 @@ const waitingBlogItems: WaitingBlogItem[] = [
     createdAt: "20-10-2022 12:33:00",
     status: "waiting"
   },
-  {
-    id: 4,
-    title: "Bài viết 4",
-    intro: "Đây là bài viết số 4",
-    thumbnail:
-      "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
-    createdAt: "20-10-2022 12:33:00",
-    status: "edit"
-  },
-  {
-    id: 5,
-    title: "Bài viết 5",
-    intro:
-      "Đây là bài v3e sdsố 5 2 123 asd e1 eqsd 123e sdssd 123 eqsd 123e sd asd e1 eqsd 123e sd",
-    thumbnail:
-      "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
-    createdAt: "20-10-2022 12:33:00",
-    status: "waiting"
-  }
 ];
 
 const WaitingBlogList = () => {
@@ -90,7 +74,7 @@ const WaitingBlogList = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <Tabs
         defaultActiveKey="all"
         centered
@@ -112,42 +96,36 @@ const WaitingBlogList = () => {
           setKeyTab(key);
         }}
       />
-      <Row gutter={[12, 12]} style={{ margin: "6px" }}>
+      <div className="grid grid-cols-4 gap-4 mb-4">
         {blogList &&
           blogList
             .filter(item => (keyTab === "all" ? item : item.status === keyTab))
             .map((product, index) => (
-              <Col span={4} key={index}>
-                <Card
-                  style={{
-                    height: "300px",
-                    background: product.status === "waiting" ? "#ff00001f" : "#b2eef752"
-                  }}
-                  onClick={() => {
-                    setBlogDetail(product);
-                    setIsModalOpen(true);
-                  }}
-                  hoverable
-                  cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
-                >
-                  <Card.Meta title={product.title} />
-                  <p
-                    style={{
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      color: "#4f4f4fab",
-                      marginTop: "6px"
-                    }}
-                  >
-                    {product.intro}
-                  </p>
-                </Card>
-              </Col>
+              <Card
+                key={index}
+                className={`${product.status === "waiting" ? "bg-red-100" : "bg-sky-50"}`}
+                onClick={() => {
+                  setBlogDetail(product);
+                  setIsModalOpen(true);
+                }}
+                hoverable
+                cover={<img style={{ height: "200px" }} alt="" src={product.thumbnail} />}
+              >
+                <div className="flex items-center" style={{ margin: "-10px 0 10px 0" }}>
+                  <Avatar src="https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg" />
+                  <div className="ml-2">
+                    <p className="font-bold">Nguyen Van A</p>
+                    <p className="font-light text-sm">{product.createdAt}</p>
+                  </div>
+                </div>
+                <div className="font-bold mt-4 line-clamp-2">{product.title}</div>
+                <p className="line-clamp-2 text-gray-500 mt-1">{product.intro}</p>
+              </Card>
             ))}
-      </Row>
+      </div>
       <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
-    </div>
+    </>
+
   );
 };
 
