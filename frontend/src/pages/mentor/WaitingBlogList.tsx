@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+
 import { Avatar, Card, Col, Row, Tabs } from "antd";
+
 import ModalBlog from "./modal-blog/ModalBlog";
 
 interface WaitingBlogItem {
@@ -15,7 +17,7 @@ const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 1,
     title:
-      "Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1",
+      "1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết",
     intro: "Đây là bài số 1",
     thumbnail:
       "https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg",
@@ -51,12 +53,13 @@ const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 5,
     title: "Bài viết 5",
-    intro: "Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4Đây là bài viết số 4",
+    intro:
+      "Đây là bài v3e sdsố 5 2 123 asd e1 eqsd 123e sdssd 123 eqsd 123e sd asd e1 eqsd 123e sd",
     thumbnail:
-      "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
+      "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
     createdAt: "20-10-2022 12:33:00",
-    status: "edit"
-  }
+    status: "waiting"
+  },
 ];
 
 const WaitingBlogList = () => {
@@ -122,6 +125,7 @@ const WaitingBlogList = () => {
       </div>
       <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
+
   );
 };
 

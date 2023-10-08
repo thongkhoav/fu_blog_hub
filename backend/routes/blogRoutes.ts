@@ -14,7 +14,7 @@ router.get(
 
 // Protect all routes after this middleware
 router.get(
-  "/seft/:id",
+  "/self/:id",
   authController.protect,
   authController.restrictTo("student"),
   blogController.checkBlogOwnership,

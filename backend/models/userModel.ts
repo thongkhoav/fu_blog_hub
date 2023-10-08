@@ -1,11 +1,11 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 
 interface IBan extends Document {
   bannedReason: string;
-  bannedAt: Date;
-  bannedUntil: Date;
+  banAt: Date;
+  banUntil: Date;
 }
 
 let banSchema: Schema<IBan>;
@@ -15,11 +15,11 @@ banSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    bannedUntil: {
+    banUntil: {
       type: Date,
       default: null,
     },
-    bannedAt: {
+    banAt: {
       type: Date,
       default: null,
     },
@@ -30,15 +30,14 @@ banSchema = new mongoose.Schema(
 );
 
 interface IUser extends Document {
-  levelId: Schema.Types.ObjectId;
   fullName: string;
   email: string;
   password: string;
-  passwordConfirm: string;
+  phone?: string;
   role: "admin" | "mentor" | "student";
-  active: boolean;
+  majorId?: Schema.Types.ObjectId; // mentor will have major(category)
+  active: boolean; // account only login at 1 time
   isVerifiedEmail: boolean;
-  username: string;
   createdAt: Date;
   updatedAt: Date;
   avatar?: string;
@@ -47,7 +46,7 @@ interface IUser extends Document {
   numBlog?: number;
   numComment?: number;
   numFollower?: number;
-  //   numFollowing?: number;
+  numFollowing?: number;
   userTitle?: string;
   facebook?: string;
   instagram?: string;
@@ -60,19 +59,29 @@ interface IUser extends Document {
 let userSchema: Schema<IUser>;
 userSchema = new mongoose.Schema(
   {
-    levelId: {
+    avatar: {
+      type: String,
+      default:
+        "https://med.virginia.edu/diabetes-technology/wp-content/uploads/sites/265/2020/10/Blank-Avatar.png",
+    },
+    coverAvatar: {
+      type: String,
+      default:
+        "https://www.englishclub.com/images/esl-wallpaper/1920x1200/ESL-Wallpaper-1920x1200-2.jpg",
+    },
+    majorId: {
       type: Schema.Types.ObjectId,
-      ref: "Level",
+      ref: "Categories",
     },
-    facebook: {
-      type: String,
-      default: null,
-    },
-    instagram: {
-      type: String,
-      default: null,
+    isVerifiedEmail: {
+      type: Boolean,
+      default: false,
     },
     numFollower: {
+      type: Number,
+      default: 0,
+    },
+    numFollowing: {
       type: Number,
       default: 0,
     },
@@ -92,37 +101,33 @@ userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    username: {
-      type: String,
-      required: [true, "Please fill your username"],
-    },
     fullName: {
       type: String,
       required: [true, "Please fill your name"],
+    },
+    phone: {
+      type: String,
+      default: null,
+      validate: {
+        validator: function (value: string) {
+          // Regular expression to match phone numbers starting with 0 and having 10 or 11 digits
+          return /^0\d{9,10}$/.test(value);
+        },
+        message: "Phone number must start with 0 and have 10 or 11 digits.",
+      },
     },
     email: {
       type: String,
       required: [true, "Please fill your email"],
       unique: true,
       lowercase: true,
-      validate: [validator.isEmail, "Please provide a valid email"],
+      validate: [validator.isEmail, "Please provide a valid email format"],
     },
     password: {
       type: String,
       required: [true, "Please fill your password"],
       minLength: 6,
       select: false,
-    },
-    passwordConfirm: {
-      type: String,
-      required: [true, "Please fill your password confirm"],
-      validate: {
-        validator: function (el: string) {
-          // "this" works only on create and save
-          return el === (this as any).password;
-        },
-        message: "Your password and confirmation password are not the same",
-      },
     },
     role: {
       type: String,
@@ -133,6 +138,14 @@ userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
       select: false,
+    },
+    facebook: {
+      type: String,
+      default: null,
+    },
+    instagram: {
+      type: String,
+      default: null,
     },
   },
   {
@@ -150,9 +163,6 @@ userSchema.pre<IUser>("save", async function (next) {
 
   // Hashing the password
   this.password = await bcrypt.hash(this.password, 12);
-
-  // Delete passwordConfirm field
-  this.passwordConfirm = "";
   next();
 });
 

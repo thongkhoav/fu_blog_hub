@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { PATH, navigateUserTo } from "~/utils/constants";
+import { PATH, userPath } from "~/utils/constants";
 import { BiUpArrow, BiDownArrow, BiBookmark, BiCommentDetail } from "react-icons/bi";
 import { MdOutlineReportProblem } from "react-icons/md";
 import { Dropdown, Modal, Button, Tooltip } from "antd";
@@ -56,7 +56,7 @@ function BlogInfoSide({ isBlogDetail = false }) {
           />
         </div>
         <div className="flex flex-col justify-center gap-5">
-          <Link to={navigateUserTo(PATH.PROFILE, "213123")} className="flex gap-2 items-center">
+          <Link to={userPath(PATH.PROFILE, "213123")} className="flex gap-2 items-center">
             <img
               src="https://cdn-icons-png.flaticon.com/512/1995/1995562.png"
               alt="avt author"

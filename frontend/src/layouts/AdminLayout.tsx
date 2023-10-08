@@ -10,10 +10,11 @@ import { GoReport } from "react-icons/go";
 import { BsNewspaper } from "react-icons/bs";
 import { Avatar, Button, Layout, Menu, Space, Typography, theme } from "antd";
 import { Outlet } from "react-router-dom";
-import { ADMIN_PATH, navigateAdminTo } from "~/utils/constants";
+import { ADMIN_PATH, adminPath } from "~/utils/constants";
 import { Link } from "react-router-dom";
 import { AiOutlineComment } from "react-icons/ai";
 import Meta from "antd/es/card/Meta";
+import { useAuth } from "~/utils/helpers";
 
 const { Sider } = Layout;
 
@@ -26,25 +27,25 @@ interface SideBarItemProps {
 }
 
 const items: SideBarItemProps[] = [
-  { icon: <UserOutlined />, label: "Users", link: navigateAdminTo(ADMIN_PATH.MANAGE_USER) },
-  { icon: <TagsOutlined />, label: "Tags", link: navigateAdminTo(ADMIN_PATH.MANAGE_TAG) },
+  { icon: <UserOutlined />, label: "Users", link: adminPath(ADMIN_PATH.MANAGE_USER) },
+  { icon: <TagsOutlined />, label: "Tags", link: adminPath(ADMIN_PATH.MANAGE_TAG) },
   {
     icon: <BookOutlined />,
     label: "Categories",
-    link: navigateAdminTo(ADMIN_PATH.MANAGE_CATEGORY)
+    link: adminPath(ADMIN_PATH.MANAGE_CATEGORY)
   },
-  { icon: <BsNewspaper />, label: "Blogs", link: navigateAdminTo(ADMIN_PATH.MANAGE_BLOG) },
+  { icon: <BsNewspaper />, label: "Blogs", link: adminPath(ADMIN_PATH.MANAGE_BLOG) },
   {
     icon: <GoReport />,
     label: "Reports",
     parentMenu: true,
     children: [
-      { icon: <UserOutlined />, label: "Users", link: navigateAdminTo(ADMIN_PATH.REPORT_USER) },
-      { icon: <BsNewspaper />, label: "Blogs", link: navigateAdminTo(ADMIN_PATH.REPORT_BLOG) },
+      { icon: <UserOutlined />, label: "Users", link: adminPath(ADMIN_PATH.REPORT_USER) },
+      { icon: <BsNewspaper />, label: "Blogs", link: adminPath(ADMIN_PATH.REPORT_BLOG) },
       {
         icon: <AiOutlineComment />,
         label: "Comments",
-        link: navigateAdminTo(ADMIN_PATH.REPORT_COMMENT)
+        link: adminPath(ADMIN_PATH.REPORT_COMMENT)
       }
     ]
   }
@@ -52,6 +53,7 @@ const items: SideBarItemProps[] = [
 
 function AdminLayout() {
   const [openKeys, setOpenKeys] = useState([]);
+  const { onLogout } = useAuth();
 
   // const items = [
   //   // Your menu items here
@@ -114,11 +116,15 @@ function AdminLayout() {
             )
           )}
         </Menu>
-        <Button type="primary" style={{ position: "absolute", bottom: 10, right: 0, left: 0 }}>
+        <Button
+          type="primary"
+          style={{ position: "absolute", bottom: 10, right: 0, left: 0 }}
+          onClick={onLogout}
+        >
           Logout
         </Button>
       </Sider>
-      <Layout className="site-layout" style={{ marginLeft: 200 }}>
+      <Layout className="site-layout" style={{ marginLeft: 220 }}>
         <Outlet />
       </Layout>
     </Layout>

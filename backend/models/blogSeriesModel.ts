@@ -36,10 +36,6 @@ blogSeriesSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  order: {
-    type: Number,
-    default: 0,
-  },
 });
 
 blogSeriesSchema.pre("save", async function (next) {

@@ -1,11 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const blogController = require('../controllers/blogController');
-const authController = require('./../controllers/authController');
+const blogController = require("../controllers/blogController");
+const authController = require("./../controllers/authController");
+router.get("/:id", blogController.checkBlogStatus("public"), blogController.getOneBlog);
 // Protect all routes after this middleware
-// router.use(authController.protect);
+router.get("/self/:id", authController.protect, authController.restrictTo("student"), blogController.checkBlogOwnership, blogController.checkBlogStatus("public", "draft", "private", "waiting", "banned"), blogController.getOneBlog);
+router.get("/mentor/:id", authController.protect, authController.restrictTo("mentor"), blogController.checkBlogStatus("waiting"), blogController.getOneBlog);
+router.get("/admin/:id", authController.protect, authController.restrictTo("admin"), blogController.checkBlogStatus("public", "draft", "private", "waiting", "banned", "removed"), blogController.getOneBlog);
+router.patch("/:id", authController.protect, blogController.checkBlogOwnership, authController.restrictTo("admin", "student"), blogController.formatUpdateData, blogController.updateBlog);
 /**
  * @swagger
  * tags:
@@ -32,12 +36,13 @@ const authController = require('./../controllers/authController');
  *                 type: string
  *               contentRaw:
  *                 type: string
+ *               blogSeriesId:
+ *                 type: string
  *     responses:
  *       '201':
  *         description: Resource created successfully.
  *       '400':
  *         description: Bad request, check your input data.
  */
-router.route('/')
-    .post(blogController.createBlog);
+router.post("/", authController.protect, blogController.createBlog);
 module.exports = router;

@@ -1,13 +1,10 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
-const URLSlug = require("mongoose-slug-generator");
-mongoose.plugin(URLSlug);
 
-interface ICategory extends Document {
+export interface ICategory extends Document {
   name: string;
   numBlog: number;
   status: boolean;
   slug: string;
-  avatar: string;
 }
 
 let categorySchema: Schema<ICategory>;
@@ -17,6 +14,11 @@ categorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      validate: {
+        validator: function (v: string) {
+          return v.length <= 30 && v.length >= 1;
+        },
+      },
     },
     numBlog: {
       type: Number,
@@ -24,16 +26,11 @@ categorySchema = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     slug: {
       type: String,
       unique: true,
-      required: true,
-      slug: "name",
-    },
-    avatar: {
-      type: String,
     },
   },
   {
@@ -46,6 +43,6 @@ categorySchema.pre("save", async function (next) {
   next();
 });
 
-const Category: Model<ICategory> = mongoose.model("Category", categorySchema);
+const Category: Model<ICategory> = mongoose.model("Categories", categorySchema);
 
-export default Category;
+module.exports = Category;
