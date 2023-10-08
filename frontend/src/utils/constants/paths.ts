@@ -24,7 +24,7 @@ export enum ADMIN_PATH {
   REPORT_COMMENT = "report-comment"
 }
 
-export const navigateUserTo = (path: string, id?: string) => {
+export const userPath = (path: string, id?: string) => {
   if (path) {
     if (id) {
       path = path + "/" + id;
@@ -33,7 +33,7 @@ export const navigateUserTo = (path: string, id?: string) => {
   return path;
 };
 
-export const navigateAdminTo = (path: string, id?: string) => {
+export const adminPath = (path: string, id?: string) => {
   if (path) {
     path = "/" + path;
     if (id) {
