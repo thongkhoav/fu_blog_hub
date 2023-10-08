@@ -69,9 +69,7 @@ export default function HomeRoutes() {
           <Route path="series" element={<Series />} />
           <Route path="follower" element={<Posts />} />
           <Route path="following" element={<Posts />} />
-          <Route path="love" element={<Posts />} />
           <Route path="series" element={<Posts />} />
-          <Route path="comment" element={<Posts />} />
         </Route>
       </Route>
       {/* protected routes - role student and mentor */}
