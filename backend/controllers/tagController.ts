@@ -10,7 +10,6 @@ export const createTag = async (
 ) => {
   try {
     const user = (req as any).user;
-    console.log("asdasd");
 
     if (!req.body.name) {
       return next(new Error("Please provide all required fields"));

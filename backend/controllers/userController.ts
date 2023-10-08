@@ -24,7 +24,26 @@ export const deleteMe = async (
     next(error);
   }
 };
-export const getAllUsers = base.getAll(User);
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // find only user with role is not admin
+    const doc = await User.find({
+      role: { $ne: "admin" },
+    });
+
+    res.status(200).json({
+      status: "success",
+      results: doc.length,
+      data: doc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const getUser = base.getOne(User);
 
 // Don't update password on this

@@ -14,6 +14,11 @@ categorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      validate: {
+        validator: function (v: string) {
+          return v.length <= 30 && v.length >= 1;
+        },
+      },
     },
     numBlog: {
       type: Number,

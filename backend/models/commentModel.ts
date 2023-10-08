@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 
 interface IComment extends Document {
   userId: Schema.Types.ObjectId;
-  children: Schema.Types.ObjectId[];
+  children?: Schema.Types.ObjectId[];
   blogId: Schema.Types.ObjectId;
   content: string;
   status: boolean;
@@ -33,7 +33,7 @@ commentSchema = new mongoose.Schema(
     },
     status: {
       type: Boolean,
-      default: true,
+      default: true, // over 3 report will change status to false
     },
   },
   {

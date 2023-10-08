@@ -1,11 +1,11 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 
 interface IBan extends Document {
   bannedReason: string;
-  bannedAt: Date;
-  bannedUntil: Date;
+  banAt: Date;
+  banUntil: Date;
 }
 
 let banSchema: Schema<IBan>;
@@ -15,11 +15,11 @@ banSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    bannedUntil: {
+    banUntil: {
       type: Date,
       default: null,
     },
-    bannedAt: {
+    banAt: {
       type: Date,
       default: null,
     },
@@ -33,7 +33,9 @@ interface IUser extends Document {
   fullName: string;
   email: string;
   password: string;
+  phone?: string;
   role: "admin" | "mentor" | "student";
+  majorId?: Schema.Types.ObjectId; // mentor will have major(category)
   active: boolean; // account only login at 1 time
   isVerifiedEmail: boolean;
   createdAt: Date;
@@ -67,6 +69,10 @@ userSchema = new mongoose.Schema(
       default:
         "https://www.englishclub.com/images/esl-wallpaper/1920x1200/ESL-Wallpaper-1920x1200-2.jpg",
     },
+    majorId: {
+      type: Schema.Types.ObjectId,
+      ref: "Categories",
+    },
     isVerifiedEmail: {
       type: Boolean,
       default: false,
@@ -79,7 +85,6 @@ userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-
     numComment: {
       type: Number,
       default: 0,
@@ -100,12 +105,23 @@ userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please fill your name"],
     },
+    phone: {
+      type: String,
+      default: null,
+      validate: {
+        validator: function (value: string) {
+          // Regular expression to match phone numbers starting with 0 and having 10 or 11 digits
+          return /^0\d{9,10}$/.test(value);
+        },
+        message: "Phone number must start with 0 and have 10 or 11 digits.",
+      },
+    },
     email: {
       type: String,
       required: [true, "Please fill your email"],
       unique: true,
       lowercase: true,
-      validate: [validator.isEmail, "Please provide a valid email"],
+      validate: [validator.isEmail, "Please provide a valid email format"],
     },
     password: {
       type: String,

@@ -8,7 +8,7 @@ import toastOption from "~/utils/constants/toastOption";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import axios from "~/config/axios";
 
-interface Category {
+export interface Category {
   _id: string;
   name: string;
   numBlog: number;
@@ -20,7 +20,7 @@ const ManageCategory = () => {
   const [newCate, setNewCate] = useState("");
   const axiosPrivate = useAxiosPrivate();
 
-  const handleAddNewTag = async () => {
+  const handleAddNewCategory = async () => {
     try {
       const res = await axiosPrivate.post("/api/v1/categories", {
         name: newCate
@@ -57,7 +57,7 @@ const ManageCategory = () => {
       }
     };
     getTags();
-  }, [axiosPrivate]);
+  }, []);
 
   const columns: ColumnsType<Category> = [
     {
@@ -95,7 +95,7 @@ const ManageCategory = () => {
           onChange={e => setNewCate(e.target.value)}
           value={newCate}
         />
-        <Button shape="circle" icon={<PlusOutlined />} onClick={handleAddNewTag} />
+        <Button shape="circle" icon={<PlusOutlined />} onClick={handleAddNewCategory} />
       </Space>
       <Table columns={columns} dataSource={categories} />
     </Layout>

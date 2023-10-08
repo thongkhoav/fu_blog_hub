@@ -149,6 +149,11 @@ router.post("/signup", authController.signup);
 // PROTECT ALL ROUTES AFTER THIS MIDDLEWARE
 router.use(authController.protect);
 
+router.post(
+  "/mentor",
+  authController.restrictTo("admin"),
+  authController.addMentorAccount
+);
 /**
  * @swagger
  * /api/v1/users/deleteMe:

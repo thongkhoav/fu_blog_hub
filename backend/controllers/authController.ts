@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const Category = require("../models/categoryModel");
 import AppError from "../utils/appError";
 const {
   createNewAccessToken,
@@ -62,6 +63,38 @@ exports.signup = async (req: Request, res: Response, next: NextFunction) => {
       status: "success",
       token,
       refreshToken,
+      user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.addMentorAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const marjor = await Category.findById(req.body.majorId);
+    if (!marjor) {
+      return next(new AppError(404, "fail", "No major found with that id"));
+    }
+
+    const user = await User.create({
+      email: req.body.email,
+      fullName: req.body.fullName,
+      password: req.body.password,
+      phone: req.body.phone,
+      role: "mentor",
+      majorId: req.body.majorId, // major is category
+    });
+
+    user.password = undefined;
+
+    res.status(201).json({
+      status: "success",
+      message: "Mentor account has been created",
       user,
     });
   } catch (err) {

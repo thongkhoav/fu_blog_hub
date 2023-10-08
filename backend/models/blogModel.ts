@@ -4,11 +4,9 @@ mongoose.plugin(URLSlug);
 
 enum BlogState {
   PUBLIC = "public",
-  PRIVATE = "private",
   REMOVED = "removed",
   WAITING = "waiting",
   DRAFT = "draft",
-  BANNED = "banned",
   REJECTED = "rejected",
 }
 
