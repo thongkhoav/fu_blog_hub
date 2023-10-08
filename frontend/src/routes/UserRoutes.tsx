@@ -58,7 +58,7 @@ export default function HomeRoutes() {
         />
 
         <Route
-          path={PATH.PROFILE + "/:idUser"}
+          path={PATH.PROFILE}
           Component={() => (
             <Suspense fallback={<Loading />}>
               <Profile />
