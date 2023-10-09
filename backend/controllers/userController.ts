@@ -59,12 +59,6 @@ export const getNewAccessToken = async (
   try {
     // 1) check if the token is there
     let refreshToken = req.body.refreshToken;
-    // if (
-    //   req.headers.authorization &&
-    //   req.headers.authorization.startsWith("Bearer")
-    // ) {
-    //   refeshToken = req.headers.authorization.split(" ")[1];
-    // }
     if (!refreshToken) {
       return next(
         new AppError(

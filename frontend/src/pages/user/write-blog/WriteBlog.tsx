@@ -20,23 +20,38 @@ import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { beforeUpload, getBase64 } from "~/utils/constants/uploadPlugin";
 import { Upload } from "antd";
 import { HOST } from "~/utils/constants";
+import { getBlogTagsApi, getBlogCategoriesApi } from "~/apis/blog.api";
+const { v4: uuidv4 } = require('uuid');
+
 const { TextArea } = Input;
 
 interface Props {
   mode?: ButtonTitle.CREATE | ButtonTitle.EDIT;
 }
 
+interface Tag {
+  name: string;
+  numBlog: number;
+}
+
+interface Category {
+  _id?: string;
+  name: string;
+  numBlog: number;
+}
+
 export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [data, setData] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [blogSeries, setBlogSeries] = useState<any[]>([
     { value: "jack", label: "Jack" },
     { value: "lucy", label: "Lucy" },
     { value: "Yiminghe", label: "yiminghe" }
-  ]);
-  const [tags, setTags] = useState(["#jack", "#lucy"]);
+  ])
+  const [blogCategory, setBlogCategory] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState("");
   const inputNewTagRef = useRef<InputRef>(null);
   const [loadingPostImage, setLoadingPostImage] = useState(false);
@@ -45,22 +60,23 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const addNewTag = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     if (newTag === "") return;
-    setTags([...tags, "#" + newTag]);
+    const newTagObj: Tag = {
+      name: newTag,
+      numBlog: 0,
+    };
+
+    setTags([newTagObj, ...tags]);
     setNewTag("");
     setTimeout(() => {
       inputNewTagRef.current?.focus();
     }, 0);
   };
+
   const onNewTagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(event.target.value);
   };
-  const showModal = (value: boolean) => setIsModalOpen(value);
 
-  useEffect(() => {
-    setEditorLoaded(true);
-    const defaultData = "<h1>Tiêu đề ...</h1> <p>Nội dung ...</p>";
-    setData(defaultData);
-  }, []);
+  const showModal = (value: boolean) => setIsModalOpen(value);
 
   const handleChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === "uploading") {
@@ -75,6 +91,34 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       });
     }
   };
+
+  const handleSubmit = () => {
+    console.log(form.getFieldsValue());
+    form.validateFields().then(values => {
+      form.resetFields();
+      showModal(false);
+    });
+  }
+
+  useEffect(() => {
+    setEditorLoaded(true);
+    const defaultData = "<h1>Tiêu đề ...</h1> <p>Nội dung ...</p>";
+    setData(defaultData);
+    getAllCategory();
+    getAllTag();
+  }, []);
+
+  const getAllTag = async () => {
+    const res = await getBlogTagsApi();
+    const data = res.data.data;
+    setTags(data);
+  }
+
+  const getAllCategory = async () => {
+    const res = await getBlogCategoriesApi();
+    const data = res.data.data;
+    setBlogCategory(data);
+  }
 
   const uploadButton = (
     <div>
@@ -114,13 +158,13 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             <Button key="customCancel" className="h-[40px]" onClick={() => showModal(false)}>
               Quay lại
             </Button>,
-            <Button key="ok" className="h-[40px] ">
+            <Button key="customOk" form="myForm" htmlType="submit" className="h-[40px]">
               Tạo bài viết
             </Button>
           ]}
         >
-          <Form form={form} layout="vertical">
-            <Form.Item label="Mô tả bài viết">
+          <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
+            <Form.Item label="Mô tả bài viết" name='description' rules={[{ required: true, message: 'Please input your username!' }]}>
               <TextArea rows={4} maxLength={6} />
             </Form.Item>
 
@@ -128,11 +172,14 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               <Select options={blogSeries} />
             </Form.Item>
 
-            <Form.Item label="Danh mục blog">
-              <Select mode="multiple" allowClear options={blogSeries} />
+            <Form.Item label="Danh mục blog" name="blogCateId">
+              <Select
+                allowClear
+                options={blogCategory.map(item => ({ label: item.name, value: item._id, key: item._id }))}
+              />
             </Form.Item>
 
-            <Form.Item label="Tag">
+            <Form.Item label="Tag" name="tags">
               <Select
                 mode="multiple"
                 placeholder="#Tag"
@@ -144,6 +191,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                       <Input
                         placeholder="Tạo tag mới"
                         ref={inputNewTagRef}
+                        value={newTag}
                         onChange={onNewTagChange}
                         style={{ width: "90%" }}
                       />
@@ -153,7 +201,9 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                     </Space>
                   </>
                 )}
-                options={tags.map(item => ({ label: item, value: item }))}
+                options={tags.map(item => ({
+                  label: `#${item.name}`, value: item.name, key: uuidv4()
+                }))}
               />
             </Form.Item>
 
@@ -175,8 +225,8 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               </Upload>
             </Form.Item>
 
-            <Form.Item label="Cài đặt khác">
-              <Checkbox>Hiển thị bình luận</Checkbox>
+            <Form.Item label="Cài đặt khác" name="hideComment" valuePropName="checked">
+              <Checkbox defaultChecked={false}> Hiển thị bình luận</Checkbox>
             </Form.Item>
           </Form>
         </Modal>
