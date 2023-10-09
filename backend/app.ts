@@ -8,19 +8,31 @@ const cors = require("cors");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
+const passport = require('passport');
+const cookieSession = require("cookie-session");
 
 const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
+const googleRoutes = require("./routes/googleRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const { globalErrHandler } = require("./controllers/errorController");
 
+const multer = require("multer");
+import './passport'
 import AppError from "./utils/appError";
 const app = express();
 
 // Allow Cross-Origin requests
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+
+// Configure passport middleware
+app.use(
+  cookieSession({ name: "session", keys: ["cus"], maxAge: 24 * 60 * 60 * 100 })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Set security HTTP headers
 app.use(
@@ -55,6 +67,7 @@ app.use(xss());
 app.use(hpp());
 
 // Routes
+app.use("/api/auth", googleRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/tags", tagRoutes);

@@ -155,3 +155,7 @@ exports.restrictTo = (...roles: any) => {
     next();
   };
 };
+
+exports.loginGoogleSuccess = async (req: Request, res: Response, next: NextFunction) => {
+
+}
