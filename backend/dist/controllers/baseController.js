@@ -14,15 +14,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAll = exports.getOne = exports.createOne = exports.updateOne = exports.deleteOne = void 0;
 const appError_1 = __importDefault(require("../utils/appError"));
-const APIFeatures = require('../utils/apiFeatures');
+const Blog = require("../models/blogModel");
+const APIFeatures = require("../utils/apiFeatures");
 const deleteOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const doc = yield Model.findByIdAndDelete(req.params.id);
         if (!doc) {
-            return next(new appError_1.default(404, 'fail', 'No document found with that id'));
+            return next(new appError_1.default(404, "fail", "No document found with that id"));
         }
         res.status(204).json({
-            status: 'success',
+            status: "success",
             data: null,
         });
     }
@@ -38,10 +39,10 @@ const updateOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 
             runValidators: true,
         });
         if (!doc) {
-            return next(new appError_1.default(404, 'fail', 'No document found with that id'));
+            return next(new appError_1.default(404, "fail", "No document found with that id"));
         }
         res.status(200).json({
-            status: 'success',
+            status: "success",
             data: {
                 doc,
             },
@@ -56,7 +57,7 @@ const createOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 
     try {
         const doc = yield Model.create(req.body);
         res.status(201).json({
-            status: 'success',
+            status: "success",
             data: {
                 doc,
             },
@@ -71,10 +72,10 @@ const getOne = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 0, 
     try {
         const doc = yield Model.findById(req.params.id);
         if (!doc) {
-            return next(new appError_1.default(404, 'fail', 'No document found with that id'));
+            return next(new appError_1.default(404, "fail", "No document found with that id"));
         }
         res.status(200).json({
-            status: 'success',
+            status: "success",
             data: {
                 doc,
             },
@@ -92,10 +93,10 @@ const getAll = (Model) => (req, res, next) => __awaiter(void 0, void 0, void 0, 
             .paginate();
         const doc = yield features.query;
         res.status(200).json({
-            status: 'success',
+            status: "success",
             results: doc.length,
             data: {
-                data: doc,
+                doc,
             },
         });
     }

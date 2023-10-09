@@ -24,24 +24,41 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+let resolveSchema;
+resolveSchema = new mongoose_1.default.Schema({
+    resolved: {
+        type: Boolean,
+        default: false,
+    },
+    resolvedAt: {
+        type: Date,
+        default: null,
+    },
+    resolvedBy: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        default: null,
+        ref: "User",
+    },
+    resolveContent: {
+        type: String,
+        default: null,
+    },
+});
 let reportSchema;
 reportSchema = new mongoose_1.default.Schema({
     reportBy: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        ref: 'User',
+        ref: "User",
     },
-    userId: {
+    objectId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User',
+        required: true,
     },
-    blogId: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Blog',
-    },
-    commentId: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Comment',
+    type: {
+        type: String,
+        enum: ["user", "comment", "blog"],
+        required: true,
     },
     content: {
         type: String,
@@ -49,26 +66,12 @@ reportSchema = new mongoose_1.default.Schema({
         validate: {
             validator: function (v) {
                 return v.length <= 1000 && v.length >= 1;
-            }
-        }
+            },
+        },
     },
-    removed: {
-        type: Boolean,
-        default: false,
-    },
-    resolved: {
-        type: Boolean,
-        default: false,
-    },
-    resolvedAt: {
-        type: Date,
-    },
-    resolvedBy: {
-        type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'User',
-    }
+    resolve: resolveSchema,
 }, {
-    timestamps: true
+    timestamps: true,
 });
-const Report = mongoose_1.default.model('Report', reportSchema);
+const Report = mongoose_1.default.model("Report", reportSchema);
 module.exports = Report;

@@ -1,57 +1,48 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
-const URLSlug = require("mongoose-slug-generator");
-mongoose.plugin(URLSlug);
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-interface ICategory extends Document {
-    name: string;
-    numBlog: number;
-    order: number;
-    removed: boolean;
-    description: string;
-    slug: string;
-    avatar: string;
+export interface ICategory extends Document {
+  name: string;
+  numBlog: number;
+  status: boolean;
+  slug: string;
 }
 
 let categorySchema: Schema<ICategory>;
 
-categorySchema =  new mongoose.Schema({
+categorySchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      validate: {
+        validator: function (v: string) {
+          return v.length <= 30 && v.length >= 1;
+        },
+      },
     },
     numBlog: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
-    order: {
-        type: Number,
-        default: 0
-    },
-    removed: {
-        type: Boolean,
-        default: false
-    },
-    description: {
-        type: String
+    status: {
+      type: Boolean,
+      default: true,
     },
     slug: {
-        type: String,
-        unique: true,
-        required: true,
-        slug: "name"
+      type: String,
+      unique: true,
     },
-    avatar: {
-        type: String
-    }
-}, {
-    timestamps: true // Thêm thời gian tạo và cập nhật tự động
+  },
+  {
+    timestamps: true, // Thêm thời gian tạo và cập nhật tự động
+  }
+);
+
+categorySchema.pre("save", async function (next) {
+  this.slug = this.name.split(" ").join("-");
+  next();
 });
 
-categorySchema.pre('save', async function (next) {
-    this.slug = this.name.split(" ").join("-");
-    next();
-})
+const Category: Model<ICategory> = mongoose.model("Categories", categorySchema);
 
-const Category: Model<ICategory> = mongoose.model('Category', categorySchema);
-
-export default Category;
+module.exports = Category;

@@ -40,58 +40,33 @@ h6 {
   font-weight: bold; /* Đặt độ đậm cho tiêu đề h6 */
 }
 
-.ce-paragraph{
-  font-size: 19px;
-  line-height: 1.7em;
-  font-weight: 400;
-  text-align: left;
-  border: unset;
-  box-shadow: none;
-  border-radius: unset;
+.ant-upload-select{
+  width: 100% !important;
+  height: 200px !important;
 }
 
-.cdx-quote {
-  padding: 25px 0;
+.ant-modal{
+  top: 10px !important;
 }
 
-.cdx-quote [contentEditable=true][data-placeholder]::before{
-  width: auto;
-  position: absolute !important;
+.ant-modal-content{
+  width: 100% !important;
+  margin: auto;
 }
 
-
-.cdx-quote__text{
-  border: unset;
-  margin-bottom: 0 !important;
-  box-shadow: none;
-  border-radius: unset;
-  padding: 5px 45px;
-  font-size: 26px;
-  line-height: 1.7em;
-  font-weight: 700;
-  text-align: center;
-  height: auto;
-  min-height: 50px !important;
-  width: auto;
+.ck-toolbar{
+  border: none !important;
 }
 
-.cdx-quote__caption{
-  width: auto;
-  font-size: 16px;
-  line-height: 1.7em;
-  font-weight: 400;
-  text-align: center;
-  margin-top: 0px;
-  border: unset;
-  box-shadow: none;
-  border-radius: unset;
+.ck-content{
+  border: none !important;
 }
 
-.cdx-quote:before {
-  content: "“";
-  position: absolute !important;
-  margin-left: 0;
-  margin-top: 0.4em;
-  font-size: 96px;
-  line-height: 0;
+.ck{
+  box-shadow: none !important;
+}
+
+.ck-toolbar__items{
+  justify-content: center;
+  gap: 30px;
 }

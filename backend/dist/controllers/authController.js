@@ -16,7 +16,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const appError_1 = __importDefault(require("../utils/appError"));
-const { createNewAccessToken, createNewRefreshToken } = require('../services/createNewAccessToken');
+const { createNewAccessToken, createRefreshToken, } = require("../services/createToken");
 exports.login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
@@ -33,17 +33,12 @@ exports.login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         }
         // 3) All correct, send jwt to client
         const token = createNewAccessToken(user);
-        const refreshToken = createNewRefreshToken(user);
+        const refreshToken = createRefreshToken(user);
         // Remove the password from the output
-        user.password = undefined;
-        res.status(200).json({
-            status: "success",
-            token,
-            refreshToken,
-            data: {
-                user,
-            },
-        });
+        delete user.password;
+        user.accessToken = token;
+        user.refreshToken = refreshToken;
+        res.status(200).json(Object.assign(Object.assign({}, user._doc), { accessToken: token, refreshToken }));
     }
     catch (err) {
         next(err);
@@ -52,22 +47,19 @@ exports.login = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
 exports.signup = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield User.create({
-            name: req.body.name,
             email: req.body.email,
+            fullName: req.body.fullName,
             password: req.body.password,
-            passwordConfirm: req.body.passwordConfirm,
             role: req.body.role,
         });
         const token = createNewAccessToken(user);
-        const refreshToken = createNewRefreshToken(user);
+        const refreshToken = createRefreshToken(user);
         user.password = undefined;
         res.status(201).json({
             status: "success",
             token,
             refreshToken,
-            data: {
-                user,
-            },
+            user,
         });
     }
     catch (err) {

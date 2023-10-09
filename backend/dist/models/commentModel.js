@@ -29,19 +29,15 @@ commentSchema = new mongoose_1.default.Schema({
     userId: {
         type: mongoose_1.Schema.Types.ObjectId,
         required: true,
-        ref: 'User',
+        ref: "User",
     },
     commentId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Comment',
+        ref: "Comment",
     },
     blogId: {
         type: mongoose_1.Schema.Types.ObjectId,
-        ref: 'Blog',
-    },
-    isUnlike: {
-        type: Boolean,
-        default: false,
+        ref: "Blog",
     },
     content: {
         type: String,
@@ -49,15 +45,15 @@ commentSchema = new mongoose_1.default.Schema({
         validate: {
             validator: function (v) {
                 return v.length <= 1000 && v.length >= 1;
-            }
-        }
+            },
+        },
     },
-    removed: {
+    status: {
         type: Boolean,
         default: false,
-    }
+    },
 }, {
     timestamps: true,
 });
-const Comment = mongoose_1.default.model('Comment', commentSchema);
+const Comment = mongoose_1.default.model("Comment", commentSchema);
 module.exports = Comment;

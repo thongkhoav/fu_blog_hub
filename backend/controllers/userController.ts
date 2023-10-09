@@ -24,7 +24,26 @@ export const deleteMe = async (
     next(error);
   }
 };
-export const getAllUsers = base.getAll(User);
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // find only user with role is not admin
+    const doc = await User.find({
+      role: { $ne: "admin" },
+    });
+
+    res.status(200).json({
+      status: "success",
+      results: doc.length,
+      data: doc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const getUser = base.getOne(User);
 
 // Don't update password on this
@@ -39,14 +58,14 @@ export const getNewAccessToken = async (
 ) => {
   try {
     // 1) check if the token is there
-    let refeshToken;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      refeshToken = req.headers.authorization.split(" ")[1];
-    }
-    if (!refeshToken) {
+    let refreshToken = req.body.refreshToken;
+    // if (
+    //   req.headers.authorization &&
+    //   req.headers.authorization.startsWith("Bearer")
+    // ) {
+    //   refeshToken = req.headers.authorization.split(" ")[1];
+    // }
+    if (!refreshToken) {
       return next(
         new AppError(
           401,
@@ -58,17 +77,21 @@ export const getNewAccessToken = async (
 
     // 2) Verify token
     const decode = await promisify(jwt.verify)(
-      refeshToken,
+      refreshToken,
       process.env.REFRESH_TOKEN_SIGN_SECRET
     );
-
     const user = await User.findById(decode.id);
 
     if (!user) {
+      console.log("No user found with that id");
+
       return next(new AppError(404, "fail", "No user found with that id"));
     }
 
-    const newAccessToken = createNewAccessToken(user);
+    const newAccessToken = createNewAccessToken({
+      id: user.id,
+      email: user.email,
+    });
 
     res.status(200).json({
       status: "success",

@@ -1,39 +1,51 @@
-import ReactDOM from "react-dom";
-import React, { Component } from "react";
+import React, { useEffect, useRef } from "react";
+import uploadPlugin from "~/utils/constants/uploadPlugin";
 import "./write-blog.scss";
 
-import { createReactEditorJS } from "react-editor-js";
+// @ts-ignore
+function Editor({ onChange, editorLoaded, name, value }) {
+  const editorRef = useRef();
+  // @ts-ignore
+  const { CKEditor, ClassicEditor } = editorRef.current || {};
 
-import { EDITOR_JS_TOOLS } from "~/utils/constants/editorJsTools";
-
-const ReactEditorJS = createReactEditorJS();
-export default function ReactEditor() {
+  useEffect(() => {
+    // @ts-ignore
+    editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor, // v3+
+      ClassicEditor: require("@ckeditor/ckeditor5-build-classic")
+    };
+  }, []);
 
   return (
-    <ReactEditorJS
-      tools={EDITOR_JS_TOOLS} // tools prop is required
-      autofocus={true}
-      defaultValue={{
-        time: 1635603431943,
-        blocks: [
-          {
-            id: "sheNwCUP5A",
-            type: "header",
-            data: {
-              level: 1,
-              text: "Tiêu đề ....",
+    <div>
+      {editorLoaded ? (
+        <CKEditor
+          type=""
+          name={name}
+          editor={ClassicEditor}
+          config={{
+            toolbar: {
+              items: [
+                'heading',
+                'fontfamily', 'fontsize', 'fontColor', 'fontBackgroundColor',
+                'bold', 'italic', 'strikethrough', 'subscript', 'superscript', 'code',
+                'link', 'uploadImage', 'blockQuote', 'codeBlock',
+                'alignment',
+              ],
             },
-
-          },
-          {
-            id: "12iM3lqzcm",
-            type: "paragraph",
-            data: {
-              text: "Nội dung ....",
-            },
-          },
-        ]
-      }}
-    />
+            extraPlugins: [uploadPlugin]
+          }}
+          data={value}
+          onChange={(event:any, editor:any) => {
+            const data = editor.getData();
+            onChange(data);
+          }}
+        />
+      ) : (
+        <div>Editor loading</div>
+      )}
+    </div>
   );
 }
+
+export default Editor;
