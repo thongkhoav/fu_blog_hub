@@ -11,18 +11,19 @@ interface WaitingBlogItem {
   thumbnail: string;
   createdAt: string;
   status: string;
+  tags: string[];
 }
 
 const waitingBlogItems: WaitingBlogItem[] = [
   {
     id: 1,
-    title:
-      "1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết",
+    title: "1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết 1Bài viết",
     intro: "Đây là bài số 1",
     thumbnail:
       "https://nld.mediacdn.vn/thumb_w/540/2014/article-2612308-1d51068a00000578-859-634x798-1398410783770.jpg",
     createdAt: "20-10-2022 12:33:00",
-    status: "waiting"
+    status: "waiting",
+    tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9"]
   },
   {
     id: 2,
@@ -30,7 +31,8 @@ const waitingBlogItems: WaitingBlogItem[] = [
     intro: "Đây là bài viết số 2",
     thumbnail: "https://tingenz.com/wp-content/uploads/2022/10/hinh-anh-con-khi-cuoi-6-min.jpg",
     createdAt: "20-10-2022 12:33:00",
-    status: "edit"
+    status: "edit",
+    tags: ["tag1", "tag2", "tag3", "tag4"]
   },
   {
     id: 3,
@@ -39,7 +41,8 @@ const waitingBlogItems: WaitingBlogItem[] = [
     thumbnail:
       "https://binhminhdigital.com/StoreData/PageData/3429/Tim-hieu-ve-ban-quyen-hinh-anh%20(3).jpg",
     createdAt: "20-10-2022 12:33:00",
-    status: "waiting"
+    status: "waiting",
+    tags: ["tag1", "tag2", "tag3", "tag4"]
   },
   {
     id: 4,
@@ -48,7 +51,8 @@ const waitingBlogItems: WaitingBlogItem[] = [
     thumbnail:
       "https://nhadepso.com/wp-content/uploads/2023/02/chiem-nguong-99-hinh-anh-con-ngua-dep-nhat-manh-me-oai-phong_1.jpg",
     createdAt: "20-10-2022 12:33:00",
-    status: "edit"
+    status: "edit",
+    tags: ["tag1", "tag2", "tag3", "tag4"]
   },
   {
     id: 5,
@@ -58,8 +62,9 @@ const waitingBlogItems: WaitingBlogItem[] = [
     thumbnail:
       "https://nhadepso.com/wp-content/uploads/2023/02/me-man-50-hinh-anh-con-voi-dep-dang-yeu-de-thuong-nhat_1.jpg",
     createdAt: "20-10-2022 12:33:00",
-    status: "waiting"
-  },
+    status: "waiting",
+    tags: ["tag1", "tag2", "tag3", "tag4"]
+  }
 ];
 
 const WaitingBlogList = () => {
