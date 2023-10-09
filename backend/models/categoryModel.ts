@@ -1,4 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
+const URLSlug = require("mongoose-slug-generator");
+mongoose.plugin(URLSlug);
 
 export interface ICategory extends Document {
   name: string;
@@ -30,18 +32,13 @@ categorySchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      unique: true,
+      slug: "name",
     },
   },
   {
     timestamps: true, // Thêm thời gian tạo và cập nhật tự động
   }
 );
-
-categorySchema.pre("save", async function (next) {
-  this.slug = this.name.split(" ").join("-");
-  next();
-});
 
 const Category: Model<ICategory> = mongoose.model("Categories", categorySchema);
 

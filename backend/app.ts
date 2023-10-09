@@ -7,17 +7,16 @@ const hpp = require("hpp");
 const cors = require("cors");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+require("dotenv").config();
 
+const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const { globalErrHandler } = require("./controllers/errorController");
-const multer = require("multer");
 
 import AppError from "./utils/appError";
-import path from "path";
-import { Callback } from "mongoose";
 const app = express();
 
 // Allow Cross-Origin requests
@@ -55,35 +54,12 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(hpp());
 
-// Multer config
-const storage = multer.diskStorage({
-  destination: "./uploads/",
-  filename: function (req: Request, file: any, cb: Callback) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage });
-
 // Routes
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/tags", tagRoutes);
 app.use("/api/v1/categories", categoryRoutes);
-app.use("/image", express.static(path.join(__dirname, "uploads")));
-
-app.post("/api/upload", upload.single("image"), (req: any, res: any) => {
-  if (!req.file) {
-    return res.status(400).send("No image uploaded.");
-  }
-  const imageUrl = `http://localhost:4000/image/${req.file.filename}`;
-  res.json({
-    success: 1,
-    file: {
-      url: imageUrl,
-    },
-  });
-});
+app.use("/api/upload", uploadRouter);
 
 app.use(globalErrHandler);
 const swaggerOptions = {
