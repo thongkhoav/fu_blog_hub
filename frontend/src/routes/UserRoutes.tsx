@@ -7,6 +7,10 @@ import { Role } from "~/utils/models/user.model";
 import ProtectedRoute from "~/contexts/ProtectedRoute";
 import WriteBlog from "~/pages/user/write-blog/WriteBlog";
 import { ButtonTitle } from "~/utils/constants/buttonTitle";
+import PersonalProfile from "~/pages/user/profile/personal-profile/PersonalProfile";
+import Following from "~/pages/user/profile/following/Following";
+import Followers from "~/pages/user/profile/followers/Followers";
+import Bookmark from "~/pages/user/profile/bookmark/Bookmark";
 const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail"));
@@ -56,6 +60,20 @@ export default function HomeRoutes() {
             </ProtectedRoute>
           )}
         />
+        <Route
+          path={PATH.PROFILE + "/me"}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <PersonalProfile />
+            </Suspense>
+          )}
+        >
+          <Route index element={<Posts />} />
+          <Route path="series" element={<Series />} />
+          <Route path="followers" element={<Followers />} />
+          <Route path="following" element={<Following />} />
+          <Route path="bookmark" element={<Bookmark />} />
+        </Route>
 
         <Route
           path={PATH.PROFILE + "/:idUser"}
@@ -67,18 +85,15 @@ export default function HomeRoutes() {
         >
           <Route index element={<Posts />} />
           <Route path="series" element={<Series />} />
-          <Route path="follower" element={<Posts />} />
-          <Route path="following" element={<Posts />} />
-          <Route path="series" element={<Posts />} />
         </Route>
       </Route>
       {/* protected routes - role student and mentor */}
       <Route
         path="/"
         element={
-          // <ProtectedRoute allowedRoles={[Role.MTR, Role.STU]}>
-          <MainLayout />
-          // </ProtectedRoute>
+          <ProtectedRoute allowedRoles={[Role.MTR, Role.STU]}>
+            <MainLayout />
+          </ProtectedRoute>
         }
       >
         <Route
@@ -94,14 +109,6 @@ export default function HomeRoutes() {
           Component={() => (
             <Suspense fallback={<Loading />}>
               <WriteBlog mode={ButtonTitle.EDIT} />
-            </Suspense>
-          )}
-        />
-        <Route
-          path={PATH.PROFILE + "/me"}
-          Component={() => (
-            <Suspense fallback={<Loading />}>
-              <Profile />
             </Suspense>
           )}
         />

@@ -1,28 +1,39 @@
-import { useEffect, useState } from "react";
+import { Tabs, TabsProps } from "antd";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { NavLink, Outlet } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants";
+import Posts from "../Posts";
+import { useEffect, useState } from "react";
+import Series from "../Series";
 
-const genTabItems = (userId: string) => {
-  return [
-    {
-      label: "Trang chủ",
-      path: userPath(PATH.PROFILE, userId)
-    },
-    {
-      label: "Series",
-      path: userPath(PATH.PROFILE, userId) + "/series"
-    }
-  ];
-};
+const tabItems = [
+  {
+    label: "Trang chủ",
+    path: PATH.PROFILE + "/me"
+  },
+  {
+    label: "Series",
+    path: PATH.PROFILE + "/me/series"
+  },
+  {
+    label: "Following",
+    path: PATH.PROFILE + "/me/following"
+  },
+  {
+    label: "Followers",
+    path: PATH.PROFILE + "/me/followers"
+  },
+  {
+    label: "Bookmark",
+    path: PATH.PROFILE + "/me/bookmark"
+  }
+];
 
 export default function PersonalProfile() {
-  const { idUser } = useParams();
   const { pathname } = useLocation();
-  const [tabItems, setTabItems] = useState<{ label: string; path: string }[]>([]);
-  useEffect(() => {
-    setTabItems(genTabItems(idUser!));
-  }, [idUser]);
+  const onChange = (key: string) => {
+    console.log(key);
+  };
 
   return (
     <div className="grid grid-cols-12 gap-5 mt-12">

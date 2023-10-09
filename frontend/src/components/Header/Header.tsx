@@ -6,6 +6,7 @@ import { useAuth } from "~/utils/helpers/auth";
 import { BiSearch } from "react-icons/bi";
 import { Avatar, Dropdown, MenuProps } from "antd";
 import { FiLogOut } from "react-icons/fi";
+import { Role } from "~/utils/models/user.model";
 
 const Header = () => {
   const { userGlobal, onLogout } = useAuth();
@@ -23,11 +24,11 @@ const Header = () => {
 
   const items: MenuProps["items"] = [
     {
-      key: "1",
-      label: <Link to={userPath(PATH.PROFILE)}>Profile</Link>
+      key: "1sdasd",
+      label: <Link to={userPath(PATH.PROFILE, "me")}>Profile</Link>
     },
     {
-      key: "2",
+      key: "2ertrt",
       label: <span onClick={onLogout}>Logout</span>,
       icon: <FiLogOut />
     }
@@ -52,11 +53,19 @@ const Header = () => {
         <div className="p-2 hover:bg-gray-100 hover:cursor-pointer rounded-sm">
           <BiSearch className="text-2xl " />
         </div>
+        {userGlobal?.role === Role.MTR && (
+          <Link
+            to={userPath(PATH.WAITING_BLOGS)}
+            className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Duyệt bài
+          </Link>
+        )}
         <button
           className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleWriteBlog}
         >
-          Đăng bài
+          Viết bài
         </button>
         {userGlobal ? (
           <div>
