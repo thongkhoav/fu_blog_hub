@@ -1,10 +1,8 @@
 import { Button, Col, Modal, Row } from "antd";
-import React from "react";
 import "./modal-blog.scss";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 
 export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
-
   const modalTitle = (
     <Row>
       <Col span={6}>
@@ -31,7 +29,6 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
             handleAccept();
           }}
         >
-
           Accept
         </Button>
       </Col>
