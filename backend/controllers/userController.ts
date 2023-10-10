@@ -74,6 +74,8 @@ export const getNewAccessToken = async (
       refreshToken,
       process.env.REFRESH_TOKEN_SIGN_SECRET
     );
+    console.log(decode);
+
     const user = await User.findById(decode.id);
 
     if (!user) {

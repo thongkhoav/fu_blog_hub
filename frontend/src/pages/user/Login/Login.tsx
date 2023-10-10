@@ -4,6 +4,7 @@ import { PATH } from "src/utils/constants/paths";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "~/utils/helpers";
 import { FcGoogle } from "react-icons/fc";
+import { HOST } from "~/utils/constants";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const from = location.state?.from?.pathname;
   const { onLogin } = useAuth();
+
   const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
@@ -24,8 +26,11 @@ const Login = () => {
     event.preventDefault();
     try {
       await onLogin(email, password);
-    } catch (error) {}
+    } catch (error) {
+    }
   };
+
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -60,9 +65,9 @@ const Login = () => {
           </button>
         </form>
         <p className="text-gray-500 text-center text-sm">Or login with</p>
-        <div className=" p-2 inline-block rounded-full cursor-pointer border border-slate-700">
+        <a href={`${HOST}/api/auth/google`} className="p-2 inline-block rounded-full cursor-pointer border border-slate-700">
           <FcGoogle className="text-lg" />
-        </div>
+        </a>
       </div>
     </div>
   );

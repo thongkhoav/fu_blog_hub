@@ -106,7 +106,6 @@ exports.protect = async (req: Request, res: Response, next: NextFunction) => {
   try {
     // 1) check if the token is there
     let token;
-    console.log("asdasd");
 
     if (
       req.headers.authorization &&
@@ -131,8 +130,6 @@ exports.protect = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     // 3) check if the user is exist (not deleted)
-    console.log(decode);
-
     const user = await User.findById(decode.id);
     if (!user) {
       return next(new AppError(401, "fail", "This user is no longer exist"));

@@ -10,6 +10,7 @@ const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
 const passport = require('passport');
 const cookieSession = require("cookie-session");
+var cookieParser = require("cookie-parser");
 
 const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
@@ -29,7 +30,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // Configure passport middleware
 app.use(
-  cookieSession({ name: "session", keys: ["cus"], maxAge: 24 * 60 * 60 * 100 })
+  cookieSession({ name: "session", keys: ["cus"], maxAge: 24 * 60 * 60 * 100 * 500 })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -40,6 +41,8 @@ app.use(
     crossOriginResourcePolicy: false,
   })
 );
+
+app.use(cookieParser());
 
 // Limit request from the same API
 const limiter = rateLimit({

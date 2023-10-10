@@ -62,7 +62,6 @@ blogSchema = new mongoose.Schema(
     },
     contentRaw: {
       type: String,
-      required: true,
     },
     contentHTML: {
       type: String,
@@ -103,7 +102,6 @@ blogSchema = new mongoose.Schema(
     },
     thumbnail: {
       type: String,
-      required: true,
     },
   },
   {

@@ -10,18 +10,14 @@ export const createBlog = async (
   next: NextFunction
 ) => {
   try {
-    const { title, content, description, contentRaw, blogSeriesId } = req.body;
+    const { title, thumbnail, description, contentRaw, blogSeriesId } = req.body;
     const user = (req as any).user;
-
-    if (!title || !content || !description || !contentRaw) {
-      return next(new Error("Please provide all required fields"));
-    }
 
     const blog: IBlog = await Blog.create({
       title,
-      content,
       description,
       contentRaw,
+      thumbnail,
       userId: user._id,
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
     });

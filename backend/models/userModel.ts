@@ -110,7 +110,9 @@ userSchema = new mongoose.Schema(
       default: null,
       validate: {
         validator: function (value: string) {
-          // Regular expression to match phone numbers starting with 0 and having 10 or 11 digits
+          if (value === null || value === undefined) {
+            return true;
+          }
           return /^0\d{9,10}$/.test(value);
         },
         message: "Phone number must start with 0 and have 10 or 11 digits.",
@@ -125,7 +127,7 @@ userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Please fill your password"],
+      required: [false, "Please fill your password"],
       minLength: 6,
       select: false,
     },

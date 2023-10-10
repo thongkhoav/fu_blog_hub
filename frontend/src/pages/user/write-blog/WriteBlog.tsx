@@ -2,6 +2,8 @@ import { ButtonTitle } from "~/utils/constants/buttonTitle";
 import "./write-blog.scss";
 import Editor from "./EditorJS";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
 import {
   Button,
   Form,
@@ -21,6 +23,7 @@ import { beforeUpload, getBase64 } from "~/utils/constants/uploadPlugin";
 import { Upload } from "antd";
 import { HOST } from "~/utils/constants";
 import { getBlogTagsApi, getBlogCategoriesApi } from "~/apis/blog.api";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
 const { v4: uuidv4 } = require('uuid');
 
 const { TextArea } = Input;
@@ -56,6 +59,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const inputNewTagRef = useRef<InputRef>(null);
   const [loadingPostImage, setLoadingPostImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
+  const axiosPrivate = useAxiosPrivate();
 
   const addNewTag = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
@@ -78,22 +82,49 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
 
   const showModal = (value: boolean) => setIsModalOpen(value);
 
-  const handleChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
+  const handleUploadImage: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === "uploading") {
       setLoadingPostImage(true);
       return;
     }
     if (info.file.status === "done") {
-      // Get this url from response in real world.
       getBase64(info.file.originFileObj as RcFile, url => {
         setLoadingPostImage(false);
-        setImageUrl(url);
       });
     }
+    const response = info.file.response;
+    setImageUrl(response.file.url);
+
+
   };
 
   const handleSubmit = () => {
-    console.log(form.getFieldsValue());
+    const regexH2 = /<h2[^>]*>(.*?)<\/h2>/;
+    let title = data.match(regexH2);
+
+    if (!title) {
+      const regexH3 = /<h3[^>]*>(.*?)<\/h3>/;
+      title = data.match(regexH3);
+    }
+
+    if (!title) {
+      return toast.error("Vui lòng nhập tiều đề của bạn!!!", toastOption)
+    }
+
+    const values = {
+      ...form.getFieldsValue(),
+      thumbnail: imageUrl,
+      contentRaw: data,
+      title: title ? title[1] : "",
+    };
+
+    axiosPrivate.post("/api/v1/blogs", values).then(res => {
+      setIsModalOpen(false);
+      toast.success("Thêm bài viết thành công", toastOption);
+    }).catch(err => {
+      toast.error(err.response.data.message, toastOption);
+    });
+
     form.validateFields().then(values => {
       form.resetFields();
       showModal(false);
@@ -164,7 +195,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
           ]}
         >
           <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
-            <Form.Item label="Mô tả bài viết" name='description' rules={[{ required: true, message: 'Please input your username!' }]}>
+            <Form.Item label="Mô tả bài viết" name='description' rules={[{ required: true, message: 'Vui lòng nhập mô tả bài viết' }]}>
               <TextArea rows={4} maxLength={6} />
             </Form.Item>
 
@@ -172,7 +203,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               <Select options={blogSeries} />
             </Form.Item>
 
-            <Form.Item label="Danh mục blog" name="blogCateId">
+            <Form.Item label="Danh mục blog" name="blogCateId" rules={[{ required: true, message: 'Vui lòng chọn danh mục cho Blog' }]}>
               <Select
                 allowClear
                 options={blogCategory.map(item => ({ label: item.name, value: item._id, key: item._id }))}
@@ -215,7 +246,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                 showUploadList={false}
                 action={`${HOST}/api/upload`}
                 beforeUpload={beforeUpload}
-                onChange={handleChange}
+                onChange={handleUploadImage}
               >
                 {imageUrl ? (
                   <img src={imageUrl} alt="avatar" style={{ height: "100%" }} />
@@ -225,8 +256,8 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               </Upload>
             </Form.Item>
 
-            <Form.Item label="Cài đặt khác" name="hideComment" valuePropName="checked">
-              <Checkbox defaultChecked={false}> Hiển thị bình luận</Checkbox>
+            <Form.Item label="Cài đặt khác" name="showComment" initialValue={true} valuePropName="checked">
+              <Checkbox defaultChecked={true}> Hiển thị bình luận</Checkbox>
             </Form.Item>
           </Form>
         </Modal>

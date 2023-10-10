@@ -7,12 +7,35 @@ const User = require("./models/userModel");
 passport.use(new GoogleStrategy({
     clientID: "692996051289-3vrdknpneeukpb9tbvls25746hb1s45o.apps.googleusercontent.com",
     clientSecret: "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",
-    callbackURL: 'http://localhost:4000/api/auth/google/callback',
+    callbackURL: '/api/auth/google/callback',
     passReqToCallback: true
 },
-    function (request: Request, accessToken: String, refreshToken: String, profile: any, done: any) {
-        console.log(profile);
-        return done(null, profile);
+    async function (request: Request, accessToken: String, refreshToken: String, profile: any, done: any) {
+        try {
+            // Có tài khoản đăng nhập
+            let user = await User.findOne({
+                email: profile._json.email,
+                password: { $exists: true },
+            });
+            if (!user) {
+                const { name, email, picture } = profile._json;
+                const newUser = new User({
+                    email: email,
+                    avatar: picture,
+                    fullName: name,
+                    password: "123456",
+                    role: "student",
+                    active: true,
+                    isVerifiedEmail: true,
+                });
+                const savedUser = await newUser.save();
+                return done(null, { ...savedUser._doc });
+            }
+            return done(null, { ...user._doc });
+        } catch (err) {
+            console.log(err);
+            return done(err);
+        }
     }
 ));
 
