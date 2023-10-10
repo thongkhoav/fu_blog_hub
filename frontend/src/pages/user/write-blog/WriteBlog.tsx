@@ -2,6 +2,8 @@ import { ButtonTitle } from "~/utils/constants/buttonTitle";
 import "./write-blog.scss";
 import Editor from "./EditorJS";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
 import {
   Button,
   Form,
@@ -20,61 +22,134 @@ import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { beforeUpload, getBase64 } from "~/utils/constants/uploadPlugin";
 import { Upload } from "antd";
 import { HOST } from "~/utils/constants";
+import { getBlogTagsApi, getBlogCategoriesApi } from "~/apis/blog.api";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+const { v4: uuidv4 } = require('uuid');
+
 const { TextArea } = Input;
 
 interface Props {
   mode?: ButtonTitle.CREATE | ButtonTitle.EDIT;
 }
 
+interface Tag {
+  name: string;
+  numBlog: number;
+}
+
+interface Category {
+  _id?: string;
+  name: string;
+  numBlog: number;
+}
+
 export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [data, setData] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [blogSeries, setBlogSeries] = useState<any[]>([
     { value: "jack", label: "Jack" },
     { value: "lucy", label: "Lucy" },
     { value: "Yiminghe", label: "yiminghe" }
-  ]);
-  const [tags, setTags] = useState(["#jack", "#lucy"]);
+  ])
+  const [blogCategory, setBlogCategory] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState("");
   const inputNewTagRef = useRef<InputRef>(null);
   const [loadingPostImage, setLoadingPostImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
+  const axiosPrivate = useAxiosPrivate();
 
   const addNewTag = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     if (newTag === "") return;
-    setTags([...tags, "#" + newTag]);
+    const newTagObj: Tag = {
+      name: newTag,
+      numBlog: 0,
+    };
+
+    setTags([newTagObj, ...tags]);
     setNewTag("");
     setTimeout(() => {
       inputNewTagRef.current?.focus();
     }, 0);
   };
+
   const onNewTagChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewTag(event.target.value);
   };
+
   const showModal = (value: boolean) => setIsModalOpen(value);
 
-  useEffect(() => {
-    setEditorLoaded(true);
-    const defaultData = "<h1>Tiêu đề ...</h1> <p>Nội dung ...</p>";
-    setData(defaultData);
-  }, []);
-
-  const handleChange: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
+  const handleUploadImage: UploadProps["onChange"] = (info: UploadChangeParam<UploadFile>) => {
     if (info.file.status === "uploading") {
       setLoadingPostImage(true);
       return;
     }
     if (info.file.status === "done") {
-      // Get this url from response in real world.
       getBase64(info.file.originFileObj as RcFile, url => {
         setLoadingPostImage(false);
-        setImageUrl(url);
       });
     }
+    const response = info.file.response;
+    setImageUrl(response.file.url);
+
+
   };
+
+  const handleSubmit = () => {
+    const regexH2 = /<h2[^>]*>(.*?)<\/h2>/;
+    let title = data.match(regexH2);
+
+    if (!title) {
+      const regexH3 = /<h3[^>]*>(.*?)<\/h3>/;
+      title = data.match(regexH3);
+    }
+
+    if (!title) {
+      return toast.error("Vui lòng nhập tiều đề của bạn!!!", toastOption)
+    }
+
+    const values = {
+      ...form.getFieldsValue(),
+      thumbnail: imageUrl,
+      contentRaw: data,
+      title: title ? title[1] : "",
+    };
+
+    axiosPrivate.post("/api/v1/blogs", values).then(res => {
+      setIsModalOpen(false);
+      toast.success("Thêm bài viết thành công", toastOption);
+    }).catch(err => {
+      toast.error(err.response.data.message, toastOption);
+    });
+
+    form.validateFields().then(values => {
+      form.resetFields();
+      showModal(false);
+    });
+  }
+
+  useEffect(() => {
+    setEditorLoaded(true);
+    const defaultData = "<h1>Tiêu đề ...</h1> <p>Nội dung ...</p>";
+    setData(defaultData);
+    getAllCategory();
+    getAllTag();
+  }, []);
+
+  const getAllTag = async () => {
+    const res = await getBlogTagsApi();
+    const data = res.data.data;
+    setTags(data);
+  }
+
+  const getAllCategory = async () => {
+    const res = await getBlogCategoriesApi();
+    const data = res.data.data;
+    setBlogCategory(data);
+  }
 
   const uploadButton = (
     <div>
@@ -114,13 +189,13 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             <Button key="customCancel" className="h-[40px]" onClick={() => showModal(false)}>
               Quay lại
             </Button>,
-            <Button key="ok" className="h-[40px] ">
+            <Button key="customOk" form="myForm" htmlType="submit" className="h-[40px]">
               Tạo bài viết
             </Button>
           ]}
         >
-          <Form form={form} layout="vertical">
-            <Form.Item label="Mô tả bài viết">
+          <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
+            <Form.Item label="Mô tả bài viết" name='description' rules={[{ required: true, message: 'Vui lòng nhập mô tả bài viết' }]}>
               <TextArea rows={4} maxLength={6} />
             </Form.Item>
 
@@ -128,11 +203,14 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               <Select options={blogSeries} />
             </Form.Item>
 
-            <Form.Item label="Danh mục blog">
-              <Select mode="multiple" allowClear options={blogSeries} />
+            <Form.Item label="Danh mục blog" name="blogCateId" rules={[{ required: true, message: 'Vui lòng chọn danh mục cho Blog' }]}>
+              <Select
+                allowClear
+                options={blogCategory.map(item => ({ label: item.name, value: item._id, key: item._id }))}
+              />
             </Form.Item>
 
-            <Form.Item label="Tag">
+            <Form.Item label="Tag" name="tags">
               <Select
                 mode="multiple"
                 placeholder="#Tag"
@@ -144,6 +222,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                       <Input
                         placeholder="Tạo tag mới"
                         ref={inputNewTagRef}
+                        value={newTag}
                         onChange={onNewTagChange}
                         style={{ width: "90%" }}
                       />
@@ -153,7 +232,9 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                     </Space>
                   </>
                 )}
-                options={tags.map(item => ({ label: item, value: item }))}
+                options={tags.map(item => ({
+                  label: `#${item.name}`, value: item.name, key: uuidv4()
+                }))}
               />
             </Form.Item>
 
@@ -165,7 +246,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                 showUploadList={false}
                 action={`${HOST}/api/upload`}
                 beforeUpload={beforeUpload}
-                onChange={handleChange}
+                onChange={handleUploadImage}
               >
                 {imageUrl ? (
                   <img src={imageUrl} alt="avatar" style={{ height: "100%" }} />
@@ -175,8 +256,8 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               </Upload>
             </Form.Item>
 
-            <Form.Item label="Cài đặt khác">
-              <Checkbox>Hiển thị bình luận</Checkbox>
+            <Form.Item label="Cài đặt khác" name="showComment" initialValue={true} valuePropName="checked">
+              <Checkbox defaultChecked={true}> Hiển thị bình luận</Checkbox>
             </Form.Item>
           </Form>
         </Modal>

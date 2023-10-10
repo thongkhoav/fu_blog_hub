@@ -59,12 +59,6 @@ export const getNewAccessToken = async (
   try {
     // 1) check if the token is there
     let refreshToken = req.body.refreshToken;
-    // if (
-    //   req.headers.authorization &&
-    //   req.headers.authorization.startsWith("Bearer")
-    // ) {
-    //   refeshToken = req.headers.authorization.split(" ")[1];
-    // }
     if (!refreshToken) {
       return next(
         new AppError(
@@ -80,6 +74,8 @@ export const getNewAccessToken = async (
       refreshToken,
       process.env.REFRESH_TOKEN_SIGN_SECRET
     );
+    console.log(decode);
+
     const user = await User.findById(decode.id);
 
     if (!user) {

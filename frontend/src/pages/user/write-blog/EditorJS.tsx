@@ -36,7 +36,7 @@ function Editor({ onChange, editorLoaded, name, value }) {
             extraPlugins: [uploadPlugin]
           }}
           data={value}
-          onChange={(event:any, editor:any) => {
+          onChange={(event: any, editor: any) => {
             const data = editor.getData();
             onChange(data);
           }}

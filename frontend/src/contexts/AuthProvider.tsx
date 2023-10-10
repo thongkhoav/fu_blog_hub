@@ -11,6 +11,8 @@ import {
 import { loginApi, logoutApi } from "~/apis/user.api";
 import { Role } from "~/utils/models/user.model";
 import { PATH } from "~/utils/constants";
+import { toast } from "react-toastify";
+import { loginGoogleApi } from "~/apis/user.api";
 
 interface LocationState {
   from: {
@@ -23,6 +25,18 @@ function AuthProvider({ children }: any) {
   const [userGlobal, setUserGlobal] = useState(getUserData());
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    try {
+      loginGoogleApi().then((res) => {
+        setUserGlobal(res.data);
+        setUserData(res.data);
+      });
+
+    } catch (error) {
+      console.log(error);
+    }
+  }, [])
 
   useEffect(() => {
     if (userGlobal != null) {
@@ -40,7 +54,6 @@ function AuthProvider({ children }: any) {
       });
       setUserData(user.data);
       setUserGlobal(user.data);
-      console.log(user.data.role);
 
       if (user.data.role === Role.ADM) {
         navigate("/admin");
@@ -48,8 +61,9 @@ function AuthProvider({ children }: any) {
       }
       const origin = (location.state as LocationState)?.from?.pathname || PATH.HOME;
       navigate(origin);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      toast.error(error.response.data.message);
     }
   };
 
@@ -59,10 +73,6 @@ function AuthProvider({ children }: any) {
     }
     clearUserData();
     setUserGlobal(null);
-
-    // Also remove user's refresh token from server
-    // await logoutApi(refreshToken); // do not create logout api yet
-    // navigate("/login");
   };
 
   const value = useMemo(

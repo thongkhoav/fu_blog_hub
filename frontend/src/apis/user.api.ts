@@ -55,3 +55,10 @@ export const getAccessTokenApi = async (refreshToken: string): Promise<AccessTok
   await axios.post(`${HOST}/api/v1/users/refresh-token`, {
     refreshToken
   });
+
+export const loginGoogleApi = async (): Promise<UserLoginRes> => {
+  const res = await axios.get(`${HOST}/api/auth/google/success`, {
+    withCredentials: true,
+  });
+  return res;
+}
