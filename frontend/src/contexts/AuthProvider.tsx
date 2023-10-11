@@ -27,15 +27,12 @@ function AuthProvider({ children }: any) {
   const location = useLocation();
 
   useEffect(() => {
-    try {
-      loginGoogleApi().then((res) => {
-        setUserGlobal(res.data);
-        setUserData(res.data);
-      });
-
-    } catch (error) {
-      console.log(error);
-    }
+    loginGoogleApi().then((res) => {
+      setUserGlobal(res.data);
+      setUserData(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
   }, [])
 
   useEffect(() => {
