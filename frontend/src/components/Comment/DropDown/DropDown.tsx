@@ -4,7 +4,11 @@ import type { MenuProps } from "antd";
 import { Dropdown, message, Space } from "antd";
 
 const onClick: MenuProps["onClick"] = ({ key }) => {
-  message.info(`Click on item ${key}`);
+  if (key == "1") {
+    message.info(`Edit`);
+  } else {
+    message.info(`Remove`);
+  }
 };
 
 const items: MenuProps["items"] = [
@@ -15,10 +19,6 @@ const items: MenuProps["items"] = [
   {
     label: "Remove",
     key: "2"
-  },
-  {
-    label: "Report",
-    key: "3"
   }
 ];
 

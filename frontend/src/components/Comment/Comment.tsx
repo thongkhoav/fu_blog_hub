@@ -1,19 +1,76 @@
-import React, { useState, createContext, useContext, Children } from "react";
+import React, { useState, createContext } from "react";
+
 import Avartar, { AvartarProps } from "./Avartar/Avartar";
 
-const RenderListContext = createContext([]);
-export const useMyState = () => {
-  const context = useContext(RenderListContext);
-  if (!context) {
-    throw new Error("useMyState must be used within a MyStateProvider");
-  }
-  return context;
-};
+export const RenderListContext = createContext<RenderListContextProps>({
+  renderList: [],
+  setRenderList: () => {},
+  ComId: 0,
+  SetComId: () => {}
+});
+
+export interface RenderListContextProps {
+  renderList: any[];
+  setRenderList: React.Dispatch<React.SetStateAction<any[]>>;
+  ComId: number;
+  SetComId: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export function getDate() {
+  const today = new Date();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear();
+  const date = today.getDate();
+  return `${month}, ${date}, ${year}`;
+}
 
 export default function Comment() {
   const [Content, setContent] = useState("");
-  const [RenderList, setRenderList]: any[] = useState([]);
-  const [ComId, SetComId] = useState(0);
+  const [ComId, SetComId] = useState(3);
+  const [RenderList, setRenderList] = useState<any[]>([
+    {
+      id: 0,
+      parentId: -1,
+      srcAvartar:
+        "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
+      nameAvartar: "Test1",
+      timeComment: getDate(),
+      comment: "Content",
+      replyStatus: false,
+      childrent: [
+        {
+          id: 1,
+          parentId: 0,
+          srcAvartar:
+            "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
+          nameAvartar: "testname",
+          timeComment: getDate(),
+          comment: "comment test linh hoang"
+        }
+      ]
+    },
+    {
+      id: 2,
+      parentId: -1,
+      srcAvartar:
+        "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
+      nameAvartar: "Test2",
+      timeComment: getDate(),
+      comment: "Content",
+      replyStatus: false,
+      childrent: [
+        {
+          id: 3,
+          parentId: 2,
+          srcAvartar:
+            "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
+          nameAvartar: "testname",
+          timeComment: getDate(),
+          comment: "comment test linh hoang"
+        }
+      ]
+    }
+  ]);
 
   const handleChange = (event: any) => {
     setContent(event.target.value);
@@ -23,65 +80,19 @@ export default function Comment() {
     SetComId(ComId + 1);
     const AvatarValue: AvartarProps = {
       id: ComId,
+      parentId: -1,
       srcAvartar:
         "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
       nameAvartar: "Test Name",
       timeComment: getDate(),
       comment: Content,
-      child: null
+      replyStatus: false,
+      childrent: []
     };
 
-    setRenderList([...RenderList, AvatarValue]);
+    setRenderList([AvatarValue, ...RenderList]);
   };
 
-  function getDate() {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const year = today.getFullYear();
-    const date = today.getDate();
-    return `${month}. ${date}, ${year}`;
-  }
-
-  const CommentList: any = (
-    <div>
-      {RenderList.map((comment: AvartarProps, index: number) => (
-        <>
-          <article
-            key={index}
-            className={
-              index == 0
-                ? "p-6 text-base bg-white rounded-lg dark:bg-gray-900"
-                : "p-6 mb-3 text-base bg-white border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900"
-            }
-          >
-            <Avartar
-              id={comment.id}
-              srcAvartar={comment.srcAvartar}
-              nameAvartar={comment.nameAvartar}
-              timeComment={comment.timeComment}
-              comment={comment.comment}
-              child={comment.child}
-            />
-          </article>
-          {/* {comment.child != null && comment.child.map(comment.child, index) =>{
-            <article
-            key={index}
-            className="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900"
-          >
-            <Avartar
-              id={comment.child.id}
-              srcAvartar={comment.child.srcAvartar}
-              nameAvartar={comment.child.nameAvartar}
-              timeComment={comment.child.timeComment}
-              comment={comment.child.comment}
-              child={comment.child.child}
-            />
-          </article>
-      }} */}
-        </>
-      ))}
-    </div>
-  );
   return (
     <div className="flex mx-28 pt-5 pb-16 justify-between text-gray-400 border-t border-gray-200">
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
@@ -112,11 +123,13 @@ export default function Comment() {
           >
             Post comment
           </button>
-          {/* </form> */}
-          {/* <RenderListContext.Provider value={[RenderList, setRenderList]} >
-            {children}
-            <RenderListContext.Provider/> */}
-          {CommentList}
+          {/* <ReplyChild renderList={RenderList} /> */}
+          <RenderListContext.Provider
+            value={{ renderList: RenderList, setRenderList, ComId: ComId, SetComId }}
+          >
+            {/* Existing component code */}
+          </RenderListContext.Provider>
+          <Avartar RenderParentList={RenderList} />
         </div>
       </section>
     </div>
