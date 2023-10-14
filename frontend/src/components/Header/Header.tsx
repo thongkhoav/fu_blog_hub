@@ -70,7 +70,7 @@ const Header = () => {
         {userGlobal ? (
           <div>
             <Dropdown menu={{ items }}>
-              <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
+              <Avatar src={userGlobal.avatar} />
             </Dropdown>
           </div>
         ) : (

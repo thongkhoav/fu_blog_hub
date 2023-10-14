@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
-import { IBlog } from "../models/blogModel";
+import { BlogState, IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
 const Blog = require("../models/blogModel");
 
@@ -10,7 +10,8 @@ export const createBlog = async (
   next: NextFunction
 ) => {
   try {
-    const { title, thumbnail, description, contentRaw, blogSeriesId } = req.body;
+    const { title, thumbnail, description, contentRaw, blogSeriesId, status } =
+      req.body;
     const user = (req as any).user;
 
     const blog: IBlog = await Blog.create({
@@ -20,6 +21,7 @@ export const createBlog = async (
       thumbnail,
       userId: user._id,
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
+      status: status === BlogState.DRAFT ? BlogState.WAITING : BlogState.DRAFT,
     });
 
     res.status(200).json({

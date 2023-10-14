@@ -17,7 +17,7 @@ const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail")
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));
 const Profile = lazy(() => import("~/pages/user/profile/Profile"));
 const Posts = lazy(() => import("~/pages/user/profile/Posts"));
-const Series = lazy(() => import("~/pages/user/profile/Series"));
+const Series = lazy(() => import("~/pages/user/profile/series/Series"));
 
 export default function HomeRoutes() {
   return (
@@ -63,9 +63,11 @@ export default function HomeRoutes() {
         <Route
           path={PATH.PROFILE + "/me"}
           Component={() => (
-            <Suspense fallback={<Loading />}>
-              <PersonalProfile />
-            </Suspense>
+            <ProtectedRoute allowedRoles={[Role.MTR, Role.STU]}>
+              <Suspense fallback={<Loading />}>
+                <PersonalProfile />
+              </Suspense>
+            </ProtectedRoute>
           )}
         >
           <Route index element={<Posts />} />

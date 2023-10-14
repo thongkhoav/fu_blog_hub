@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 const URLSlug = require("mongoose-slug-generator");
 mongoose.plugin(URLSlug);
 
-enum BlogState {
+export enum BlogState {
   PUBLIC = "public",
   REMOVED = "removed",
   WAITING = "waiting",
@@ -25,8 +25,7 @@ export interface IBlog extends Document {
   numWord: number;
   numView: number;
   numComment: number;
-  numUpVote: number;
-  numDownVote: number;
+  totalPoint: number;
   hideComment: boolean;
   thumbnail: string;
 }
@@ -88,11 +87,7 @@ blogSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    numUpVote: {
-      type: Number,
-      default: 0,
-    },
-    numDownVote: {
+    totalPoint: {
       type: Number,
       default: 0,
     },

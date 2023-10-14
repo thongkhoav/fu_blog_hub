@@ -4,7 +4,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants";
 import Posts from "../Posts";
 import { useEffect, useState } from "react";
-import Series from "../Series";
+import Series from "../series/Series";
+import { useAuth } from "~/utils/helpers";
 
 const tabItems = [
   {
@@ -31,6 +32,11 @@ const tabItems = [
 
 export default function PersonalProfile() {
   const { pathname } = useLocation();
+  const { userGlobal } = useAuth();
+
+  useEffect(() => {
+    // console.log(userGlobal);
+  }, [pathname]);
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -38,15 +44,14 @@ export default function PersonalProfile() {
   return (
     <div className="grid grid-cols-12 gap-5 mt-12">
       <div className="col-span-3 h-screen mt-[80px] relative">
-        <div className="w-[100px] h-[100px] rounded-full border border-slate-600 flex items-center justify-center col-span-6 absolute top-[-105px] left-[-30px] right-[0px] m-auto">
+        <div className="w-full  flex items-center justify-center col-span-6 absolute top-[-105px] ">
           <img
-            className="w-full h-full rounded-full"
-            src="https://photocross.net/wp-content/uploads/2020/03/anh-chan-dung.jpg"
+            className="w-[100px] h-[100px] rounded-full border border-slate-600"
+            src={userGlobal.avatar}
             alt=""
           />
         </div>
-        <p className="text-lg font-bold">Thạch đi viết thuê blog</p>
-        <p className="text-lg font-thin font-['Brush_Script_MT']">@ThachHD</p>
+        <p className="text-lg font-bold text-center">{userGlobal.fullName}</p>
         <button className="my-4 w-full bg-blue-200 items-center justify-center rounded-md py-2">
           Theo dõi
         </button>
@@ -75,7 +80,11 @@ export default function PersonalProfile() {
             <NavLink
               key={item.path}
               to={item.path}
-              className={`${pathname === item.path ? "text-blue-500" : "text-gray-500"} px-3 py-2`}
+              className={`${
+                pathname === item.path
+                  ? "text-blue-500  border-b-4 border-blue-500"
+                  : "text-gray-500"
+              } px-3 py-2`}
             >
               {item.label}
             </NavLink>

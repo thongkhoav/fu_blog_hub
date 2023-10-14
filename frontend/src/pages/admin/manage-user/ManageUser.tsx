@@ -48,7 +48,7 @@ const ManageUser = () => {
       const res = await axiosPrivate.post("/api/v1/users/mentor", values);
       setUsers(prev => [{ ...res.data.user, key: res.data.user._id }, ...prev]);
       setIsModalOpen(false);
-      toast.success("Add new mentor successfully", toastOption);
+      toast.success(res.data.message, toastOption);
     } catch (error: any) {
       toast.error(error.message, toastOption);
     }

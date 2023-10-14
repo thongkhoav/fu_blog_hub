@@ -46,7 +46,7 @@ const ManageCategory = () => {
   };
 
   useEffect(() => {
-    const getTags = async () => {
+    const getCategories = async () => {
       try {
         const res = await axios.get("/api/v1/categories");
 
@@ -56,7 +56,7 @@ const ManageCategory = () => {
         toast.error(error.message, toastOption);
       }
     };
-    getTags();
+    getCategories();
   }, []);
 
   const columns: ColumnsType<Category> = [

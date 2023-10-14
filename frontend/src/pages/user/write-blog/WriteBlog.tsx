@@ -24,7 +24,7 @@ import { Upload } from "antd";
 import { HOST } from "~/utils/constants";
 import { getBlogTagsApi, getBlogCategoriesApi } from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4 } = require("uuid");
 
 const { TextArea } = Input;
 
@@ -52,7 +52,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     { value: "jack", label: "Jack" },
     { value: "lucy", label: "Lucy" },
     { value: "Yiminghe", label: "yiminghe" }
-  ])
+  ]);
   const [blogCategory, setBlogCategory] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState("");
@@ -66,7 +66,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     if (newTag === "") return;
     const newTagObj: Tag = {
       name: newTag,
-      numBlog: 0,
+      numBlog: 0
     };
 
     setTags([newTagObj, ...tags]);
@@ -94,11 +94,14 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     }
     const response = info.file.response;
     setImageUrl(response.file.url);
-
-
   };
 
-  const handleSubmit = () => {
+  const handleSaveDraft = () => {
+    handleSubmit("draft");
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = (status?: string) => {
     const regexH2 = /<h2[^>]*>(.*?)<\/h2>/;
     let title = data.match(regexH2);
 
@@ -108,7 +111,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     }
 
     if (!title) {
-      return toast.error("Vui lòng nhập tiều đề của bạn!!!", toastOption)
+      return toast.error("Vui lòng nhập tiều đề của bạn!!!", toastOption);
     }
 
     const values = {
@@ -116,20 +119,24 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       thumbnail: imageUrl,
       contentRaw: data,
       title: title ? title[1] : "",
+      status: status || "waiting"
     };
 
-    axiosPrivate.post("/api/v1/blogs", values).then(res => {
-      setIsModalOpen(false);
-      toast.success("Thêm bài viết thành công", toastOption);
-    }).catch(err => {
-      toast.error(err.response.data.message, toastOption);
-    });
+    axiosPrivate
+      .post("/api/v1/blogs", values)
+      .then(res => {
+        setIsModalOpen(false);
+        toast.success("Thêm bài viết thành công", toastOption);
+      })
+      .catch(err => {
+        toast.error(err.response.data.message, toastOption);
+      });
 
     form.validateFields().then(values => {
       form.resetFields();
       showModal(false);
     });
-  }
+  };
 
   useEffect(() => {
     setEditorLoaded(true);
@@ -143,13 +150,13 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     const res = await getBlogTagsApi();
     const data = res.data.data;
     setTags(data);
-  }
+  };
 
   const getAllCategory = async () => {
     const res = await getBlogCategoriesApi();
     const data = res.data.data;
     setBlogCategory(data);
-  }
+  };
 
   const uploadButton = (
     <div>
@@ -186,6 +193,9 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
           open={isModalOpen}
           onCancel={() => showModal(false)}
           footer={[
+            <Button key="draft" className="h-[40px]" onClick={handleSaveDraft}>
+              Lưu bản nháp
+            </Button>,
             <Button key="customCancel" className="h-[40px]" onClick={() => showModal(false)}>
               Quay lại
             </Button>,
@@ -195,18 +205,30 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
           ]}
         >
           <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
-            <Form.Item label="Mô tả bài viết" name='description' rules={[{ required: true, message: 'Vui lòng nhập mô tả bài viết' }]}>
-              <TextArea rows={4} maxLength={6} />
+            <Form.Item
+              label="Mô tả bài viết"
+              name="description"
+              rules={[{ required: true, message: "Vui lòng nhập mô tả bài viết" }]}
+            >
+              <TextArea rows={4} maxLength={200} />
             </Form.Item>
 
             <Form.Item label="Blogseries">
               <Select options={blogSeries} />
             </Form.Item>
 
-            <Form.Item label="Danh mục blog" name="blogCateId" rules={[{ required: true, message: 'Vui lòng chọn danh mục cho Blog' }]}>
+            <Form.Item
+              label="Danh mục blog"
+              name="blogCateId"
+              rules={[{ required: true, message: "Vui lòng chọn danh mục cho Blog" }]}
+            >
               <Select
                 allowClear
-                options={blogCategory.map(item => ({ label: item.name, value: item._id, key: item._id }))}
+                options={blogCategory.map(item => ({
+                  label: item.name,
+                  value: item._id,
+                  key: item._id
+                }))}
               />
             </Form.Item>
 
@@ -233,7 +255,9 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                   </>
                 )}
                 options={tags.map(item => ({
-                  label: `#${item.name}`, value: item.name, key: uuidv4()
+                  label: `#${item.name}`,
+                  value: item.name,
+                  key: uuidv4()
                 }))}
               />
             </Form.Item>
@@ -256,7 +280,12 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               </Upload>
             </Form.Item>
 
-            <Form.Item label="Cài đặt khác" name="showComment" initialValue={true} valuePropName="checked">
+            <Form.Item
+              label="Cài đặt khác"
+              name="showComment"
+              initialValue={true}
+              valuePropName="checked"
+            >
               <Checkbox defaultChecked={true}> Hiển thị bình luận</Checkbox>
             </Form.Item>
           </Form>

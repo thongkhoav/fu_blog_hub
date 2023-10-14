@@ -11,4 +11,5 @@ router.delete(
 );
 router.post("/", authController.protect, categoryController.createCategory);
 router.get("/", categoryController.getAllCategory);
+// to handle put request
 module.exports = router;

@@ -1,0 +1,91 @@
+import { Button, Card, Col, Modal, Row, Space } from "antd";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import toastOption from "~/utils/constants/toastOption";
+import AddSeriesModal from "./add-series-modal/AddSeriesModal";
+import { useAuth } from "~/utils/helpers";
+
+interface Series {
+  _id: string;
+  title: string;
+  description: string;
+  numBlog: number;
+  key: string;
+}
+
+const Series = () => {
+  const axiosPrivate = useAxiosPrivate();
+  const { userGlobal } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [seriesList, setSeriesList] = useState<Series[]>([]);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  useEffect(() => {
+    const getSeries = async () => {
+      try {
+        const res = await axiosPrivate.get("/api/v1/series");
+        const formatedSeriesList = res.data.data?.map((seri: Series) => ({
+          ...seri,
+          key: seri._id
+        }));
+        setSeriesList(formatedSeriesList);
+      } catch (error: any) {
+        toast.error(error.message, toastOption);
+      }
+    };
+    getSeries();
+  }, [axiosPrivate]);
+
+  const handleAddSeries = async (values: any) => {
+    try {
+      const res = await axiosPrivate.post("/api/v1/series", {
+        ...values,
+        userId: userGlobal._id
+      });
+      setSeriesList(prev => [{ ...res.data.blogSeries, key: res.data.blogSeries._id }, ...prev]);
+      setIsModalOpen(false);
+      toast.success(res.data.message, toastOption);
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
+  };
+  // cảu tôi thì được sửa
+  return (
+    <Space direction="vertical" size="large">
+      <Modal
+        title="Add series Modal"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={(_, { OkBtn, CancelBtn }) => <CancelBtn />}
+      >
+        <AddSeriesModal handleAddSeries={handleAddSeries} />
+      </Modal>
+      <Space align="center" size="middle" className="my-5">
+        <Button onClick={showModal}>Thêm series</Button>
+      </Space>
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        {seriesList.map((series: Series) => (
+          <Card hoverable title={series.title} bordered style={{ width: "100%" }}>
+            <p className="line-clamp-2">{series.description}</p>
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-base ">{series.numBlog} bài viết</span>
+              <button className=" bg-blue-200 items-center justify-center rounded-sm py-1 px-3">
+                Chi tiết
+              </button>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </Space>
+  );
+};
+
+export default Series;

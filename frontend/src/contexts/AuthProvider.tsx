@@ -27,13 +27,18 @@ function AuthProvider({ children }: any) {
   const location = useLocation();
 
   useEffect(() => {
-    loginGoogleApi().then((res) => {
-      setUserGlobal(res.data);
-      setUserData(res.data);
-    }).catch((err) => {
-      console.log(err);
-    })
-  }, [])
+    try {
+      if (userGlobal) {
+        return;
+      }
+      loginGoogleApi().then(res => {
+        setUserGlobal(res.data);
+        setUserData(res.data);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   useEffect(() => {
     if (userGlobal != null) {

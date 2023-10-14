@@ -93,8 +93,8 @@ const WaitingBlogList = () => {
             key: "waiting"
           },
           {
-            label: <div style={{ color: "#0c98ff" }}>Edit</div>,
-            key: "edit"
+            label: <div style={{ color: "#0c98ff" }}>Rejected</div>,
+            key: "rejected"
           }
         ]}
         onChange={(key: string) => {
@@ -130,7 +130,6 @@ const WaitingBlogList = () => {
       </div>
       <ModalBlog blogDetail={blogDetail} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
-
   );
 };
 

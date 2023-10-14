@@ -11,4 +11,5 @@ router.delete(
 );
 router.post("/", authController.protect, tagController.createTag);
 router.get("/", tagController.getAllTag);
+// to handle put request
 module.exports = router;

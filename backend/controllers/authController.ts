@@ -94,7 +94,7 @@ exports.addMentorAccount = async (
 
     res.status(201).json({
       status: "success",
-      message: "Mentor account has been created",
+      message: "Thêm mentor thành công",
       user,
     });
   } catch (err) {
@@ -153,6 +153,8 @@ exports.restrictTo = (...roles: any) => {
   };
 };
 
-exports.loginGoogleSuccess = async (req: Request, res: Response, next: NextFunction) => {
-
-}
+exports.loginGoogleSuccess = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {};

@@ -8,7 +8,7 @@ const cors = require("cors");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 require("dotenv").config();
-const passport = require('passport');
+const passport = require("passport");
 const cookieSession = require("cookie-session");
 var cookieParser = require("cookie-parser");
 
@@ -18,10 +18,11 @@ const blogRoutes = require("./routes/blogRoutes");
 const googleRoutes = require("./routes/googleRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const blogSeriesRoutes = require("./routes/blogSeriesRoutes");
 const { globalErrHandler } = require("./controllers/errorController");
 
 const multer = require("multer");
-import './passport'
+import "./passport";
 import AppError from "./utils/appError";
 const app = express();
 
@@ -30,7 +31,11 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // Configure passport middleware
 app.use(
-  cookieSession({ name: "session", keys: ["cus"], maxAge: 24 * 60 * 60 * 100 * 500 })
+  cookieSession({
+    name: "session",
+    keys: ["cus"],
+    maxAge: 24 * 60 * 60 * 100 * 500,
+  })
 );
 app.use(passport.initialize());
 app.use(passport.session());
@@ -73,6 +78,7 @@ app.use(hpp());
 app.use("/api/auth", googleRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);
+app.use("/api/v1/series", blogSeriesRoutes);
 app.use("/api/v1/tags", tagRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/upload", uploadRouter);
