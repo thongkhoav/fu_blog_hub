@@ -12,6 +12,11 @@ let commentSchema: Schema<IComment>;
 
 commentSchema = new mongoose.Schema(
   {
+    commentId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      auto: true,
+    },
     userId: {
       type: Schema.Types.ObjectId,
       required: true,
