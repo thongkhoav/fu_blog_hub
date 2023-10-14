@@ -97,3 +97,14 @@ export const checkBlogStatus = (...status: any) => {
     next();
   };
 };
+
+export const getWaitingBlogs = async (req: Request, res: Response, next: NextFunction) => {
+    const blogs = await Blog.find({}).populate('userId').where('status').in(["waiting","rejected"])
+     res.status(200).json({
+      status: "success",
+      data: {
+        blogs,
+      },
+    });
+  };
+
