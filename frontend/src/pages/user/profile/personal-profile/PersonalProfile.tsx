@@ -52,9 +52,6 @@ export default function PersonalProfile() {
           />
         </div>
         <p className="text-lg font-bold text-center">{userGlobal.fullName}</p>
-        <button className="my-4 w-full bg-blue-200 items-center justify-center rounded-md py-2">
-          Theo dõi
-        </button>
         <div className="grid grid-cols-3 mt-[10px]">
           <div className="col-span-1 text-center  ">
             <p className="font-medium">83</p>

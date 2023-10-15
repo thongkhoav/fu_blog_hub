@@ -22,8 +22,9 @@ import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { beforeUpload, getBase64 } from "~/utils/constants/uploadPlugin";
 import { Upload } from "antd";
 import { HOST } from "~/utils/constants";
-import { getBlogTagsApi, getBlogCategoriesApi } from "~/apis/blog.api";
+import { getBlogTagsApi, getBlogCategoriesApi, getProfileSeriesApi } from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { useAuth } from "~/utils/helpers";
 const { v4: uuidv4 } = require("uuid");
 
 const { TextArea } = Input;
@@ -44,15 +45,12 @@ interface Category {
 }
 
 export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
+  const { userGlobal } = useAuth();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [data, setData] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const [blogSeries, setBlogSeries] = useState<any[]>([
-    { value: "jack", label: "Jack" },
-    { value: "lucy", label: "Lucy" },
-    { value: "Yiminghe", label: "yiminghe" }
-  ]);
+  const [blogSeries, setBlogSeries] = useState<any[]>();
   const [blogCategory, setBlogCategory] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState("");
@@ -144,6 +142,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     setData(defaultData);
     getAllCategory();
     getAllTag();
+    getProfileSeries();
   }, []);
 
   const getAllTag = async () => {
@@ -156,6 +155,15 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     const res = await getBlogCategoriesApi();
     const data = res.data.data;
     setBlogCategory(data);
+  };
+
+  const getProfileSeries = async () => {
+    try {
+      const { data } = await getProfileSeriesApi(userGlobal._id);
+      setBlogSeries(data.data);
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
   };
 
   const uploadButton = (
@@ -214,7 +222,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             </Form.Item>
 
             <Form.Item label="Blogseries">
-              <Select options={blogSeries} />
+              <Select options={blogSeries?.map(s => ({ value: s._id, label: s.title }))} />
             </Form.Item>
 
             <Form.Item

@@ -17,5 +17,6 @@ router.post(
   blogSeriesController.createSeries
 );
 router.get("/", blogSeriesController.getAllSeries);
+router.get("/user/:id", blogSeriesController.getProfileSeries);
 // to handle put request
 module.exports = router;

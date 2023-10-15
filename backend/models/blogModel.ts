@@ -14,7 +14,6 @@ export interface IBlog extends Document {
   userId: Schema.Types.ObjectId;
   blogSeriesId: Schema.Types.ObjectId;
   blogCateId: Schema.Types.ObjectId;
-  tags: Schema.Types.ObjectId;
   title: string;
   description: string;
   slug: string;

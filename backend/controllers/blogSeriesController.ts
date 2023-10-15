@@ -72,4 +72,24 @@ export const getAllSeries = async (
   }
 };
 
+export const getProfileSeries = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    console.log((req as any).user);
+
+    const doc = await BlogSeries.find({ userId: req.params.id });
+
+    res.status(200).json({
+      status: "success",
+      results: doc.length,
+      data: doc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateSeries = base.updateOne(BlogSeries);

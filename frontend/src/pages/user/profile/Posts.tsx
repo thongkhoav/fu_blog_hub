@@ -1,39 +1,52 @@
 /* eslint-disable prettier/prettier */
-import { Popover } from "antd";
+import { Button, Popover, Select } from "antd";
 import React from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { NavLink } from "react-router-dom";
 const Posts = () => {
+  const handleChange = (value: string) => {
+    console.log(`selected ${value}`);
+  };
   return (
     <>
-      <div className="grid grid-cols-12 mt-4">
-        <select className="w-[150px] col-span-6 bg-gray-400">
-          <option>Theo thời gian</option>
-          <option>Theo thời gian</option>
-        </select>
-        <div className="col-span-6 text-center">
-          <i className="fa-solid fa-grip mr-[20px]"></i>
-          <span>Chế độ xem lưới</span>
-        </div>
+      <div className="flex justify-end">
+        <Select
+          defaultValue="lucy"
+          size="middle"
+          style={{ width: 150 }}
+          onChange={handleChange}
+          options={[
+            { value: "createdAt", label: "Ngày đăng" },
+            { value: "mostViews", label: "Nhiều lượt đọc" }
+          ]}
+        />
       </div>
       <div className="grid grid-cols-12 gap-[15px] mt-4 text-[15px]">
         <div className="col-span-4 h-auto relative">
           <Popover
             content={
               <div className="flex flex-col">
-                <NavLink to="#">Chỉnh sửa</NavLink>
-                <NavLink to="#">Xóa</NavLink>
+                <NavLink to="#">
+                  <Button type="primary" className="bg-blue-500">
+                    Chỉnh sửa
+                  </Button>
+                </NavLink>
+                <NavLink to="#">
+                  <Button type="primary" danger className="w-full">
+                    Xoá
+                  </Button>
+                </NavLink>
               </div>
             }
             trigger="click"
             placement="rightBottom"
           >
-            <div className="bg-transparent w-5 h-5 absolute right-2 top-2 cursor-pointer">
+            <div className="bg-slate-400 p-1 rounded absolute right-2 top-2 cursor-pointer">
               <BsThreeDotsVertical className="text-xl" />
             </div>
           </Popover>
           <img
-            className="w-full h-[200px] rounded-md"
+            className="w-full h-[180px] rounded-md"
             src="https://images.theconversation.com/files/45159/original/rptgtpxd-1396254731.jpg?ixNavLinkb=rb-1.1.0&q=45&auto=format&w=754&fit=cNavLinkp"
             alt=""
           />
@@ -45,12 +58,12 @@ const Posts = () => {
             </div>
           </div>
 
-          <p className="font-semibold mt-4">
+          <p className="font-semibold mt-1 line-clamp-2">
             [Review] Một thoáng ta rực rỡ ở nhân gian: Phải đi qua nỗi buồn mới biết trân trọng niềm
             vui
           </p>
-          <p>NavLinkệu Ocean Vương có giống Ishiguro</p>
-          <div className="flex items-center justify-between mt-2">
+          <p className="line-clamp-2">NavLinkệu Ocean Vương có giống Ishiguro</p>
+          <div className="flex items-center justify-between mt-1">
             <p className="opacity-50 text-[13px]">23/09/2023</p>
             <div className="">
               <i className="fa-regular fa-eye mr-3"></i>

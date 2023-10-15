@@ -10,9 +10,17 @@ export const createBlog = async (
   next: NextFunction
 ) => {
   try {
-    const { title, thumbnail, description, contentRaw, blogSeriesId, status } =
-      req.body;
+    const {
+      title,
+      thumbnail,
+      description,
+      contentRaw,
+      blogSeriesId,
+      status,
+      blogCateId,
+    } = req.body;
     const user = (req as any).user;
+    console.log(BlogState.DRAFT);
 
     const blog: IBlog = await Blog.create({
       title,
@@ -21,14 +29,12 @@ export const createBlog = async (
       thumbnail,
       userId: user._id,
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
-      status: status === BlogState.DRAFT ? BlogState.WAITING : BlogState.DRAFT,
+      status: status === BlogState.DRAFT ? BlogState.DRAFT : BlogState.WAITING,
     });
 
     res.status(200).json({
       status: "success",
-      data: {
-        blog,
-      },
+      data: blog,
     });
   } catch (error) {
     next(error);
@@ -58,6 +64,31 @@ export const checkBlogOwnership = async (
     next();
   } catch (error) {
     next(error);
+  }
+};
+
+export const formatMentorUpdateStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const blog = await Blog.find({ _id: req.params.id, status: "waiting" });
+
+  if (blog == null) {
+    return next(new Error("No waiting blog found with that id"));
+  }
+
+  if (blog.blogCateId !== (req as any).user.majorId) {
+    return next(
+      new Error("Review mentor must be in the same major with the blog")
+    );
+  }
+
+  if (req.body.status == "rejected" || req.body.status == "public") {
+    req.body = { status: req.body.status };
+    next();
+  } else {
+    next(new Error("Review status is not valid"));
   }
 };
 

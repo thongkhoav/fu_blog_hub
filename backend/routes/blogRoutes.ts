@@ -60,6 +60,14 @@ router.patch(
   blogController.updateBlog
 );
 
+router.patch(
+  "/mentor/:id",
+  authController.protect,
+  authController.restrictTo("mentor"),
+  blogController.formatMentorUpdateStatus,
+  blogController.updateBlog
+);
+
 /**
  * @swagger
  * tags:
@@ -94,6 +102,11 @@ router.patch(
  *       '400':
  *         description: Bad request, check your input data.
  */
-router.post("/", authController.protect, blogController.createBlog);
+router.post(
+  "/",
+  authController.protect,
+  authController.restrictTo("mentor", "student"),
+  blogController.createBlog
+);
 
 module.exports = router;
