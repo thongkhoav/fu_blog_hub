@@ -42,9 +42,9 @@ export default function PersonalProfile() {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-5 mt-12">
-      <div className="col-span-3 h-screen mt-[80px] relative">
-        <div className="w-full  flex items-center justify-center col-span-6 absolute top-[-105px] ">
+    <div className="flex gap-5 mt-12 w-[1200px] justify-between">
+      <div className="flex-1 h-screen mt-[80px] relative">
+        <div className="w-full flex items-center justify-center absolute top-[-105px] ">
           <img
             className="w-[100px] h-[100px] rounded-full border border-slate-600"
             src={userGlobal.avatar}
@@ -71,7 +71,7 @@ export default function PersonalProfile() {
         </p>
       </div>
       {/* phan ben phai */}
-      <div className="col-span-9">
+      <div className="flex-[3]">
         <div>
           {tabItems.map(item => (
             <NavLink
@@ -87,7 +87,9 @@ export default function PersonalProfile() {
             </NavLink>
           ))}
         </div>
-        <Outlet />
+        <div className="w-full">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

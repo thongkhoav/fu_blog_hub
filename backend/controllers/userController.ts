@@ -3,6 +3,7 @@ import * as base from "./baseController";
 import AppError from "../utils/appError";
 import { promisify } from "util";
 const User = require("../models/userModel");
+const Bookmark = require("../models/bookmarkModel");
 const { createNewAccessToken } = require("../services/createToken");
 const jwt = require("jsonwebtoken");
 
@@ -24,6 +25,7 @@ export const deleteMe = async (
     next(error);
   }
 };
+
 export const getAllUsers = async (
   req: Request,
   res: Response,
@@ -44,6 +46,29 @@ export const getAllUsers = async (
     next(error);
   }
 };
+
+export const getUserBookmark = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // find only user with role is not admin
+    const userBookmarks = await Bookmark.find({
+      userId: (req as any).user._id,
+      removed: false,
+    });
+
+    res.status(200).json({
+      status: "success",
+      results: userBookmarks.length,
+      data: userBookmarks,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUser = base.getOne(User);
 
 // Don't update password on this
@@ -74,7 +99,6 @@ export const getNewAccessToken = async (
       refreshToken,
       process.env.REFRESH_TOKEN_SIGN_SECRET
     );
-    console.log(decode);
 
     const user = await User.findById(decode.id);
 

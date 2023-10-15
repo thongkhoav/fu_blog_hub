@@ -30,7 +30,6 @@ const useAxiosPrivate = () => {
           !prevRequest?.sent
         ) {
           prevRequest.sent = true;
-          console.log("access expried");
 
           const newAccessToken = await refresh();
           prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;

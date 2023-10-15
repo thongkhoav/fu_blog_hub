@@ -11,7 +11,7 @@ export default function LatestBlogs({ blogsData }: { blogsData: BlogItem[] }) {
   return (
     <div className="w-full grid grid-cols-3 gap-8 px-5">
       {[...latestBlogs, latestBlogs[0]].map(blog => (
-        <div key={blog.id} className="h-96 flex flex-col flex-[1] box-border">
+        <div key={blog._id} className="h-96 flex flex-col flex-[1] box-border">
           <img
             src={blog.thumbnail}
             alt="thumbnail"
@@ -20,28 +20,28 @@ export default function LatestBlogs({ blogsData }: { blogsData: BlogItem[] }) {
           <div className="flex flex-col justify-between">
             <div>
               <div className="flex justify-between">
-                <span className="text-sm uppercase">{blog.category}</span>
+                <span className="text-sm uppercase">{blog.blogCateId.name}</span>
                 <span className="text-2xl cursor-pointer">
                   <BiBookmark />
                 </span>
               </div>
               <h1 className=" text-xl font-bold mb-2">{blog.title}</h1>
-              <p className="text-xs line-clamp-2 text-justify mb-2">{blog.introduction}</p>
+              <p className="text-xs line-clamp-2 text-justify mb-2">{blog.description}</p>
             </div>
             <div>
               {/* user and views */}
               <div className="flex justify-between mb-1">
                 <Link to="/profile/123" className="flex items-center gap-3">
                   <img
-                    src={blog.author.avatar}
+                    src={blog.userId.avatar}
                     alt="avatar author"
                     className="w-6 h-6 rounded-full object-cover"
                   />
-                  <span className="text-xs font-bold">{blog.author.name}</span>
+                  <span className="text-xs font-bold">{blog.userId.fullName}</span>
                 </Link>
                 <span className="flex items-center text-xs">
                   <AiOutlineEye className="text-xl mr-1" />
-                  {blog.views}
+                  {blog.numView}
                 </span>
               </div>
             </div>

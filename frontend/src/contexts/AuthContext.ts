@@ -1,6 +1,5 @@
 import { createContext } from "react";
 import { LoginUser } from "~/apis/user.api";
-import { UserInfo } from "~/utils/models/user.model";
 
 export interface IAuthContext {
   token: string;

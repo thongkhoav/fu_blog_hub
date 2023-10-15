@@ -6,6 +6,8 @@ const router = express.Router();
 const blogController = require("../controllers/blogController");
 const authController = require("./../controllers/authController");
 
+router.get("/", blogController.getAllPublicBlogs);
+
 router.get(
   "/:id",
   blogController.checkBlogStatus("public"),
@@ -32,7 +34,7 @@ router.get(
   "/mentor/waiting-blogs",
   authController.protect,
   authController.restrictTo("mentor"),
-  blogController.getWaitingBlogs,
+  blogController.getWaitingBlogs
 );
 
 router.get(

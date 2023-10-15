@@ -7,7 +7,6 @@ import AddSeriesModal from "./add-series-modal/AddSeriesModal";
 import { useAuth } from "~/utils/helpers";
 import { NavLink } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import ConfirmDeleteModal from "~/components/confirm-delete-modal/ConfirmDeleteModal";
 
 interface Series {
   _id: string;
@@ -72,7 +71,7 @@ const Series = () => {
   };
   // cảu tôi thì được sửa
   return (
-    <Space direction="vertical" size="large">
+    <Space direction="vertical">
       <Modal
         title="Add series Modal"
         open={isModalOpen}
@@ -81,7 +80,7 @@ const Series = () => {
       >
         <AddSeriesModal handleAddSeries={handleAddSeries} />
       </Modal>
-      <Space align="center" size="middle" className="my-5">
+      <Space align="center" size="middle" className="my-4">
         <Button onClick={showModal}>Thêm series</Button>
       </Space>
       <div className="grid grid-cols-3 gap-4 mb-4">

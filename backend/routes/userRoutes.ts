@@ -178,10 +178,10 @@ router.post(
  *                   description: Thông báo lỗi.
  */
 router.delete("/deleteMe", userController.deleteMe);
+router.route("/bookmark").get(userController.getUserBookmark);
 
 // Only admin have permission to access for the below APIs
 router.use(authController.restrictTo("admin"));
-
 router.route("/").get(userController.getAllUsers);
 
 router

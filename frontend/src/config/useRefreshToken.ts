@@ -11,17 +11,6 @@ const useRefreshToken = () => {
       const response = await axios.post("/api/v1/users/refresh-token", {
         refreshToken: user?.refreshToken || ""
       });
-      // const response = await axios.post("/api/v1/users/refresh-token", {
-      //   withCredentials: true,
-      //   headers: {
-      //     Authorization: "Bearer " + user?.refreshToken || ""
-      //   }
-      // });
-      // setAuth(prev => {
-      //   console.log(JSON.stringify(prev));
-      //   console.log(response.data.accessToken);
-      //   return { ...prev, accessToken: response.data.accessToken };
-      // });
       setUserData({ ...user, accessToken: response.data.token });
       setUserGlobal((prev: any) => ({ ...prev, accessToken: response.data.token }));
       return response.data.token;
