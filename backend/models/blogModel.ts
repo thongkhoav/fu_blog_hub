@@ -27,6 +27,7 @@ export interface IBlog extends Document {
   totalPoint: number;
   hideComment: boolean;
   thumbnail: string;
+  tagIds: Array<Schema.Types.ObjectId>;
 }
 
 let blogSchema: Schema<IBlog>;
@@ -97,6 +98,12 @@ blogSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
     },
+      tagIds: [
+          {
+              type: Schema.Types.ObjectId,
+              ref: "Tag",
+          },
+      ]
   },
   {
     timestamps: true,

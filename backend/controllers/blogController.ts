@@ -3,6 +3,7 @@ import * as base from "./baseController";
 import { BlogState, IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
 const Blog = require("../models/blogModel");
+const BlogSeries = require("../models/blogSeriesModel");
 
 export const createBlog = async (
   req: Request,
@@ -18,9 +19,32 @@ export const createBlog = async (
       blogSeriesId,
       status,
       blogCateId,
+      tags
     } = req.body;
     const user = (req as any).user;
-    console.log(BlogState.DRAFT);
+    let blogSeries = null;
+    return res.json({"status": "OK"})
+
+    // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
+    if(blogSeriesId) {
+      blogSeries = await BlogSeries.findById(blogSeriesId);
+      if (!blogSeries) {
+        const error = new AppError(403, 'fail', 'BlogSeries is not exist')
+        next(error)
+      }
+
+      if(blogSeries.blogSeries !== user._id){
+        const error = new AppError(403, 'fail', 'Invalid BlogSeries')
+        next(error)
+      }
+
+    }
+
+    // Bài viết mới tạo sẽ có thể là daft hoặc watting
+    if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING){
+      const error = new AppError(403, 'fail', 'Invalid status')
+      next(error)
+    }
 
     const blog: IBlog = await Blog.create({
       title,
@@ -29,8 +53,15 @@ export const createBlog = async (
       thumbnail,
       userId: user._id,
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
-      status: status === BlogState.DRAFT ? BlogState.DRAFT : BlogState.WAITING,
+      status,
+      blogCateId
     });
+
+    // Cập nhật số lượng trong blogseries
+    if (blogSeries){
+      blogSeries.numBlog += 1;
+      blogSeries.save()
+    }
 
     res.status(200).json({
       status: "success",
