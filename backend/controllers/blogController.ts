@@ -3,6 +3,7 @@ import * as base from "./baseController";
 import { BlogState, IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
 const Blog = require("../models/blogModel");
+const Tag = require("../models/tagModel");
 const BlogSeries = require("../models/blogSeriesModel");
 
 export const createBlog = async (
@@ -23,17 +24,17 @@ export const createBlog = async (
     } = req.body;
     const user = (req as any).user;
     let blogSeries = null;
-    return res.json({"status": "OK"})
+    // return res.json({"status": "OK"})
 
     // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
-    if(blogSeriesId) {
+    if (blogSeriesId) {
       blogSeries = await BlogSeries.findById(blogSeriesId);
       if (!blogSeries) {
         const error = new AppError(403, 'fail', 'BlogSeries is not exist')
         next(error)
       }
 
-      if(blogSeries.blogSeries !== user._id){
+      if (blogSeries.userId.toString() !== user._id.toString()) {
         const error = new AppError(403, 'fail', 'Invalid BlogSeries')
         next(error)
       }
@@ -41,9 +42,48 @@ export const createBlog = async (
     }
 
     // Bài viết mới tạo sẽ có thể là daft hoặc watting
-    if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING){
-      const error = new AppError(403, 'fail', 'Invalid status')
-      next(error)
+    // Đoạn này BlogState đang = undefined
+    // if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
+    //   const error = new AppError(403, 'fail', 'Invalid status')
+    //   next(error)
+    // }
+
+    const tagIds: Array<String> = [];
+
+    for (const tag of tags) {
+      // Kiểm tra xem tag có quá dài hay không
+      if (tag.length > 20) {
+        const error = new AppError(403, 'fail', 'Tag is too long');
+        return next(error);
+      }
+
+      // Kiểm tra xem tag có chứa kí tự đặc biệt hay không
+      const regex = /^[a-zA-Z0-9]+$/;
+      if (!regex.test(tag)) {
+        const error = new AppError(403, 'fail', 'Tag is not valid');
+        return next(error);
+      }
+
+      const lowercasedTag = tag.toLowerCase();
+      try {
+        // Tìm tag trong cơ sở dữ liệu
+        let tagExist = await Tag.findOne({ name: lowercasedTag });
+
+        if (tagExist) {
+          tagExist.numBlog += 1;
+          await tagExist.save();
+          tagIds.push(tagExist._id);
+        } else {
+          // Nếu tag không tồn tại, tạo mới
+          const newTag = await Tag.create({ name: lowercasedTag });
+          newTag.numBlog = 1;
+          await newTag.save();
+          tagIds.push(newTag._id);
+        }
+      } catch (error) {
+        // Xử lý lỗi nếu có
+        return next(error);
+      }
     }
 
     const blog: IBlog = await Blog.create({
@@ -54,11 +94,12 @@ export const createBlog = async (
       userId: user._id,
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
       status,
-      blogCateId
+      blogCateId,
+      tagIds
     });
 
     // Cập nhật số lượng trong blogseries
-    if (blogSeries){
+    if (blogSeries) {
       blogSeries.numBlog += 1;
       blogSeries.save()
     }
@@ -163,12 +204,12 @@ export const checkBlogStatus = (...status: any) => {
 };
 
 export const getWaitingBlogs = async (req: Request, res: Response, next: NextFunction) => {
-    const blogs = await Blog.find({}).populate('userId').where('status').in(["waiting","rejected"])
-     res.status(200).json({
-      status: "success",
-      data: {
-        blogs,
-      },
-    });
-  };
+  const blogs = await Blog.find({}).populate('userId').where('status').in(["waiting", "rejected"])
+  res.status(200).json({
+    status: "success",
+    data: {
+      blogs,
+    },
+  });
+};
 
