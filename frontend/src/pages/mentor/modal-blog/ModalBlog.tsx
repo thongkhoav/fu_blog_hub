@@ -1,6 +1,7 @@
 import { Button, Col, Modal, Row } from "antd";
 import "./modal-blog.scss";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
+import moment from "moment";
 
 export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
   const modalTitle = (
@@ -8,7 +9,7 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
       <Col span={16}>
         {blogDetail.title}
         <span style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
-          {blogDetail.createdAt} - {blogDetail.status}
+          {moment(blogDetail.createdAt).utc().format("DD-MM-YYYY hh:mm:ss")} - {blogDetail.status === "waiting" ? "Chờ duyệt": "Đã từ chối"}
         </span>
       </Col>
       <Col span={8} style={{ textAlign: "right" }}>
@@ -19,7 +20,7 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
             handleReject();
           }}
         >
-          Reject
+          Từ chối
         </Button>
         <Button
           className="btn-primary"
@@ -29,7 +30,7 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
             handleAccept();
           }}
         >
-          Accept
+          Duyệt
         </Button>
       </Col>
     </Row>
@@ -69,7 +70,6 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
 
         <div style={{ textAlign: "center" }}>
           <img src={blogDetail.thumbnail} style={{ height: "600px", margin: "auto" }}></img>
-          <i>Hinh anh</i>
         </div>
       </Modal>
     </>

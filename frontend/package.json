@@ -27,6 +27,7 @@
     "@hotwired/stimulus": "^3.2.2",
     "antd": "^5.9.3",
     "axios": "^1.5.0",
+    "moment": "^2.29.4",
     "flowbite": "^1.8.1",
     "multer": "^1.4.5-lts.1",
     "passport": "^0.5.3",

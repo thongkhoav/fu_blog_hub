@@ -29,6 +29,13 @@ router.get(
 );
 
 router.get(
+  "/mentor/waiting-blogs",
+  authController.protect,
+  authController.restrictTo("mentor"),
+  blogController.getWaitingBlogs,
+);
+
+router.get(
   "/mentor/:id",
   authController.protect,
   authController.restrictTo("mentor"),
