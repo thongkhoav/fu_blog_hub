@@ -10,9 +10,12 @@ import {
 } from "~/utils/helpers/auth";
 import { loginApi, logoutApi } from "~/apis/user.api";
 import { Role } from "~/utils/models/user.model";
-import { PATH } from "~/utils/constants";
+import { HOST, PATH } from "~/utils/constants";
 import { toast } from "react-toastify";
 import { loginGoogleApi } from "~/apis/user.api";
+import { axiosPrivate } from "~/config/axios";
+import toastOption from "~/utils/constants/toastOption";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
 
 interface LocationState {
   from: {

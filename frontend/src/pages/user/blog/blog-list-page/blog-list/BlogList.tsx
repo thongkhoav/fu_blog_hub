@@ -5,39 +5,51 @@ import { BiBookmark } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
 import { BlogItem } from "~/utils/models/blog.model";
 import { FcLikePlaceholder } from "react-icons/fc";
+import { getAllPublicBlogs } from "~/apis/blog.api";
+import { toast } from "react-toastify";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { BsBookmarkFill } from "react-icons/bs";
+import toastOption from "~/utils/constants/toastOption";
+import { useStoreContext } from "~/contexts/StoreProvider";
 
 const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) => {
   const [blogList, setBlogList] = useState<BlogItem[]>([]);
+  const axiosPrivate = useAxiosPrivate();
+  const { bookmarkList, setBookmarkList } = useStoreContext();
+
   useEffect(() => {
-    setBlogList(
-      [...Array(10)].map((_, index) => ({
-        id: index.toString(),
-        title: "Sử dụng AI trong Kiểm Thử Phần Mềm: Hướng Dẫn Chi Tiết và Lợi Ích",
-        introduction:
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium minus aperiam inventore sunt excepturi doloremque quis rerum ducimus eligendi tenetur.",
-        category: "Kinh tế",
-        thumbnail:
-          "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
-        comments: 323,
-        views: 231,
-        tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9"],
-        createAt: new Date(),
-        author: {
-          avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
-          id: "1a",
-          levelColor: "#FF0000",
-          name: "Nguyễn Văn A"
-        }
-      }))
-    );
+    (async function () {
+      try {
+        const { data } = await getAllPublicBlogs();
+        setBlogList(data.data);
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    })();
   }, [filters]);
+
+  const toggleBookmark = async (blogId: string, toRemove: boolean) => {
+    try {
+      if (toRemove) {
+        await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
+        setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
+        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+      } else {
+        await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
+        setBookmarkList((prev: any) => [...prev, blogId]);
+        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+      }
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
+  };
 
   return (
     <>
       {blogList.map(blog => (
-        <div key={blog.id} className="h-48 flex gap-5 mb-7 flex-[1] box-border">
+        <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
           <Link
-            to={`${PATH.BLOG}/${blog.id}`}
+            to={`${PATH.BLOG}/${blog._id}`}
             className="w-1/3 rounded-md overflow-hidden max-h-fit"
           >
             <img src={blog.thumbnail} alt="thumbnail" className="object-cover h-full w-full" />
@@ -47,7 +59,7 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
               <div className="flex justify-between">
                 {/* category, point and bookmark */}
                 <section className="flex items-center gap-2">
-                  <span className="text-sm uppercase">{blog.category}</span>
+                  <span className="text-sm uppercase">{blog.blogCateId.name}</span>
                   <hr className="w-[1px] h-[70%] bg-slate-300" />
                   <span className="flex gap-1 items-center">
                     <FcLikePlaceholder />
@@ -55,39 +67,43 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
                   </span>
                 </section>
                 <span className="text-xl cursor-pointer">
-                  <BiBookmark />
+                  {bookmarkList.includes(blog._id) ? (
+                    <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
+                  ) : (
+                    <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
+                  )}
                 </span>
               </div>
-              <Link to={`${PATH.BLOG}/${blog.id}`} className=" text-base font-bold line-clamp-2">
+              <Link to={`${PATH.BLOG}/${blog._id}`} className=" text-base font-bold line-clamp-2">
                 {blog.title}
               </Link>
-              <p className="text-sm line-clamp-3">{blog.introduction}</p>
+              <p className="text-sm line-clamp-3">{blog.description}</p>
             </div>
             <div>
               {/* user and views */}
               <div className="flex justify-between mb-2">
-                <Link to="/profile/123" className="flex items-center gap-3">
+                <Link to={`/profile/${blog.userId._id}`} className="flex items-center gap-3">
                   <img
-                    src={blog.author.avatar}
+                    src={blog.userId.avatar}
                     alt="avatar author"
                     className="w-8 h-8 rounded-full object-cover"
                   />
-                  <span className="text-sm font-bold">{blog.author.name}</span>
+                  <span className="text-sm font-bold">{blog.userId.fullName}</span>
                 </Link>
                 <span className="flex items-center text-xs">
                   <AiOutlineEye className="text-xl mr-1" />
-                  {blog.views}
+                  {blog.numView}
                 </span>
               </div>
               {/* tag list */}
               <div className="flex overflow-x-hidden">
-                {blog.tags.map(tag => (
+                {blog.tags?.map(tag => (
                   <span
-                    key={tag}
+                    key={tag._id}
                     onClick={() => setFilters({ ...filters, tag: [tag] })}
                     className="cursor-pointer text-sm text-inherit px-2 py-1 mr-2 rounded-sm bg-[#f2f2f2]"
                   >
-                    {tag}
+                    {tag.name}
                   </span>
                 ))}
               </div>

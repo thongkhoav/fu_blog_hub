@@ -9,30 +9,30 @@ export interface Tag {
 }
 
 interface BlogItemAuthor {
-  id: string;
-  name: string;
-  levelColor: string;
+  _id: string;
+  fullName: string;
   avatar: string;
+  slug?: string;
 }
 
 export interface BlogNavItem {
-  id: string;
+  _id: string;
   title: string;
   thumbnail: string;
-  category: string;
+  blogCateId: { _id: string; name: string };
   createAt?: Date;
-  author: BlogItemAuthor;
+  userId: BlogItemAuthor;
 }
 
 export interface BlogItem {
-  id: string;
+  _id: string;
   title: string;
   thumbnail: string;
-  author: BlogItemAuthor;
-  category: string;
-  introduction: string;
-  tags: string[];
-  views: number;
+  userId: BlogItemAuthor;
+  blogCateId: { _id: string; name: string };
+  description: string;
+  tags: { _id: string; name: string }[];
+  numView: number;
   comments: number;
   createAt: Date;
 }

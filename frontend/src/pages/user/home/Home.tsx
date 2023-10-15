@@ -11,41 +11,51 @@ const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 
 const blogsData: BlogItem[] = [
   {
-    id: "1",
+    _id: "1",
     title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. 1",
-    introduction:
+    description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium minus aperiam inventore sunt excepturi doloremque quis rerum ducimus eligendi tenetur.",
-    category: "Kinh tế",
+    blogCateId: {
+      name: "Kinh tế",
+      _id: "sadadada1"
+    },
     thumbnail:
       "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
     comments: 323,
-    views: 231,
-    tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6", "tag7", "tag8", "tag9"],
+    numView: 231,
+    tags: [
+      { _id: "asdasd", name: "tag1" },
+      { _id: "2313", name: "tag2" }
+    ],
     createAt: new Date(),
-    author: {
+    userId: {
       avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
-      id: "1a",
-      levelColor: "#FF0000",
-      name: "Nguyễn Văn A"
+      _id: "1a",
+      fullName: "Nguyễn Văn A"
     }
   },
   {
-    id: "2",
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. 2",
-    introduction:
+    _id: "12135",
+    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. 1",
+    description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium minus aperiam inventore sunt excepturi doloremque quis rerum ducimus eligendi tenetur.",
-    category: "Công nghệ",
+    blogCateId: {
+      name: "Kinh tế",
+      _id: "sadadada1"
+    },
     thumbnail:
       "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
-    tags: ["tag1", "tag2", "tag3"],
-    comments: 531,
-    views: 458,
+    comments: 323,
+    numView: 231,
+    tags: [
+      { _id: "asdasd", name: "tag1" },
+      { _id: "2313", name: "tag2" }
+    ],
     createAt: new Date(),
-    author: {
+    userId: {
       avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
-      id: "1a",
-      levelColor: "#FF0000",
-      name: "Nguyễn Văn B"
+      _id: "1a",
+      fullName: "Nguyễn Văn A"
     }
   }
 ];

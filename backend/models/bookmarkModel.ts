@@ -1,33 +1,36 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model, Schema } from "mongoose";
 
 interface IBookmark extends Document {
-    userId: Schema.Types.ObjectId;
-    blogId: Schema.Types.ObjectId;
-    removed: boolean;
+  userId: Schema.Types.ObjectId;
+  blogId: Schema.Types.ObjectId;
+  removed: boolean;
 }
 
 let bookmarkSchema: Schema<IBookmark>;
 
-bookmarkSchema = new mongoose.Schema({
+bookmarkSchema = new mongoose.Schema(
+  {
     userId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'User'
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
     },
     blogId: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'Blog'
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Blog",
     },
     removed: {
-        type: Boolean,
-        default: false
-    }
-},{
-    timestamps: true
-})
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Bookmark: Model<IBookmark> = mongoose.model('Tag', bookmarkSchema);
+const Bookmark: Model<IBookmark> = mongoose.model("Bookmark", bookmarkSchema);
 
 // @ts-ignore
-module.exports = Bookmark
+module.exports = Bookmark;

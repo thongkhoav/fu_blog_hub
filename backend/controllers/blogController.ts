@@ -20,7 +20,7 @@ export const createBlog = async (
       blogSeriesId,
       status,
       blogCateId,
-      tags
+      tags,
     } = req.body;
     const user = (req as any).user;
     let blogSeries = null;
@@ -30,15 +30,14 @@ export const createBlog = async (
     if (blogSeriesId) {
       blogSeries = await BlogSeries.findById(blogSeriesId);
       if (!blogSeries) {
-        const error = new AppError(403, 'fail', 'BlogSeries is not exist')
-        next(error)
+        const error = new AppError(403, "fail", "BlogSeries is not exist");
+        next(error);
       }
 
       if (blogSeries.userId.toString() !== user._id.toString()) {
-        const error = new AppError(403, 'fail', 'Invalid BlogSeries')
-        next(error)
+        const error = new AppError(403, "fail", "Invalid BlogSeries");
+        next(error);
       }
-
     }
 
     // Bài viết mới tạo sẽ có thể là daft hoặc watting
@@ -53,14 +52,14 @@ export const createBlog = async (
     for (const tag of tags) {
       // Kiểm tra xem tag có quá dài hay không
       if (tag.length > 20) {
-        const error = new AppError(403, 'fail', 'Tag is too long');
+        const error = new AppError(403, "fail", "Tag is too long");
         return next(error);
       }
 
       // Kiểm tra xem tag có chứa kí tự đặc biệt hay không
       const regex = /^[a-zA-Z0-9]+$/;
       if (!regex.test(tag)) {
-        const error = new AppError(403, 'fail', 'Tag is not valid');
+        const error = new AppError(403, "fail", "Tag is not valid");
         return next(error);
       }
 
@@ -95,13 +94,13 @@ export const createBlog = async (
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
       status,
       blogCateId,
-      tagIds
+      tagIds,
     });
 
     // Cập nhật số lượng trong blogseries
     if (blogSeries) {
       blogSeries.numBlog += 1;
-      blogSeries.save()
+      blogSeries.save();
     }
 
     res.status(200).json({
@@ -114,6 +113,90 @@ export const createBlog = async (
 };
 
 export const getOneBlog = base.getOne(Blog);
+
+export const getAllPublicBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const blogPopulate = await Blog.find({ status: "public" })
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: "name",
+      });
+
+    const blogWithTags = await Blog.aggregate([
+      {
+        $lookup: {
+          from: "blogtags", // Tên của collection cho BlogTag model
+          localField: "_id", // Trường trong collection "Blog" để so khớp
+          foreignField: "blogId", // Trường trong collection "BlogTag" để so khớp
+          as: "tags", // Tên của trường trong kết quả là "tags"
+        },
+      },
+      {
+        $unwind: "$tags", // Mở rộng các kết quả từ trường "tags"
+      },
+      {
+        $lookup: {
+          from: "tags", // Tên của collection cho Tag model
+          localField: "tags.tagId", // Trường trong collection "BlogTag" để so khớp với _id trong collection "Tag"
+          foreignField: "_id",
+          as: "tags.tagInfo", // Tên của trường trong kết quả là "tagInfo"
+        },
+      },
+      {
+        $group: {
+          _id: "$_id", // Gom nhóm kết quả theo _id của Blog
+          tags: {
+            $push: {
+              _id: "$tags.tagInfo._id",
+              name: "$tags.tagInfo.name",
+            }, // Đưa thông tin của các Tag vào một mảng "tags"
+          },
+          // Bạn có thể thêm các trường khác của Blog vào đây nếu cần
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          tags: 1,
+          // Bạn có thể chọn các trường của Blog mà bạn muốn bao gồm ở đây
+        },
+      },
+    ]);
+
+    // Gộp kết quả từ 2 mảng trên lại với nhau
+    // lấy tag gắn qua, nếu lấy theo index mà id của blog với id của blogtag khác nhau thì find lại
+    const result = blogPopulate.map((blog: any, index: any) => {
+      let blogTag = blogWithTags[index];
+
+      if (blogTag._id.toString() !== blog._id.toString()) {
+        blogTag = blogWithTags.find(
+          (item: any) => item._id.toString() === blog._id.toString()
+        );
+      }
+
+      return {
+        ...blog._doc,
+        tags: blogTag.tags,
+      };
+    });
+
+    res.status(200).json({
+      status: "success",
+      results: result.length,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const updateBlog = base.updateOne(Blog);
 
@@ -203,8 +286,15 @@ export const checkBlogStatus = (...status: any) => {
   };
 };
 
-export const getWaitingBlogs = async (req: Request, res: Response, next: NextFunction) => {
-  const blogs = await Blog.find({}).populate('userId').where('status').in(["waiting", "rejected"])
+export const getWaitingBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const blogs = await Blog.find({})
+    .populate("userId")
+    .where("status")
+    .in(["waiting", "rejected"]);
   res.status(200).json({
     status: "success",
     data: {
@@ -212,4 +302,3 @@ export const getWaitingBlogs = async (req: Request, res: Response, next: NextFun
     },
   });
 };
-
