@@ -19,6 +19,7 @@ const blogsData: BlogItem[] = [
       name: "Kinh tế",
       _id: "sadadada1"
     },
+    slug: "yrthg",
     thumbnail:
       "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
     numComment: 323,
@@ -43,6 +44,7 @@ const blogsData: BlogItem[] = [
       name: "Kinh tế",
       _id: "sadadada1"
     },
+    slug: "yrthg",
     thumbnail:
       "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
     numComment: 323,

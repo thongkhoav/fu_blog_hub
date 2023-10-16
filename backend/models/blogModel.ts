@@ -18,7 +18,6 @@ export interface IBlog extends Document {
   description: string;
   slug: string;
   contentRaw: string;
-  contentHTML: string;
   status: string;
   blogTagIds: Schema.Types.ObjectId[];
   numChar: number;
@@ -101,6 +100,7 @@ blogSchema = new mongoose.Schema(
     },
     thumbnail: {
       type: String,
+      required: true,
     },
     tagIds: [
       {
