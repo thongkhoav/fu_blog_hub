@@ -31,19 +31,28 @@ export interface BlogItem {
   userId: BlogItemAuthor;
   blogCateId: { _id: string; name: string };
   description: string;
-  tags: { _id: string; name: string }[];
+  blogTagIds: { _id: string; name: string }[];
   numView: number;
-  comments: number;
+  numComment: number;
   createAt: Date;
 }
 
 export interface BlogDetail {
-  id: string;
+  _id: string;
   title: string;
-  content: string;
-  introduction: string;
-  views: number;
-  likes: number;
-  comments: number;
-  createAt: string;
+  blogCateId: { _id: string; name: string };
+  blogTagIds: { _id: string; name: string }[];
+  description: string;
+  createdAt: Date;
+  thumbnail: string;
+  numView: number;
+  contentRaw: string | TrustedHTML;
+  tags: { _id: string; name: string }[];
+  author: {
+    avatar: string;
+    id: string;
+    name: string;
+  };
 }
+
+export interface Comment {}

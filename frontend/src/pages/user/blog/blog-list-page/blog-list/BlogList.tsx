@@ -11,11 +11,13 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { BsBookmarkFill } from "react-icons/bs";
 import toastOption from "~/utils/constants/toastOption";
 import { useStoreContext } from "~/contexts/StoreProvider";
+import { useAuth } from "~/utils/helpers";
 
 const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) => {
   const [blogList, setBlogList] = useState<BlogItem[]>([]);
   const axiosPrivate = useAxiosPrivate();
   const { bookmarkList, setBookmarkList } = useStoreContext();
+  const { userGlobal } = useAuth();
 
   useEffect(() => {
     (async function () {
@@ -63,16 +65,18 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
                   <hr className="w-[1px] h-[70%] bg-slate-300" />
                   <span className="flex gap-1 items-center">
                     <FcLikePlaceholder />
-                    {blog.comments}
+                    {blog.numComment}
                   </span>
                 </section>
-                <span className="text-xl cursor-pointer">
-                  {bookmarkList.includes(blog._id) ? (
-                    <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
-                  ) : (
-                    <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
-                  )}
-                </span>
+                {userGlobal && (
+                  <span className="text-xl cursor-pointer">
+                    {bookmarkList.includes(blog._id) ? (
+                      <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
+                    ) : (
+                      <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
+                    )}
+                  </span>
+                )}
               </div>
               <Link to={`${PATH.BLOG}/${blog._id}`} className=" text-base font-bold line-clamp-2">
                 {blog.title}
@@ -97,7 +101,7 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
               </div>
               {/* tag list */}
               <div className="flex overflow-x-hidden">
-                {blog.tags?.map(tag => (
+                {blog.blogTagIds?.map(tag => (
                   <span
                     key={tag._id}
                     onClick={() => setFilters({ ...filters, tag: [tag] })}

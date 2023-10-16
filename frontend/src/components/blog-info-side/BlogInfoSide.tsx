@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants";
 import { BiUpArrow, BiDownArrow, BiBookmark, BiCommentDetail } from "react-icons/bi";
@@ -6,15 +6,44 @@ import { MdOutlineReportProblem } from "react-icons/md";
 import { Dropdown, Modal, Button, Tooltip } from "antd";
 
 import type { MenuProps } from "antd";
-import { Category, Tag } from "~/utils/models/blog.model";
+import { BlogDetail, Category, Tag } from "~/utils/models/blog.model";
+import { BsBookmarkFill } from "react-icons/bs";
+import { useStoreContext } from "~/contexts/StoreProvider";
+import { useAuth } from "~/utils/helpers";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
 
 // cố định khi scroll
-function BlogInfoSide({ isBlogDetail = false }) {
+function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
   const [point, setPoint] = useState<number>(15);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { bookmarkList, setBookmarkList } = useStoreContext();
+  const { userGlobal } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+
+  const toggleBookmark = async (blogId: string, toRemove: boolean) => {
+    if (!userGlobal) return;
+
+    try {
+      if (toRemove) {
+        await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
+        setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
+        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+      } else {
+        await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
+        setBookmarkList((prev: any) => [...prev, blogId]);
+        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+      }
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
+  };
+
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const reportItems: MenuProps["items"] = [
     {
       key: "1",
@@ -33,6 +62,7 @@ function BlogInfoSide({ isBlogDetail = false }) {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   return (
     <div className=" flex-1 m-5 mr-0">
       <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
@@ -40,7 +70,15 @@ function BlogInfoSide({ isBlogDetail = false }) {
       </Modal>
       <div className="flex px-4 gap-7 relative">
         <Tooltip title="Bookmark">
-          <BiBookmark className="absolute right-3 top-3 text-2xl cursor-pointer" />
+          {userGlobal && (
+            <span className="absolute right-3 top-3 text-2xl cursor-pointer">
+              {bookmarkList.includes(blogDetail._id) ? (
+                <BsBookmarkFill onClick={() => toggleBookmark(blogDetail._id, true)} />
+              ) : (
+                <BiBookmark onClick={() => toggleBookmark(blogDetail._id, false)} />
+              )}
+            </span>
+          )}
         </Tooltip>
         <div className="flex flex-col justify-between items-center gap-2 min-w-[38px]">
           <BiUpArrow
