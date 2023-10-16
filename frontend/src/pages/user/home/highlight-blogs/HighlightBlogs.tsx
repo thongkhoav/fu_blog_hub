@@ -28,7 +28,7 @@ export default function HighlightBlogs({ blogsData }: { blogsData: BlogItem[] })
                   <hr className="w-[1px] h-[70%] bg-slate-300" />
                   <span className="flex gap-1 items-center">
                     <FcLikePlaceholder />
-                    {blog.comments}
+                    {blog.numComment}
                   </span>
                 </section>
                 <span className="text-xl cursor-pointer">
@@ -56,7 +56,7 @@ export default function HighlightBlogs({ blogsData }: { blogsData: BlogItem[] })
               </div>
               {/* tag list */}
               <div className="flex overflow-x-hidden">
-                {blog.tags.map(tag => (
+                {blog.blogTagIds.map(tag => (
                   <Link
                     to={`/blogs?tag=${tag._id}`}
                     key={tag._id}

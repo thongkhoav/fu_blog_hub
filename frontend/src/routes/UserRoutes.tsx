@@ -13,7 +13,7 @@ import Followers from "~/pages/user/profile/followers/Followers";
 import Bookmark from "~/pages/user/profile/bookmark/Bookmark";
 const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
-const BlogDetail = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetail"));
+const BlogDetailPage = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetailPage"));
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));
 const Profile = lazy(() => import("~/pages/user/profile/Profile"));
 const Posts = lazy(() => import("~/pages/user/profile/Posts"));
@@ -45,7 +45,7 @@ export default function HomeRoutes() {
           path={PATH.BLOG + "/:idBlog"}
           Component={() => (
             <Suspense fallback={<Loading />}>
-              <BlogDetail />
+              <BlogDetailPage />
             </Suspense>
           )}
         />

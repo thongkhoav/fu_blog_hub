@@ -8,7 +8,7 @@ export const BlogState = {
   WAITING: "waiting",
   DRAFT: "draft",
   REJECTED: "rejected",
-}
+};
 
 export interface IBlog extends Document {
   userId: Schema.Types.ObjectId;
@@ -20,6 +20,7 @@ export interface IBlog extends Document {
   contentRaw: string;
   contentHTML: string;
   status: string;
+  blogTagIds: Schema.Types.ObjectId[];
   numChar: number;
   numWord: number;
   numView: number;
@@ -47,6 +48,12 @@ blogSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Categories",
     },
+    blogTagIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
     title: {
       type: String,
       required: true,
@@ -60,9 +67,6 @@ blogSchema = new mongoose.Schema(
       slug: ["title", "_id"],
     },
     contentRaw: {
-      type: String,
-    },
-    contentHTML: {
       type: String,
     },
     status: {
@@ -98,12 +102,12 @@ blogSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
     },
-      tagIds: [
-          {
-              type: Schema.Types.ObjectId,
-              ref: "Tag",
-          },
-      ]
+    tagIds: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Tag",
+      },
+    ],
   },
   {
     timestamps: true,

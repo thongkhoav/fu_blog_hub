@@ -21,9 +21,9 @@ const blogsData: BlogItem[] = [
     },
     thumbnail:
       "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
-    comments: 323,
+    numComment: 323,
     numView: 231,
-    tags: [
+    blogTagIds: [
       { _id: "asdasd", name: "tag1" },
       { _id: "2313", name: "tag2" }
     ],
@@ -45,9 +45,9 @@ const blogsData: BlogItem[] = [
     },
     thumbnail:
       "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
-    comments: 323,
+    numComment: 323,
     numView: 231,
-    tags: [
+    blogTagIds: [
       { _id: "asdasd", name: "tag1" },
       { _id: "2313", name: "tag2" }
     ],
@@ -99,7 +99,6 @@ export default function Home() {
             {/* danh sách blog theo chủ để đã chọn lúc mới đăng nhập hoặc có thể setting */}
           </div>
           <OptionSideHome />
-          <Comment />
         </div>
       </div>
     </div>
