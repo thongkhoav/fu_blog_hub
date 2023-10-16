@@ -7,6 +7,7 @@ const blogController = require("../controllers/blogController");
 const authController = require("./../controllers/authController");
 
 router.get("/", blogController.getAllPublicBlogs);
+router.get("/user/:userId", blogController.getProfilePublicBlogs);
 
 router.get(
   "/:id",

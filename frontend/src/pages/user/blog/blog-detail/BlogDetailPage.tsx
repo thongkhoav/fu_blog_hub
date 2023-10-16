@@ -10,17 +10,18 @@ import axios from "~/config/axios";
 import toastOption from "~/utils/constants/toastOption";
 import parse from "html-react-parser";
 import { toast } from "react-toastify";
+import BlogsSide from "~/pages/user/blog/blog-detail/blogs-side/BlogsSide";
 
 // comment được fetch sau
 function BlogDetailPage() {
-  const { slug } = useParams<{ slug: string }>();
+  const { idBlog } = useParams<{ idBlog: string }>();
   const [blogDetail, setBlogDetail] = useState<BlogDetail>();
   // const refBlog = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // fetch blog
     (async function () {
       try {
-        const { data } = await axios.get("/api/v1/blogs/" + slug);
+        const { data } = await axios.get("/api/v1/blogs/" + idBlog);
         setBlogDetail(data.data);
       } catch (error: any) {
         toast.error(error.message, toastOption);
@@ -28,15 +29,20 @@ function BlogDetailPage() {
     })();
     try {
     } catch (error) {}
-  }, [slug]);
+  }, [idBlog]);
   return (
     <div className="flex gap-5 px-8">
       {blogDetail && <BlogInfoSide blogDetail={blogDetail} />}
       <div className="flex-[2]">
         <img src={blogDetail?.thumbnail} alt="" className="h-[320px] w-full object-cover mb-6" />
-        <h2 className="capitalize text-[#404040] opacity-80 mb-2">
-          <span>Thể loại: {blogDetail?.blogCateId.name}</span>
-        </h2>
+        <div className="flex justify-between items-center">
+          <h2 className="capitalize text-[#404040] opacity-80 mb-2">
+            <span>Thể loại: {blogDetail?.blogCateId.name}</span>
+          </h2>
+          <span className="text-gray-500 mb-4">
+            {blogDetail?.createdAt && formatDate(blogDetail.createdAt)}
+          </span>
+        </div>
         <div className="mb-3">
           Tag:
           {blogDetail?.blogTagIds.map(tag => (
@@ -50,15 +56,13 @@ function BlogDetailPage() {
           ))}
         </div>
         <h1 className="text-[42px] mb-2">{blogDetail?.title}</h1>
-        <span className="text-gray-500 mb-4">
-          {blogDetail?.createdAt && formatDate(blogDetail.createdAt)}
-        </span>
-        {/* divider */}
-        <div>{blogDetail?.contentRaw && parse(`${blogDetail?.contentRaw}`)}</div>
-        {/* content */}
+
+        <hr />
+        <div className="mt-5">{blogDetail?.contentRaw && parse(`${blogDetail?.contentRaw}`)}</div>
         {/* blog tương tự */}
         <Comment />
       </div>
+      {blogDetail && <BlogsSide blogDetail={blogDetail} />}
     </div>
   );
 }

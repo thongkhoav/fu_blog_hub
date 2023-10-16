@@ -21,7 +21,6 @@ const tagRoutes = require("./routes/tagRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const blogSeriesRoutes = require("./routes/blogSeriesRoutes");
 const { globalErrHandler } = require("./controllers/errorController");
-const BlogTag = require("./models/blogTagModel");
 
 const multer = require("multer");
 import "./passport";
@@ -85,13 +84,6 @@ app.use("/api/v1/series", blogSeriesRoutes);
 app.use("/api/v1/tags", tagRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/upload", uploadRouter);
-app.post("/api/v1/blogtag", async (req: Request, res: Response) => {
-  const newa = await BlogTag.create(req.body);
-  res.status(200).json({
-    status: "success",
-    data: newa,
-  });
-});
 
 app.use(globalErrHandler);
 const swaggerOptions = {

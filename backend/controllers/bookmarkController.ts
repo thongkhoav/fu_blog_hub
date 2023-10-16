@@ -72,8 +72,7 @@ export const getBookmarkedBlogs = async (
 ) => {
   try {
     const bookmarkedBlogs = await Bookmark.find({
-      // userId: (req as any).user._id,
-      userId: "6522483404d7cf62932119a6",
+      userId: (req as any).user._id,
       removed: false,
     }).populate({
       path: "blogId",
