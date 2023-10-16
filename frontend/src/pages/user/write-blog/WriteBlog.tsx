@@ -44,13 +44,21 @@ interface Category {
   numBlog: number;
 }
 
+interface BlogSeries {
+  _id?: string;
+  title: string;
+  description: string;
+  thumbnail: string;
+  numBlog: number;
+}
+
 export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const { userGlobal } = useAuth();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [data, setData] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form] = Form.useForm();
-  const [blogSeries, setBlogSeries] = useState<any[]>();
+  const [blogSeries, setBlogSeries] = useState<BlogSeries[]>();
   const [blogCategory, setBlogCategory] = useState<Category[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [newTag, setNewTag] = useState("");
@@ -94,12 +102,12 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     setImageUrl(response.file.url);
   };
 
-  const handleSaveDraft = () => {
-    handleSubmit("draft");
+  const handleSaveDraft = (formatValue: any) => {
+    handleSubmit(formatValue, "draft");
     setIsModalOpen(false);
   };
 
-  const handleSubmit = (status?: string) => {
+  const handleSubmit = (formatValue: any, status?: string) => {
     const regexH2 = /<h2[^>]*>(.*?)<\/h2>/;
     let title = data.match(regexH2);
 
@@ -201,15 +209,15 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
           open={isModalOpen}
           onCancel={() => showModal(false)}
           footer={[
-            <Button key="draft" className="h-[40px]" onClick={handleSaveDraft}>
-              Lưu bản nháp
-            </Button>,
             <Button key="customCancel" className="h-[40px]" onClick={() => showModal(false)}>
               Quay lại
             </Button>,
             <Button key="customOk" form="myForm" htmlType="submit" className="h-[40px]">
               Tạo bài viết
-            </Button>
+            </Button>,
+            <Button key="draft" className="h-[40px] bg-blue-500 text-white" onClick={handleSaveDraft}>
+              Lưu bản nháp
+            </Button>,
           ]}
         >
           <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
@@ -221,7 +229,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               <TextArea rows={4} maxLength={200} />
             </Form.Item>
 
-            <Form.Item label="Blogseries">
+            <Form.Item label="Blogseries" name="blogSeriesId">
               <Select options={blogSeries?.map(s => ({ value: s._id, label: s.title }))} />
             </Form.Item>
 
@@ -248,13 +256,13 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                   <>
                     {menu}
                     <Divider style={{ margin: "8px 0" }} />
-                    <Space style={{ padding: "0 8px 4px", width: "100%" }}>
+                    <Space style={{ padding: "0 4px 4px", width: "100%" }}>
                       <Input
                         placeholder="Tạo tag mới"
                         ref={inputNewTagRef}
                         value={newTag}
                         onChange={onNewTagChange}
-                        style={{ width: "90%" }}
+                        style={{ width: "90%", padding: "0px 6px", borderColor: "#d9d9d9", borderRadius: "5px", fontSize: "14px" }}
                       />
                       <Button type="text" icon={<PlusOutlined />} onClick={addNewTag}>
                         Add item

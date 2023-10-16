@@ -2,12 +2,12 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 const URLSlug = require("mongoose-slug-generator");
 mongoose.plugin(URLSlug);
 
-export enum BlogState {
-  PUBLIC = "public",
-  REMOVED = "removed",
-  WAITING = "waiting",
-  DRAFT = "draft",
-  REJECTED = "rejected",
+export const BlogState = {
+  PUBLIC: "public",
+  REMOVED: "removed",
+  WAITING: "waiting",
+  DRAFT: "draft",
+  REJECTED: "rejected",
 }
 
 export interface IBlog extends Document {
@@ -19,7 +19,7 @@ export interface IBlog extends Document {
   slug: string;
   contentRaw: string;
   contentHTML: string;
-  status: BlogState;
+  status: string;
   numChar: number;
   numWord: number;
   numView: number;
@@ -27,6 +27,7 @@ export interface IBlog extends Document {
   totalPoint: number;
   hideComment: boolean;
   thumbnail: string;
+  tagIds: Array<Schema.Types.ObjectId>;
 }
 
 let blogSchema: Schema<IBlog>;
@@ -97,6 +98,12 @@ blogSchema = new mongoose.Schema(
     thumbnail: {
       type: String,
     },
+      tagIds: [
+          {
+              type: Schema.Types.ObjectId,
+              ref: "Tag",
+          },
+      ]
   },
   {
     timestamps: true,
