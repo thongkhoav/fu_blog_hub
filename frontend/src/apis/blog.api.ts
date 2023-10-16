@@ -24,3 +24,4 @@ export const getProfileSeriesApi = async (id: string) =>
 export const getAllPublicBlogs = async () => await axios.get(`${HOST}/api/v1/blogs`);
 
 export const createBlogApiPath = `${HOST}/api/v1/blogs`;
+export const getSeftBlogDetailApiPath = `${HOST}/api/v1/blogs/self`;
