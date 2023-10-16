@@ -20,7 +20,7 @@ function Editor({ onChange, editorLoaded, name, value }) {
     <div>
       {editorLoaded ? (
         <CKEditor
-          type=""
+          type="classic"
           name={name}
           editor={ClassicEditor}
           config={{

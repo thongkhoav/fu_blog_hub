@@ -22,9 +22,16 @@ import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { beforeUpload, getBase64 } from "~/utils/constants/uploadPlugin";
 import { Upload } from "antd";
 import { HOST } from "~/utils/constants";
-import { getBlogTagsApi, getBlogCategoriesApi, getProfileSeriesApi } from "~/apis/blog.api";
+import {
+  getBlogTagsApi,
+  getBlogCategoriesApi,
+  getProfileSeriesApi,
+  createBlogApiPath,
+  getSeftBlogDetailApiPath
+} from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { useAuth } from "~/utils/helpers";
+import {useParams} from "react-router-dom";
 const { v4: uuidv4 } = require("uuid");
 
 const { TextArea } = Input;
@@ -66,7 +73,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const [loadingPostImage, setLoadingPostImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>();
   const axiosPrivate = useAxiosPrivate();
-
+  const { idBlog } = useParams();
   const addNewTag = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     if (newTag === "") return;
@@ -128,8 +135,10 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       status: status || "waiting"
     };
 
+    console.log(values)
+
     axiosPrivate
-      .post("/api/v1/blogs", values)
+      .post(createBlogApiPath, values)
       .then(res => {
         setIsModalOpen(false);
         toast.success("Thêm bài viết thành công", toastOption);
@@ -145,6 +154,14 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   };
 
   useEffect(() => {
+    if(mode !== "Edit") return;
+    console.log(idBlog)
+    axiosPrivate.get(`${getSeftBlogDetailApiPath}/${idBlog}`).then(response => {
+      console.log(response)
+    })  
+  }, [])
+
+  useEffect(() => {
     setEditorLoaded(true);
     const defaultData = "<h1>Tiêu đề ...</h1> <p>Nội dung ...</p>";
     setData(defaultData);
@@ -152,6 +169,8 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     getAllTag();
     getProfileSeries();
   }, []);
+
+
 
   const getAllTag = async () => {
     const res = await getBlogTagsApi();

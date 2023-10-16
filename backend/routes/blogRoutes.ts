@@ -18,7 +18,7 @@ router.get(
 router.get(
   "/self/:id",
   authController.protect,
-  authController.restrictTo("student"),
+  authController.restrictTo("student", "mentor"),
   blogController.checkBlogOwnership,
   blogController.checkBlogStatus(
     "public",
