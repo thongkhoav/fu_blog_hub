@@ -4,6 +4,7 @@ import AppError from "../utils/appError";
 import { promisify } from "util";
 const User = require("../models/userModel");
 const Bookmark = require("../models/bookmarkModel");
+const FollowModel = require("../models/followUserModel");
 const { createNewAccessToken } = require("../services/createToken");
 const jwt = require("jsonwebtoken");
 
@@ -69,7 +70,118 @@ export const getUserBookmark = async (
   }
 };
 
+// follow api
+export const unFollowUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await FollowModel.deleteOne({
+      userId: (req as any).user._id,
+      followUserId: req.params.followUserId,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Unfollow user successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const followUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = await FollowModel.create({
+      userId: (req as any).user._id,
+      followUserId: req.params.followUserId,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "Follow user successfully",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserFollowings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // find only user with role is not admin
+    const userFollowings = await FollowModel.find({
+      userId: (req as any).user._id,
+    }).populate({
+      path: "followUserId",
+      select: ["fullName", "avatar", "_id", "email"],
+    });
+
+    res.status(200).json({
+      status: "success",
+      results: userFollowings.length,
+      data: userFollowings,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserFollowers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // find only user with role is not admin
+    const userFollowings = await FollowModel.find({
+      followUserId: (req as any).user._id,
+    }).populate({
+      path: "userId",
+      select: ["fullName", "avatar", "_id", "email"],
+    });
+
+    res.status(200).json({
+      status: "success",
+      results: userFollowings.length,
+      data: userFollowings,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getUser = base.getOne(User);
+export const getBasicProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // find only user with role is not admin
+    const doc = await User.findOne({
+      _id: req.params.id,
+      role: { $ne: "admin" },
+    }).select("-password -__v");
+
+    res.status(200).json({
+      status: "success",
+      data: doc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Don't update password on this
 export const updateUser = base.updateOne(User);

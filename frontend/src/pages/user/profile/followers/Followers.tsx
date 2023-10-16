@@ -1,35 +1,50 @@
 /* eslint-disable prettier/prettier */
-import React from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { Avatar, List } from "antd";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { HOST } from "~/utils/constants";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
+import { Link } from "react-router-dom";
+import { RxCross2 } from "react-icons/rx";
+import { useStoreContext } from "~/contexts/StoreProvider";
 
-const data = [
-  {
-    title: "Ant Design Title 1"
-  },
-  {
-    title: "Ant Design Title 2"
-  },
-  {
-    title: "Ant Design Title 3"
-  },
-  {
-    title: "Ant Design Title 4"
-  }
-];
+export interface Follower {
+  _id: string;
+  followUserId: string;
+  userId: {
+    _id: string;
+    fullName: string;
+    email: string;
+    avatar: string;
+  };
+  creadedAt: string;
+}
 const Followers = () => {
+  const [followers, setFollowers] = useState<Follower[]>([]);
+  const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    (async function () {
+      try {
+        const { data } = await axiosPrivate.get(`${HOST}/api/v1/users/followers`);
+        setFollowers(data.data);
+      } catch (error: any) {
+        toast.error(error.message, toastOption);
+      }
+    })();
+  }, [axiosPrivate]);
+
   return (
     <List
       itemLayout="horizontal"
-      dataSource={data}
-      renderItem={(item, index) => (
-        <List.Item>
+      dataSource={followers}
+      renderItem={(follower: Follower, index) => (
+        <List.Item style={{ minWidth: "400px", maxWidth: "50%" }}>
           <List.Item.Meta
-            avatar={
-              <Avatar src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
-            }
-            title={<a href="https://ant.design">{item.title}</a>}
-            description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+            avatar={<Avatar src={follower.userId.avatar} />}
+            title={<Link to={`/profile/${follower.userId._id}`}>{follower.userId.fullName}</Link>}
+            description={follower.userId.email}
           />
         </List.Item>
       )}

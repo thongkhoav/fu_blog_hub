@@ -42,7 +42,7 @@ export default function HomeRoutes() {
         />
 
         <Route
-          path={PATH.BLOG + "/:slug"}
+          path={PATH.BLOG + "/:idBlog"}
           Component={() => (
             <Suspense fallback={<Loading />}>
               <BlogDetailPage />
@@ -71,7 +71,7 @@ export default function HomeRoutes() {
           )}
         >
           <Route index element={<Posts />} />
-          <Route path="series" element={<Series />} />
+          <Route path="series" element={<Series isPersonalProfile={true} />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
           <Route path="bookmark" element={<Bookmark />} />

@@ -86,7 +86,10 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
             <div>
               {/* user and views */}
               <div className="flex justify-between mb-2">
-                <Link to={`/profile/${blog.userId._id}`} className="flex items-center gap-3">
+                <Link
+                  to={`/profile/${userGlobal._id === blog.userId._id ? "me" : blog.userId._id}`}
+                  className="flex items-center gap-3"
+                >
                   <img
                     src={blog.userId.avatar}
                     alt="avatar author"

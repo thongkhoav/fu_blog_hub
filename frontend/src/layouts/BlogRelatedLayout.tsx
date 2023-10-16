@@ -1,4 +1,4 @@
-import BlogsSide from "~/components/blogs-side/BlogsSide";
+import BlogsSide from "~/pages/user/blog/blog-detail/blogs-side/BlogsSide";
 import OptionNav from "~/components/blog-info-side/BlogInfoSide";
 
 export default function BlogRelatedLayout({
@@ -11,7 +11,7 @@ export default function BlogRelatedLayout({
   return (
     <div className="flex mx-auto mt-5 gap-5 justify-between max-w-[1200px]">
       {children}
-      {isBlogDetail && <BlogsSide />}
+      {/* {isBlogDetail && <BlogsSide />} */}
     </div>
   );
 }

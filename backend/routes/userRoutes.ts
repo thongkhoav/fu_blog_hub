@@ -145,6 +145,7 @@ router.post("/login", authController.login);
  *                   description: Thông báo lỗi.
  */
 router.post("/signup", authController.signup);
+router.get("/basic/:id", userController.getBasicProfile);
 
 // PROTECT ALL ROUTES AFTER THIS MIDDLEWARE
 router.use(authController.protect);
@@ -179,6 +180,11 @@ router.post(
  */
 router.delete("/deleteMe", userController.deleteMe);
 router.route("/bookmark").get(userController.getUserBookmark);
+
+router.route("/followings").get(userController.getUserFollowings);
+router.route("/followers").get(userController.getUserFollowers);
+router.route("/:followUserId/follow").post(userController.followUser);
+router.route("/:followUserId/unfollow").delete(userController.unFollowUser);
 
 // Only admin have permission to access for the below APIs
 router.use(authController.restrictTo("admin"));
