@@ -11,7 +11,7 @@ router.get("/", blogController.getAllPublicBlogs);
 router.get(
   "/:id",
   blogController.checkBlogStatus("public"),
-  blogController.getOneBlog
+  blogController.getOnePublicBlog
 );
 
 // Protect all routes after this middleware

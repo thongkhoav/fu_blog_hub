@@ -1,10 +1,18 @@
 import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
-import { BlogState, IBlog } from "../models/blogModel";
+import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
 const Blog = require("../models/blogModel");
 const Tag = require("../models/tagModel");
 const BlogSeries = require("../models/blogSeriesModel");
+
+const BlogState = {
+  PUBLIC: "public",
+  REMOVED: "removed",
+  WAITING: "waiting",
+  DRAFT: "draft",
+  REJECTED: "rejected",
+};
 
 export const createBlog = async (
   req: Request,
@@ -112,7 +120,9 @@ export const createBlog = async (
   }
 };
 
-export const getOneBlog = async (
+export const getOneBlog = base.getOne(Blog);
+
+export const getOnePublicBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -147,7 +157,7 @@ export const getAllPublicBlogs = async (
   next: NextFunction
 ) => {
   try {
-    const blogPopulate = await Blog.find({ status: "public" })
+    const blogPopulate = await Blog.find({ status: BlogState.PUBLIC })
       .select("-contentRaw")
       .populate({
         path: "userId",
