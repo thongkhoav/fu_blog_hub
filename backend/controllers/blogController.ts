@@ -43,10 +43,10 @@ export const createBlog = async (
 
     // Bài viết mới tạo sẽ có thể là daft hoặc watting
     // Đoạn này BlogState đang = undefined
-    // if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
-    //   const error = new AppError(403, 'fail', 'Invalid status')
-    //   next(error)
-    // }
+    if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
+      const error = new AppError(403, 'fail', 'Invalid status')
+      next(error)
+    }
 
     const tagIds: Array<String> = [];
 
