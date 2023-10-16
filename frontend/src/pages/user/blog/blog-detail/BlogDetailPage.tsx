@@ -13,14 +13,14 @@ import { toast } from "react-toastify";
 
 // comment được fetch sau
 function BlogDetailPage() {
-  const { idBlog } = useParams<{ idBlog: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [blogDetail, setBlogDetail] = useState<BlogDetail>();
   // const refBlog = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // fetch blog
     (async function () {
       try {
-        const { data } = await axios.get("/api/v1/blogs/" + idBlog);
+        const { data } = await axios.get("/api/v1/blogs/" + slug);
         setBlogDetail(data.data);
       } catch (error: any) {
         toast.error(error.message, toastOption);
@@ -28,7 +28,7 @@ function BlogDetailPage() {
     })();
     try {
     } catch (error) {}
-  }, [idBlog]);
+  }, [slug]);
   return (
     <div className="flex gap-5 px-8">
       {blogDetail && <BlogInfoSide blogDetail={blogDetail} />}

@@ -42,7 +42,7 @@ export default function HomeRoutes() {
         />
 
         <Route
-          path={PATH.BLOG + "/:idBlog"}
+          path={PATH.BLOG + "/:slug"}
           Component={() => (
             <Suspense fallback={<Loading />}>
               <BlogDetailPage />
