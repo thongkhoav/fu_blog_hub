@@ -5,8 +5,9 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 import toastOption from "~/utils/constants/toastOption";
 import AddSeriesModal from "./add-series-modal/AddSeriesModal";
 import { useAuth } from "~/utils/helpers";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import axios from "~/config/axios";
 
 interface Series {
   _id: string;
@@ -19,6 +20,7 @@ interface Series {
 const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) => {
   const axiosPrivate = useAxiosPrivate();
   const { userGlobal } = useAuth();
+  const { idUser } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [seriesList, setSeriesList] = useState<Series[]>([]);
 
@@ -43,7 +45,8 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
   useEffect(() => {
     const getSeries = async () => {
       try {
-        const res = await axiosPrivate.get("/api/v1/series");
+        const userId = idUser || userGlobal._id;
+        const res = await axios.get("/api/v1/series/user/" + userId);
         const formatedSeriesList = res.data.data?.map((seri: Series) => ({
           ...seri,
           key: seri._id
