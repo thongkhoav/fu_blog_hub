@@ -2,26 +2,34 @@ import { Button, Col, Modal, Row } from "antd";
 import "./modal-blog.scss";
 import { CloseOutlined, CheckOutlined } from "@ant-design/icons";
 import moment from "moment";
+import { Link } from "react-router-dom";
+import { PATH } from "~/utils/constants";
+import parse from "html-react-parser";
 
 export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
   const modalTitle = (
     <Row>
       <Col span={16}>
-        {blogDetail.title}
+        <span className="text-xl uppercase font-bold">
+          Viết bởi tác giả: <Link to={`/profile/${blogDetail?.userId?._id}`}>{blogDetail?.userId?.fullName}</Link>
+        </span>
         <span style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
-          {moment(blogDetail.createdAt).utc().format("DD-MM-YYYY hh:mm:ss")} - {blogDetail.status === "waiting" ? "Chờ duyệt": "Đã từ chối"}
+          {moment(blogDetail?.createdAt).utc().format("DD-MM-YYYY HH:mm:ss")} -{" "}
+          {blogDetail?.status === "waiting" ? "Chờ duyệt" : "Đã từ chối"}
         </span>
       </Col>
       <Col span={8} style={{ textAlign: "right" }}>
-        <Button
-          className="btn-reject"
-          icon={<CloseOutlined />}
-          onClick={() => {
-            handleReject();
-          }}
-        >
-          Từ chối
-        </Button>
+        {blogDetail?.status === "waiting" && (
+          <Button
+            className="btn-reject"
+            icon={<CloseOutlined />}
+            onClick={() => {
+              handleReject();
+            }}
+          >
+            Từ chối
+          </Button>
+        )}
         <Button
           className="btn-primary"
           style={{ marginLeft: "6px" }}
@@ -42,7 +50,6 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
   const handleAccept = () => {
     onClose();
   };
-
   return (
     <>
       <Modal
@@ -55,22 +62,31 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
         footer={false}
         {...props}
       >
-        <div className="flex overflow-x-hidden mt-[-10px] mb-2">
-          {blogDetail &&
-            blogDetail.tags?.map((tag: string) => (
-              <div
-                key={tag}
-                className="text-sm text-inherit px-2 py-1 mr-2 rounded-sm bg-[#f2f2f2]"
-              >
-                {tag}
-              </div>
-            ))}
-        </div>
-        <div>{blogDetail.intro}</div>
-
-        <div style={{ textAlign: "center" }}>
-          <img src={blogDetail.thumbnail} style={{ height: "600px", margin: "auto" }}></img>
-        </div>
+        {blogDetail && (
+          <>
+           {blogDetail.thumbnail &&  (<img src={blogDetail.thumbnail} alt="" className="h-[500px] w-full " />)}
+            <div className="flex justify-between items-center">
+              <h2 className="capitalize text-[#404040] opacity-80">
+                <span>Thể loại: {blogDetail.blogCateId?.name}</span>
+              </h2>
+            </div>
+            <div className="mb-2">
+              Tag:
+              {blogDetail?.blogTagIds?.map((tag: any) => (
+                <Link
+                  to={`${PATH.BLOG}?tag=${tag.name}`}
+                  key={tag._id}
+                  className="text-sm text-inherit px-3 py-2 mr-3 rounded-sm underline hover:opacity-100 text-gray-800 opacity-80"
+                >
+                  {tag.name}
+                </Link>
+              ))}
+            </div>
+            <div className="mt-2">
+              {blogDetail.contentRaw && parse(`${blogDetail.contentRaw}`)}
+            </div>
+          </>
+        )}
       </Modal>
     </>
   );
