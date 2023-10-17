@@ -27,7 +27,7 @@ const WaitingBlogList = () => {
 
   const getApproveBlogs = async (statusBlogs: string) => {
     try {
-      const res = await axiosPrivate.get(`/api/v1/blogs/mentor/waiting-blogs/${statusBlogs}`);
+      const res = await axiosPrivate.get(`/api/v1/blogs/mentor/waiting-blogs?status=${statusBlogs}`);
       if ((res.data.status = "success")) {
         const waitingBlogs = [...res.data.data].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         setBlogList(waitingBlogs);

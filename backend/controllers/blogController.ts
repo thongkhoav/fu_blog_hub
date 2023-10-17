@@ -368,12 +368,8 @@ export const checkBlogStatus = (...status: any) => {
   };
 };
 
-export const getApproveBlogs = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const statusBlogs =  req.params.statusBlogs==="all" ? ["waiting","rejected"] : [req.params.statusBlogs]
+export const getApproveBlogs = async (req: Request, res: Response, next: NextFunction) => {
+  const statusBlogs = req.query.status === "all" ? ["waiting", "rejected"] : [req.query.status];
   const blogs = await Blog.find()
     .populate({
       path: "userId",
@@ -392,6 +388,5 @@ export const getApproveBlogs = async (
   res.status(200).json({
     status: "success",
     data: blogs,
-   
   });
 };

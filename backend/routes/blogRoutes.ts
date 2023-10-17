@@ -32,7 +32,7 @@ router.get(
 );
 
 router.get(
-  "/mentor/waiting-blogs/:statusBlogs",
+  "/mentor/waiting-blogs",
   authController.protect,
   authController.restrictTo("mentor"),
   blogController.getApproveBlogs
