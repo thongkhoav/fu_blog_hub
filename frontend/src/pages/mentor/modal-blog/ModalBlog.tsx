@@ -5,8 +5,11 @@ import moment from "moment";
 import { Link } from "react-router-dom";
 import { PATH } from "~/utils/constants";
 import parse from "html-react-parser";
+import { axiosPrivate } from "~/config/axios";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
 
-export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
+export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...props }: any) {
   const modalTitle = (
     <Row>
       <Col span={16}>
@@ -15,11 +18,11 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
           <Link to={`/profile/${blogDetail?.userId?._id}`}>{blogDetail?.userId?.fullName}</Link>
         </p>
         <p style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
-          {moment(blogDetail?.createdAt).utc().format("DD-MM-YYYY HH:mm:ss")} -{" "}
+          {moment(blogDetail?.createdAt).utc().format("DD-MM-YYYY HH:mm")} -{" "}
           {blogDetail?.status === "waiting" ? "Chờ duyệt" : "Đã từ chối"}
         </p>
       </Col>
-      <Col span={8} style={{ textAlign: "right" }}>
+      <Col span={8} style={{ textAlign: "right"}}>
         {blogDetail?.status === "waiting" && (
           <Button
             className="btn-reject"
@@ -33,7 +36,7 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
         )}
         <Button
           className="btn-primary"
-          style={{ marginLeft: "6px" }}
+          style={{ marginLeft: "6px",marginRight:'30px' }}
           icon={<CheckOutlined />}
           onClick={() => {
             handleAccept();
@@ -45,16 +48,37 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
     </Row>
   );
 
-  const handleReject = () => {
+  const handleReject = async () => {
+    let dataSend = { status: "rejected" };
+    try {
+      const res = await axiosPrivate.post(`/api/v1/blogs/mentor/waiting-blogs/${blogDetail._id}`,dataSend);
+      if (res.data.status === "success") {
+        handleUpdateBlog("rejected", blogDetail._id);
+        toast.success("Từ chối thành công!", toastOption);
+      }
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
     onClose();
   };
-  const handleAccept = () => {
+
+  const handleAccept = async () => {
+    let dataSend = { status: "public" };
+    try {
+      const res = await axiosPrivate.post(`/api/v1/blogs/mentor/waiting-blogs/${blogDetail._id}`,dataSend);
+      if (res.data.status === "success") {
+        handleUpdateBlog("public", blogDetail._id);
+        toast.success("Duyệt thành công!", toastOption);
+      }
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
     onClose();
   };
+
   return (
     <>
       <Modal
-        closable={false}
         className="modal_container"
         title={modalTitle}
         centered
@@ -66,7 +90,7 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
         {blogDetail && (
           <>
             {blogDetail.thumbnail && (
-              <img src={blogDetail.thumbnail} alt="" className="h-[500px] w-full " />
+              <img src={blogDetail.thumbnail} alt="" className="h-[500px] w-full mb-2" />
             )}
             <h1 className="text-2xl">Title: {blogDetail.title}</h1>
             <div className="flex justify-between items-center">
