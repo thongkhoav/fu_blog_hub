@@ -28,7 +28,7 @@ const blogsData: BlogItem[] = [
       { _id: "asdasd", name: "tag1" },
       { _id: "2313", name: "tag2" }
     ],
-    createAt: new Date(),
+    createdAt: "sdasad",
     userId: {
       avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
       _id: "1a",
@@ -53,7 +53,7 @@ const blogsData: BlogItem[] = [
       { _id: "asdasd", name: "tag1" },
       { _id: "2313", name: "tag2" }
     ],
-    createAt: new Date(),
+    createdAt: "sdasad",
     userId: {
       avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
       _id: "1a",

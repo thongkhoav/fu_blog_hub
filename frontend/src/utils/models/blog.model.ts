@@ -35,7 +35,7 @@ export interface BlogItem {
   numView: number;
   numComment: number;
   slug: string;
-  createAt: Date;
+  createdAt: string;
 }
 
 export interface BlogDetail {

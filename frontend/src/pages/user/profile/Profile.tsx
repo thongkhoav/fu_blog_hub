@@ -64,7 +64,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-5 mt-12">
+    <div className="grid grid-cols-12 gap-5 mt-12 w-[1200px]">
       <div className="col-span-3 h-screen mt-[80px] relative">
         <div className="w-full flex items-center justify-center absolute top-[-105px] ">
           <img

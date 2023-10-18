@@ -44,7 +44,7 @@ function StoreProvider({ children }: any) {
             setBookmarkList(data.data.map((bookmark: any) => bookmark.blogId));
 
             const { data: resdata } = await axiosPrivate.get(`${HOST}/api/v1/users/followings`);
-            setFollowingList(resdata.data.map((follow: any) => follow.followUserId));
+            setFollowingList(resdata.data.map((follow: any) => follow.followUserId._id));
           } catch (error: any) {
             toast.error(error.message, toastOption);
           }

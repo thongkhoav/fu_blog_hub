@@ -58,7 +58,9 @@ const Following = () => {
         <List.Item style={{ minWidth: "400px", maxWidth: "50%" }}>
           <List.Item.Meta
             avatar={<Avatar src={follow.followUserId.avatar} />}
-            title={<Link to={"asds"}>{follow.followUserId.fullName}</Link>}
+            title={
+              <Link to={`/profile/${follow.followUserId._id}`}>{follow.followUserId.fullName}</Link>
+            }
             description={follow.followUserId.email}
           />
           <button>

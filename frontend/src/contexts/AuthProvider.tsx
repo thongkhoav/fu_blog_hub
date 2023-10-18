@@ -34,10 +34,12 @@ function AuthProvider({ children }: any) {
       if (userGlobal) {
         return;
       }
-      loginGoogleApi().then(res => {
-        setUserGlobal(res.data);
-        setUserData(res.data);
-      });
+      loginGoogleApi()
+        .then(res => {
+          setUserGlobal(res.data);
+          setUserData(res.data);
+        })
+        .catch(err => {});
     } catch (error) {
       console.log(error);
     }
