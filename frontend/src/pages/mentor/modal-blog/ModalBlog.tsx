@@ -10,13 +10,14 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
   const modalTitle = (
     <Row>
       <Col span={16}>
-        <span className="text-xl uppercase font-bold">
-          Viết bởi tác giả: <Link to={`/profile/${blogDetail?.userId?._id}`}>{blogDetail?.userId?.fullName}</Link>
-        </span>
-        <span style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
+        <p className="text-xl uppercase font-medium">
+          Viết bởi tác giả:{" "}
+          <Link to={`/profile/${blogDetail?.userId?._id}`}>{blogDetail?.userId?.fullName}</Link>
+        </p>
+        <p style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
           {moment(blogDetail?.createdAt).utc().format("DD-MM-YYYY HH:mm:ss")} -{" "}
           {blogDetail?.status === "waiting" ? "Chờ duyệt" : "Đã từ chối"}
-        </span>
+        </p>
       </Col>
       <Col span={8} style={{ textAlign: "right" }}>
         {blogDetail?.status === "waiting" && (
@@ -64,9 +65,12 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
       >
         {blogDetail && (
           <>
-           {blogDetail.thumbnail &&  (<img src={blogDetail.thumbnail} alt="" className="h-[500px] w-full " />)}
+            {blogDetail.thumbnail && (
+              <img src={blogDetail.thumbnail} alt="" className="h-[500px] w-full " />
+            )}
+            <h1 className="text-2xl">Title: {blogDetail.title}</h1>
             <div className="flex justify-between items-center">
-              <h2 className="capitalize text-[#404040] opacity-80">
+              <h2 className="capitalize text-lg font-medium text-[#404040] opacity-80">
                 <span>Thể loại: {blogDetail.blogCateId?.name}</span>
               </h2>
             </div>
@@ -82,9 +86,8 @@ export default function ModalBlog({ blogDetail, onClose, ...props }: any) {
                 </Link>
               ))}
             </div>
-            <div className="mt-2">
-              {blogDetail.contentRaw && parse(`${blogDetail.contentRaw}`)}
-            </div>
+            <hr />
+            <div className="mt-2">{blogDetail.contentRaw && parse(`${blogDetail.contentRaw}`)}</div>
           </>
         )}
       </Modal>
