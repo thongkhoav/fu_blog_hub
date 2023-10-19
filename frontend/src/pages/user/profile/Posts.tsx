@@ -9,20 +9,20 @@ import { HOST } from "~/utils/constants";
 import { useAuth } from "~/utils/helpers";
 import { BlogItem } from "~/utils/models/blog.model";
 const Posts = () => {
-  const { isUser } = useParams();
+  const { idUser } = useParams();
   const { userGlobal } = useAuth();
   const [blogList, setBlogList] = useState<BlogItem[]>([]);
 
   useEffect(() => {
     (async function () {
       try {
-        const { data } = await axios.get(`${HOST}/api/v1/blogs/user/${isUser || userGlobal._id}`);
+        const { data } = await axios.get(`${HOST}/api/v1/blogs/user/${idUser || userGlobal?._id}`);
         setBlogList(data.data);
       } catch (error: any) {
         toast.error(error.message);
       }
     })();
-  }, [isUser, userGlobal._id]);
+  }, [idUser, userGlobal?._id]);
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
