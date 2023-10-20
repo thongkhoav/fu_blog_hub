@@ -51,7 +51,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
   const handleReject = async () => {
     let dataSend = { status: "rejected" };
     try {
-      const res = await axiosPrivate.post(
+      const res = await axiosPrivate.put(
         `/api/v1/blogs/mentor/waiting-blogs/${blogDetail._id}`,
         dataSend
       );
@@ -68,7 +68,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
   const handleAccept = async () => {
     let dataSend = { status: "public" };
     try {
-      const res = await axiosPrivate.post(
+      const res = await axiosPrivate.put(
         `/api/v1/blogs/mentor/waiting-blogs/${blogDetail._id}`,
         dataSend
       );

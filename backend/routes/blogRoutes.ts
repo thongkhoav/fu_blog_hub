@@ -38,7 +38,7 @@ router.get(
   blogController.getApproveBlogs
 );
 
-router.post(
+router.put(
   "/mentor/waiting-blogs/:id",
   authController.protect,
   authController.restrictTo("mentor"),
