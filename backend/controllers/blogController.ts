@@ -369,6 +369,7 @@ export const checkBlogStatus = (...status: any) => {
 };
 
 export const getApproveBlogs = async (req: Request, res: Response, next: NextFunction) => {
+  const majorId =  (req as any).user.majorId
   const statusBlogs = req.query.status === "all" ? ["waiting", "rejected"] : [req.query.status];
   const blogs = await Blog.find()
     .populate({
@@ -383,6 +384,7 @@ export const getApproveBlogs = async (req: Request, res: Response, next: NextFun
       path: "blogTagIds",
       select: ["_id", "name"],
     })
+    .where ({blogCateId:majorId})
     .where("status")
     .in(statusBlogs);
   res.status(200).json({
