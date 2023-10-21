@@ -50,6 +50,7 @@ interface IUser extends Document {
   userTitle?: string;
   facebook?: string;
   instagram?: string;
+  favoriteCates: Array<Schema.Types.ObjectId>;
   correctPassword(
     typedPassword: string,
     originalPassword: string
@@ -72,6 +73,15 @@ userSchema = new mongoose.Schema(
     majorId: {
       type: Schema.Types.ObjectId,
       ref: "Categories",
+    },
+    favoriteCates: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Categories",
+        },
+      ],
+      default: [],
     },
     isVerifiedEmail: {
       type: Boolean,
