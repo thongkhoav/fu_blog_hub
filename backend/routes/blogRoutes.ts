@@ -85,6 +85,12 @@ router.patch(
   blogController.updateBlog
 );
 
+router.post(`/filterBlogList`, 
+authController.protect, 
+blogController.filterBloglist
+);
+
+
 /**
  * @swagger
  * tags:

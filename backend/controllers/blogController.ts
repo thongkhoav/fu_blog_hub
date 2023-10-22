@@ -390,3 +390,16 @@ export const getApproveBlogs = async (req: Request, res: Response, next: NextFun
     data: blogs,
   });
 };
+
+export const filterBloglist = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.log("asda", req.body)
+  // const blogs = await Blog.find()
+  // res.status(200).json({
+  //   status: "success",
+  //   data: blogs,
+  // });
+}

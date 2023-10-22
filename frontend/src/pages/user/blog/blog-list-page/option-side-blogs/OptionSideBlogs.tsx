@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
 
 import { Category, Tag } from "~/utils/models/blog.model";
 
 const categoriess: Category[] = [
   {
-    _id: "1",
+    _id: "6521646128d9f680f0e0f4eb",
     name: "Kinh tế"
   },
   {
-    _id: "2",
+    _id: "65217b0d3e5240adb158f660",
     name: "Công nghệ thông tin"
   },
   {
@@ -43,11 +44,11 @@ const categoriess: Category[] = [
 
 const tagsData: Tag[] = [
   {
-    _id: "1",
+    _id: "652154c7f34c483654663245",
     name: ".Net"
   },
   {
-    _id: "2",
+    _id: "652154d6f34c48365466324e",
     name: "Tiếng Nhật"
   },
   {
@@ -74,6 +75,7 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
   const [filterCategory, setFilterCategory] = useState<string[]>([]);
   const [tags, setTags] = useState<Tag[]>(tagsData);
   const [filterTag, setFilterTag] = useState<string[]>([]);
+  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     //fetch category list and tag list
@@ -95,8 +97,14 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
     }
   };
 
-  const hanleFilter = () => {
-    setFilters({ category: filterCategory, tag: filterTag });
+  const hanleFilter = async () => {
+    // setFilters({ category: filterCategory, tag: filterTag });
+    console.log("asd",filterCategory)
+    var res =  await axiosPrivate.post(`/api/v1/blogs/filterBlogList`,{ category: filterCategory, tag: filterTag })
+    console.log('res', res)
+    if(res.data.status === "success") {
+      // setFilters(res.data.)
+    }
   };
 
   return (

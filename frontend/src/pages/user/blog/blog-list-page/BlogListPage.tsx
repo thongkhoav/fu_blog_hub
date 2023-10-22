@@ -16,10 +16,10 @@ const BlogListPage = () => {
   return (
     <div className="flex mt-5 gap-4">
       <div className="flex-1">
-        <OptionSideBlogs filters={filters} setFilters={setFilters} />
+        <OptionSideBlogs filters={filters} setFilters={setFilters} /> // filter
       </div>
       <div className="flex-[2]">
-        <BlogList filters={filters} setFilters={setFilters} />
+        <BlogList filters={filters} setFilters={setFilters} /> // bloglist
       </div>
     </div>
   );
