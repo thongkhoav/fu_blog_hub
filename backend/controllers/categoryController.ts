@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as base from "./baseController";
 import { ICategory } from "../models/categoryModel";
+import AppError from "../utils/appError";
 const Category = require("../models/categoryModel");
 
 export const createCategory = async (
@@ -28,6 +29,34 @@ export const createCategory = async (
 };
 
 export const getOneCategory = base.getOne(Category);
-export const deleteCategory = base.deleteOne(Category);
+export const deleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const doc = await Category.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: false,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!doc) {
+      return next(new AppError(404, "fail", "No category found with that id"));
+    }
+
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 export const getAllCategory = base.getAll(Category);
 export const updateCategory = base.updateOne(Category);

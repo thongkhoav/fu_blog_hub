@@ -2,10 +2,9 @@ import { Tabs, TabsProps } from "antd";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { NavLink, Outlet } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants";
-import Posts from "../Posts";
 import { useEffect, useState } from "react";
-import Series from "../series/Series";
 import { useAuth } from "~/utils/helpers";
+import { BsPersonFillLock } from "react-icons/bs";
 
 const tabItems = [
   {
@@ -18,15 +17,18 @@ const tabItems = [
   },
   {
     label: "Following",
-    path: PATH.PROFILE + "/me/following"
+    path: PATH.PROFILE + "/me/following",
+    icon: <BsPersonFillLock />
   },
   {
     label: "Followers",
-    path: PATH.PROFILE + "/me/followers"
+    path: PATH.PROFILE + "/me/followers",
+    icon: <BsPersonFillLock />
   },
   {
     label: "Bookmark",
-    path: PATH.PROFILE + "/me/bookmark"
+    path: PATH.PROFILE + "/me/bookmark",
+    icon: <BsPersonFillLock />
   }
 ];
 
@@ -66,24 +68,23 @@ export default function PersonalProfile() {
             <p className="text-sm">điểm</p>
           </div>
         </div>
-        <p className="text-center mt-[10px] text-2xl  font-light font-['Brush_Script_MT']">
-          Bio của các bạn viết ở đây
-        </p>
+        <p className="text-center mt-[10px] text-base  font-light ">Bio của các bạn viết ở đây</p>
       </div>
       {/* phan ben phai */}
       <div className="flex-[3]">
-        <div>
+        <div className="flex">
           {tabItems.map(item => (
             <NavLink
               key={item.path}
               to={item.path}
-              className={`${
+              className={`flex items-center justify-center gap-1 ${
                 pathname === item.path
                   ? "text-blue-500  border-b-4 border-blue-500"
                   : "text-gray-500"
-              } px-3 py-2`}
+              } px-3 py-2 hover:bg-gray-100 transition-colors duration-300`}
             >
               {item.label}
+              {item.icon && <span className="text-xl">{item.icon}</span>}
             </NavLink>
           ))}
         </div>

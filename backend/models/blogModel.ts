@@ -18,9 +18,7 @@ export interface IBlog extends Document {
   description: string;
   slug: string;
   contentRaw: string;
-  contentHTML: string;
   status: string;
-  blogTagIds: Schema.Types.ObjectId[];
   numChar: number;
   numWord: number;
   numView: number;
@@ -28,7 +26,7 @@ export interface IBlog extends Document {
   totalPoint: number;
   hideComment: boolean;
   thumbnail: string;
-  tagIds: Array<Schema.Types.ObjectId>;
+  blogTagIds: Array<Schema.Types.ObjectId>;
 }
 
 let blogSchema: Schema<IBlog>;
@@ -48,12 +46,6 @@ blogSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Categories",
     },
-    blogTagIds: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Tag",
-      },
-    ],
     title: {
       type: String,
       required: true,
@@ -101,8 +93,9 @@ blogSchema = new mongoose.Schema(
     },
     thumbnail: {
       type: String,
+      required: true,
     },
-    tagIds: [
+    blogTagIds: [
       {
         type: Schema.Types.ObjectId,
         ref: "Tag",

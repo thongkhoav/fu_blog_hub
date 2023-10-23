@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants";
 import { BiUpArrow, BiDownArrow, BiBookmark, BiCommentDetail } from "react-icons/bi";
 import { MdOutlineReportProblem } from "react-icons/md";
-import { Dropdown, Modal, Button, Tooltip } from "antd";
+import { Dropdown, Modal, Tooltip } from "antd";
 
 import type { MenuProps } from "antd";
-import { BlogDetail, Category, Tag } from "~/utils/models/blog.model";
+import { BlogDetail } from "~/utils/models/blog.model";
 import { BsBookmarkFill } from "react-icons/bs";
 import { useStoreContext } from "~/contexts/StoreProvider";
 import { useAuth } from "~/utils/helpers";
@@ -24,7 +24,6 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
 
   const toggleBookmark = async (blogId: string, toRemove: boolean) => {
     if (!userGlobal) return;
-
     try {
       if (toRemove) {
         await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
@@ -66,12 +65,12 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
   return (
     <div className=" flex-1 m-5 mr-0">
       <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>report</p>
+        <p>Report blog</p>
       </Modal>
-      <div className="flex px-4 gap-7 relative">
+      <div className="flex px-4 gap-4 relative">
         <Tooltip title="Bookmark">
           {userGlobal && (
-            <span className="absolute right-3 top-3 text-2xl cursor-pointer">
+            <span className="absolute -right-1 top-0 text-xl cursor-pointer">
               {bookmarkList.includes(blogDetail._id) ? (
                 <BsBookmarkFill onClick={() => toggleBookmark(blogDetail._id, true)} />
               ) : (
@@ -80,7 +79,7 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
             </span>
           )}
         </Tooltip>
-        <div className="flex flex-col justify-between items-center gap-2 min-w-[38px]">
+        <div className="flex flex-col justify-between items-center gap-2 min-w-[35px]">
           <BiUpArrow
             className="cursor-pointer text-xl select-none"
             onClick={() => setPoint(point => point + 1)}
@@ -94,13 +93,16 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
           />
         </div>
         <div className="flex flex-col justify-center gap-5">
-          <Link to={userPath(PATH.PROFILE, "213123")} className="flex gap-2 items-center">
+          <Link
+            to={userPath(PATH.PROFILE, blogDetail.userId._id)}
+            className="flex gap-2 items-center"
+          >
             <img
               src="https://cdn-icons-png.flaticon.com/512/1995/1995562.png"
               alt="avt author"
               className="w-12 h-12 object-cover rounded-full border-2 border-solid border-orange-500"
             />
-            <span>Shakespear</span>
+            <span>{blogDetail.userId.fullName}</span>
           </Link>
           <div className="flex gap-3">
             <Tooltip title="Go to comments">

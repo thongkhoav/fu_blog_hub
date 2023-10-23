@@ -7,11 +7,12 @@ const blogController = require("../controllers/blogController");
 const authController = require("./../controllers/authController");
 
 router.get("/", blogController.getAllPublicBlogs);
+router.get("/user/:userId", blogController.getProfilePublicBlogs);
 
 router.get(
   "/:id",
   blogController.checkBlogStatus("public"),
-  blogController.getOneBlog
+  blogController.getOnePublicBlog
 );
 
 // Protect all routes after this middleware
@@ -34,7 +35,14 @@ router.get(
   "/mentor/waiting-blogs",
   authController.protect,
   authController.restrictTo("mentor"),
-  blogController.getWaitingBlogs
+  blogController.getApproveBlogs
+);
+
+router.put(
+  "/mentor/waiting-blogs/:id",
+  authController.protect,
+  authController.restrictTo("mentor"),
+  blogController.updateBlog
 );
 
 router.get(

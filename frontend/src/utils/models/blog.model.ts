@@ -34,7 +34,8 @@ export interface BlogItem {
   blogTagIds: { _id: string; name: string }[];
   numView: number;
   numComment: number;
-  createAt: Date;
+  slug: string;
+  createdAt: string;
 }
 
 export interface BlogDetail {
@@ -48,10 +49,10 @@ export interface BlogDetail {
   numView: number;
   contentRaw: string | TrustedHTML;
   tags: { _id: string; name: string }[];
-  author: {
+  userId: {
     avatar: string;
-    id: string;
-    name: string;
+    _id: string;
+    fullName: string;
   };
 }
 

@@ -5,7 +5,7 @@ import AppError from "../utils/appError";
 const Blog = require("../models/blogModel");
 const Tag = require("../models/tagModel");
 const BlogSeries = require("../models/blogSeriesModel");
-const he = require('he'); // Import thư viện he
+const he = require("he"); // Import thư viện he
 
 const BlogState = {
   PUBLIC: "public",
@@ -29,7 +29,7 @@ export const createBlog = async (
       blogSeriesId,
       status,
       blogCateId,
-      tags
+      tags,
     } = req.body;
     const user = (req as any).user;
     let blogSeries = null;
@@ -59,7 +59,6 @@ export const createBlog = async (
         const error = new AppError(403, "fail", "Invalid BlogSeries");
         next(error);
       }
-
     }
 
     // Bài viết mới tạo sẽ có thể là daft hoặc watting
@@ -69,7 +68,7 @@ export const createBlog = async (
       next(error);
     }
 
-    contentRaw = he.decode(contentRaw)
+    contentRaw = he.decode(contentRaw);
 
     const tagIds: Array<String> = [];
 
@@ -118,7 +117,7 @@ export const createBlog = async (
       blogSeriesId: blogSeriesId ? blogSeriesId : null,
       status,
       blogCateId,
-      tagIds,
+      blogTagIds: tagIds,
     });
 
     // Cập nhật số lượng trong blogseries
@@ -136,7 +135,9 @@ export const createBlog = async (
   }
 };
 
-export const getOneBlog = async (
+export const getOneBlog = base.getOne(Blog);
+
+export const getOnePublicBlog = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -171,7 +172,7 @@ export const getAllPublicBlogs = async (
   next: NextFunction
 ) => {
   try {
-    const blogPopulate = await Blog.find({ status: "public" })
+    const blogPopulate = await Blog.find({ status: BlogState.PUBLIC })
       .select("-contentRaw")
       .populate({
         path: "userId",
@@ -253,7 +254,41 @@ export const getAllPublicBlogs = async (
   }
 };
 
-export const updateBlog = base.updateOne(Blog)
+export const getProfilePublicBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const blogPopulate = await Blog.find({
+      status: BlogState.PUBLIC,
+      userId: req.params.userId,
+    })
+      .select("-contentRaw")
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: "name",
+      })
+      .populate({
+        path: "blogTagIds",
+        select: ["_id", "name"],
+      });
+
+    res.status(200).json({
+      status: "success",
+      results: blogPopulate.length,
+      data: blogPopulate,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateBlog = base.updateOne(Blog);
 
 export const checkBlogOwnership = async (
   req: Request,
@@ -444,20 +479,27 @@ export const checkBlogStatus = (...status: any) => {
   };
 };
 
-export const getWaitingBlogs = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const blogs = await Blog.find({})
-    .populate("userId")
+export const getApproveBlogs = async (req: Request, res: Response, next: NextFunction) => {
+  const majorId = (req as any).user.majorId
+  const statusBlogs = req.query.status === "all" ? ["waiting", "rejected"] : [req.query.status];
+  const blogs = await Blog.find()
+    .populate({
+      path: "userId",
+      select: ["fullName", "avatar", "_id"],
+    })
+    .populate({
+      path: "blogCateId",
+      select: "name",
+    })
+    .populate({
+      path: "blogTagIds",
+      select: ["_id", "name"],
+    })
+    .where({ blogCateId: majorId })
     .where("status")
-    .in(["waiting", "rejected"]);
+    .in(statusBlogs);
   res.status(200).json({
     status: "success",
-    data: {
-      blogs,
-    },
+    data: blogs,
   });
 };
-

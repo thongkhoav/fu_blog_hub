@@ -48,7 +48,7 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
 
   return (
     <>
-      {blogList.map(blog => (
+      {blogList?.map(blog => (
         <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
           <Link
             to={`${PATH.BLOG}/${blog._id}`}
@@ -86,7 +86,10 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
             <div>
               {/* user and views */}
               <div className="flex justify-between mb-2">
-                <Link to={`/profile/${blog.userId._id}`} className="flex items-center gap-3">
+                <Link
+                  to={`/profile/${userGlobal?._id === blog.userId._id ? "me" : blog.userId._id}`}
+                  className="flex items-center gap-3"
+                >
                   <img
                     src={blog.userId.avatar}
                     alt="avatar author"

@@ -5,8 +5,9 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 import toastOption from "~/utils/constants/toastOption";
 import AddSeriesModal from "./add-series-modal/AddSeriesModal";
 import { useAuth } from "~/utils/helpers";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import axios from "~/config/axios";
 
 interface Series {
   _id: string;
@@ -16,9 +17,10 @@ interface Series {
   key: string;
 }
 
-const Series = () => {
+const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) => {
   const axiosPrivate = useAxiosPrivate();
   const { userGlobal } = useAuth();
+  const { idUser } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [seriesList, setSeriesList] = useState<Series[]>([]);
 
@@ -43,7 +45,8 @@ const Series = () => {
   useEffect(() => {
     const getSeries = async () => {
       try {
-        const res = await axiosPrivate.get("/api/v1/series");
+        const userId = idUser || userGlobal._id;
+        const res = await axios.get("/api/v1/series/user/" + userId);
         const formatedSeriesList = res.data.data?.map((seri: Series) => ({
           ...seri,
           key: seri._id
@@ -72,17 +75,21 @@ const Series = () => {
   // cảu tôi thì được sửa
   return (
     <Space direction="vertical">
-      <Modal
-        title="Add series Modal"
-        open={isModalOpen}
-        onCancel={handleCancel}
-        footer={(_, { OkBtn, CancelBtn }) => <CancelBtn />}
-      >
-        <AddSeriesModal handleAddSeries={handleAddSeries} />
-      </Modal>
-      <Space align="center" size="middle" className="my-4">
-        <Button onClick={showModal}>Thêm series</Button>
-      </Space>
+      {isPersonalProfile && (
+        <>
+          <Modal
+            title="Add series Modal"
+            open={isModalOpen}
+            onCancel={handleCancel}
+            footer={(_, { OkBtn, CancelBtn }) => <CancelBtn />}
+          >
+            <AddSeriesModal handleAddSeries={handleAddSeries} />
+          </Modal>
+          <Space align="center" size="middle" className="my-4">
+            <Button onClick={showModal}>Thêm series</Button>
+          </Space>
+        </>
+      )}
       <div className="grid grid-cols-3 gap-4 mb-4">
         {seriesList.map((series: Series) => (
           <Card hoverable title={series.title} bordered style={{ width: "100%" }}>
@@ -113,6 +120,36 @@ const Series = () => {
                 <BsThreeDotsVertical className="text-xl" />
               </div>
             </Popover>
+            {isPersonalProfile && (
+              <Popover
+                content={
+                  <div className="flex flex-col">
+                    <Button type="primary" className="bg-blue-400">
+                      Chỉnh sửa
+                    </Button>
+                    <Popconfirm
+                      title="Delete the series"
+                      description="Are you sure to delete this series?"
+                      onConfirm={() => deleteSeries(series._id)}
+                      onCancel={() => { }}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button type="primary" danger>
+                        Xoá
+                      </Button>
+                    </Popconfirm>
+                  </div>
+                }
+                trigger="click"
+                placement="rightBottom"
+              >
+                <div className="bg-transparent p-1 rounded absolute right-2 top-3 cursor-pointer hover:bg-gray-200">
+                  <BsThreeDotsVertical className="text-xl" />
+                </div>
+              </Popover>
+            )}
+
             <p className="line-clamp-2 flex-1">{series.description}</p>
 
             <div className="flex justify-between items-center mt-2">
