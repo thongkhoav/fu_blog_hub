@@ -172,7 +172,7 @@ export const getBasicProfile = async (
     const doc = await User.findOne({
       _id: req.params.id,
       role: { $ne: "admin" },
-    }).select("-password -__v");
+    }).select("-password -__v -isVerifiedEmail");
 
     res.status(200).json({
       status: "success",

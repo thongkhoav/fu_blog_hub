@@ -180,6 +180,7 @@ router.post(
  *                   description: Thông báo lỗi.
  */
 router.delete("/deleteMe", authController.protect, userController.deleteMe);
+router.put("/updateMe/:id", authController.protect, userController.updateUser);
 router.route("/bookmark").get(userController.getUserBookmark);
 
 router.route("/followings").get(userController.getUserFollowings);

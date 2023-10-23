@@ -11,6 +11,7 @@ import PersonalProfile from "~/pages/user/profile/personal-profile/PersonalProfi
 import Following from "~/pages/user/profile/following/Following";
 import Followers from "~/pages/user/profile/followers/Followers";
 import Bookmark from "~/pages/user/profile/bookmark/Bookmark";
+import Information from "~/pages/user/profile/information/Information";
 const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetailPage = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetailPage"));
@@ -71,6 +72,7 @@ export default function HomeRoutes() {
           )}
         >
           <Route index element={<Posts />} />
+          <Route path="information" element={<Information/>} />
           <Route path="series" element={<Series isPersonalProfile={true} />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />

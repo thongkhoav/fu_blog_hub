@@ -29,6 +29,11 @@ const tabItems = [
     label: "Bookmark",
     path: PATH.PROFILE + "/me/bookmark",
     icon: <BsPersonFillLock />
+  },
+  {
+    label: "Information",
+    path: PATH.PROFILE + "/me/information"
+    // icon: <BsPersonFillLock />
   }
 ];
 
