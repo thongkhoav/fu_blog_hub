@@ -90,6 +90,10 @@ authController.protect,
 blogController.filterBloglist
 );
 
+router.post(`/getLastesBlog`, 
+authController.protect, 
+blogController.getLastesBlog
+);
 
 /**
  * @swagger

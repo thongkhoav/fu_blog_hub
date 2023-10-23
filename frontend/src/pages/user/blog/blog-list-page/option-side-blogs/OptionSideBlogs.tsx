@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
-
+import { toast } from "react-toastify";
 import { Category, Tag } from "~/utils/models/blog.model";
+import toastOption from "~/utils/constants/toastOption";
 
 const categoriess: Category[] = [
   {
@@ -52,7 +53,7 @@ const tagsData: Tag[] = [
     name: "Tiếng Nhật"
   },
   {
-    _id: "3",
+    _id: "65214fd3e5d11209b2a22967",
     name: "Kinh doanh quốc tế"
   },
   {
@@ -99,11 +100,12 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
 
   const hanleFilter = async () => {
     // setFilters({ category: filterCategory, tag: filterTag });
-    console.log("asd",filterCategory)
     var res =  await axiosPrivate.post(`/api/v1/blogs/filterBlogList`,{ category: filterCategory, tag: filterTag })
-    console.log('res', res)
     if(res.data.status === "success") {
-      // setFilters(res.data.)
+      setFilters(res.data.data);
+    } else {
+      toast.error(res.data.msg, toastOption);
+      setFilters([]);
     }
   };
 

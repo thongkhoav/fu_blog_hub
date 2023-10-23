@@ -24,6 +24,9 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
       try {
         const { data } = await getAllPublicBlogs();
         setBlogList(data.data);
+        if(filters.length >= 0) {
+        setBlogList(filters);
+        }
       } catch (error: any) {
         toast.error(error.message);
       }

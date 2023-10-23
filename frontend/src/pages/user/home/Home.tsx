@@ -1,6 +1,6 @@
 import HighlightBlogs from "./highlight-blogs/HighlightBlogs";
 import { BlogItem } from "~/utils/models/blog.model";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LatestBlogs from "./latest-blogs/LatesBlogs";
 import OptionSideHome from "./option-side-home/OptionSideHome";
 import { useAuth } from "~/utils/helpers";
@@ -64,14 +64,23 @@ const blogsData: BlogItem[] = [
 
 export default function Home() {
   const [highlightBlogs, setHighlightBlogs] = useState<BlogItem[]>(blogsData);
+  const [latesBlogs, setLastesBlogs] = useState<BlogItem[]>([]);
   const { userGlobal } = useAuth();
   const axiosPrivate = useAxiosPrivate();
+
+  //lỗi
+  useEffect(() => {
+     axiosPrivate.post(`/api/v1/blogs/getLastesBlog`)
+    .then(data => {
+      setLastesBlogs(data.data.data);
+      })
+  },[])
 
   const checkownerblog = async () => {
     try {
       const res = await axiosPrivate.get("/api/v1/blogs/self/6514f09bee00ce82d4a4e93f");
       console.log(res.data);
-    } catch (error) {}
+    } catch (error) { }
   };
   return (
     <div>
@@ -93,7 +102,7 @@ export default function Home() {
         <HighlightBlogs blogsData={highlightBlogs} />
         {/* Latest */}
         <h1>Tải lên gần đây</h1>
-        <LatestBlogs blogsData={highlightBlogs} />
+        <LatestBlogs latesBlogs={latesBlogs} />
         {/* Dành cho bạn gồm những chủ đề bạn yêu thích */}
         <h1>Dành cho bạn</h1>
         <div className="flex gap-5">

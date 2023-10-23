@@ -396,10 +396,45 @@ export const filterBloglist = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("asda", req.body)
-  // const blogs = await Blog.find()
-  // res.status(200).json({
-  //   status: "success",
-  //   data: blogs,
-  // });
+  const { category, tag } = req.body;
+  console.log('tag',tag)
+  var whereObj: any = {
+    status: 'public'
+  }
+  category.length ? whereObj['blogCateId'] = category : '';
+  tag.length ? whereObj['blogTagIds'] = { $in: tag } : '';
+
+  const blogs = await Blog.find(whereObj)
+  
+  blogs.length ? res.status(200).json({
+    status: "success",
+    data: blogs,
+  }) : res.status(200).json({
+    status: "fail",
+    data: [],
+    msg: `Không có blogs phù hợp! Vui lòng chọn lại!`
+  });
+}
+
+export const getLastesBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const blogs = await Blog
+    .find({ status: 'public' })
+    .sort({ createdAt: 'desc' })
+    .limit(12)
+    .populate({
+      path: "userId",
+      select: ["fullName", "avatar", "_id"],
+    })
+    .populate({
+      path: "blogCateId",
+      select: "name",
+    })
+  res.status(200).json({
+    status: "success",
+    data: blogs,
+  })
 }
