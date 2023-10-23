@@ -46,10 +46,17 @@ interface AccessTokenRes extends AxiosResponse {
 export const loginApi = async (body: ReqLogin): Promise<UserLoginRes> =>
   await axios.post(`${HOST}/api/v1/users/login`, body);
 
-export const logoutApi = async (refreshToken: string) =>
-  await axios.post(`${HOST}/api/v1/users/logout`, {
+export const logoutApi = async (accessToken: string, refreshToken: string,) => {
+  const headers = {
+    Authorization: `Bearer ${accessToken}`
+  };
+
+  const data = {
     refreshToken
-  });
+  };
+
+  return await axios.post(`${HOST}/api/v1/users/logout`, data, { headers });
+}
 
 export const getAccessTokenApi = async (refreshToken: string): Promise<AccessTokenRes> =>
   await axios.post(`${HOST}/api/v1/users/refresh-token`, {

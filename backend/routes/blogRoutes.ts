@@ -60,11 +60,13 @@ router.get(
   blogController.getOneBlog
 );
 
+import { Request, Response } from "express";
+
 router.patch(
   "/:id",
   authController.protect,
   blogController.checkBlogOwnership,
-  authController.restrictTo("admin", "student"),
+  authController.restrictTo("mentor", "student"),
   blogController.formatUpdateData,
   blogController.updateBlog
 );

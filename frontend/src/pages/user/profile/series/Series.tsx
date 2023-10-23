@@ -96,7 +96,7 @@ const Series = () => {
                     title="Delete the series"
                     description="Are you sure to delete this series?"
                     onConfirm={() => deleteSeries(series._id)}
-                    onCancel={() => {}}
+                    onCancel={() => { }}
                     okText="Yes"
                     cancelText="No"
                   >

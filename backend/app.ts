@@ -11,6 +11,7 @@ require("dotenv").config();
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 var cookieParser = require("cookie-parser");
+var session = require('express-session')
 
 const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
@@ -21,7 +22,7 @@ const tagRoutes = require("./routes/tagRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const blogSeriesRoutes = require("./routes/blogSeriesRoutes");
 const { globalErrHandler } = require("./controllers/errorController");
-const BlogTag = require("./models/blogTagModel");
+const BlogTag = require("./models/tagModel");
 
 const multer = require("multer");
 import "./passport";

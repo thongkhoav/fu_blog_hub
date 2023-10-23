@@ -27,11 +27,12 @@ import {
   getBlogCategoriesApi,
   getProfileSeriesApi,
   createBlogApiPath,
-  getSeftBlogDetailApiPath
+  getSeftBlogDetailApiPath,
+  updateBlogApiPath
 } from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { useAuth } from "~/utils/helpers";
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 const { v4: uuidv4 } = require("uuid");
 
 const { TextArea } = Input;
@@ -106,6 +107,8 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       });
     }
     const response = info.file.response;
+    console.log(response);
+    if (!response) return;
     setImageUrl(response.file.url);
   };
 
@@ -135,31 +138,61 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       status: status || "waiting"
     };
 
-    console.log(values)
+    if (mode === "Create") {
+      axiosPrivate
+        .post(createBlogApiPath, values)
+        .then(res => {
+          setIsModalOpen(false);
+          toast.success("Thêm bài viết thành công", toastOption);
+        })
+        .catch(err => {
+          toast.error(err.response.data.message, toastOption);
+        });
 
-    axiosPrivate
-      .post(createBlogApiPath, values)
-      .then(res => {
-        setIsModalOpen(false);
-        toast.success("Thêm bài viết thành công", toastOption);
-      })
-      .catch(err => {
-        toast.error(err.response.data.message, toastOption);
+      form.validateFields().then(values => {
+        showModal(false);
       });
+    }
 
-    form.validateFields().then(values => {
-      form.resetFields();
-      showModal(false);
-    });
+    if (mode === "Edit") {
+      axiosPrivate
+        .patch(`${updateBlogApiPath}/${idBlog}`, values)
+        .then(res => {
+          setIsModalOpen(false);
+          toast.success("Cập nhật bài viết thành công", toastOption);
+        })
+        .catch(err => {
+          toast.error(err.response.data.message, toastOption);
+        });
+
+      form.validateFields().then(values => {
+        showModal(false);
+      });
+    }
   };
 
   useEffect(() => {
-    if(mode !== "Edit") return;
-    console.log(idBlog)
-    axiosPrivate.get(`${getSeftBlogDetailApiPath}/${idBlog}`).then(response => {
-      console.log(response)
-    })  
-  }, [])
+    if (mode !== "Edit") return;
+    axiosPrivate
+      .get(`${getSeftBlogDetailApiPath}/${idBlog}`)
+      .then(response => {
+        const data = response.data.data;
+
+        form.setFieldsValue({
+          description: data.description,
+          blogCateId: data.blogCateId._id,
+          blogSeriesId: data.blogSeriesId,
+          tags: data.blogTagIds.map((tag: any) => tag.name),
+          showComment: !data.showComment
+        });
+        setData(data.contentRaw);
+        setImageUrl(data.thumbnail);
+      })
+      .catch(err => {
+        // Redirect to home page
+        window.location.href = "/";
+      });
+  }, []);
 
   useEffect(() => {
     setEditorLoaded(true);
@@ -169,8 +202,6 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     getAllTag();
     getProfileSeries();
   }, []);
-
-
 
   const getAllTag = async () => {
     const res = await getBlogTagsApi();
@@ -191,6 +222,10 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     } catch (error: any) {
       toast.error(error.message, toastOption);
     }
+  };
+
+  const handleRemoveImage = () => {
+    setImageUrl("");
   };
 
   const uploadButton = (
@@ -223,6 +258,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
         </div>
 
         <Modal
+          forceRender
           title="Thông tin khác"
           style={{ maxWidth: "700px" }}
           open={isModalOpen}
@@ -234,9 +270,13 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             <Button key="customOk" form="myForm" htmlType="submit" className="h-[40px]">
               Tạo bài viết
             </Button>,
-            <Button key="draft" className="h-[40px] bg-blue-500 text-white" onClick={handleSaveDraft}>
+            <Button
+              key="draft"
+              className="h-[40px] bg-blue-500 text-white"
+              onClick={handleSaveDraft}
+            >
               Lưu bản nháp
-            </Button>,
+            </Button>
           ]}
         >
           <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
@@ -281,7 +321,13 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                         ref={inputNewTagRef}
                         value={newTag}
                         onChange={onNewTagChange}
-                        style={{ width: "90%", padding: "0px 6px", borderColor: "#d9d9d9", borderRadius: "5px", fontSize: "14px" }}
+                        style={{
+                          width: "90%",
+                          padding: "0px 6px",
+                          borderColor: "#d9d9d9",
+                          borderRadius: "5px",
+                          fontSize: "14px"
+                        }}
                       />
                       <Button type="text" icon={<PlusOutlined />} onClick={addNewTag}>
                         Add item
@@ -313,6 +359,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                   uploadButton
                 )}
               </Upload>
+              {imageUrl && <Button onClick={handleRemoveImage}>Xóa Ảnh</Button>}
             </Form.Item>
 
             <Form.Item

@@ -83,6 +83,7 @@ router.post("/refresh-token", userController.getNewAccessToken);
  */
 router.post("/login", authController.login);
 
+
 /**
  * @swagger
  * /api/v1/users/signup:
@@ -148,6 +149,8 @@ router.post("/signup", authController.signup);
 
 // PROTECT ALL ROUTES AFTER THIS MIDDLEWARE
 router.use(authController.protect);
+
+router.post("/logout", authController.logout);
 
 router.post(
   "/mentor",

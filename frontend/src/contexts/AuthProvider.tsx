@@ -73,6 +73,11 @@ function AuthProvider({ children }: any) {
   };
 
   const handleLogout = async () => {
+    try {
+      await logoutApi(localAccessToken, getRefreshToken());
+    } catch (error: any) {
+      console.log(error);
+    }
     if (userGlobal.role === Role.ADM) {
       navigate("/login");
     }

@@ -1,11 +1,19 @@
 import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
-import { BlogState, IBlog } from "../models/blogModel";
+import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
 const Blog = require("../models/blogModel");
 const Tag = require("../models/tagModel");
 const BlogSeries = require("../models/blogSeriesModel");
 const he = require('he'); // Import thư viện he
+
+const BlogState = {
+  PUBLIC: "public",
+  REMOVED: "removed",
+  WAITING: "waiting",
+  DRAFT: "draft",
+  REJECTED: "rejected",
+};
 
 export const createBlog = async (
   req: Request,
@@ -25,7 +33,19 @@ export const createBlog = async (
     } = req.body;
     const user = (req as any).user;
     let blogSeries = null;
-    // return res.json({"status": "OK"})
+
+    // Kiểm tra xem tiêu đề có hợp lệ hay không
+    if (title.length > 150 || title.length < 3) {
+      const error = new AppError(403, "fail", "Title is not valid");
+      return next(error);
+    }
+
+    // Kiểm tra content có hợp lệ hay không
+    if (contentRaw.length < 10) {
+      const error = new AppError(403, "fail", "Content is not valid");
+      return next(error);
+    }
+
 
     // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
     if (blogSeriesId) {
@@ -48,10 +68,6 @@ export const createBlog = async (
       const error = new AppError(403, "fail", "Invalid status");
       next(error);
     }
-    // if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
-    //   const error = new AppError(403, 'fail', 'Invalid status')
-    //   next(error)
-    // }
 
     contentRaw = he.decode(contentRaw)
 
@@ -237,8 +253,7 @@ export const getAllPublicBlogs = async (
   }
 };
 
-
-export const updateBlog = base.updateOne(Blog);
+export const updateBlog = base.updateOne(Blog)
 
 export const checkBlogOwnership = async (
   req: Request,
@@ -287,28 +302,131 @@ export const formatMentorUpdateStatus = async (
   }
 };
 
-export const formatUpdateData = (
+export const formatUpdateData = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
+
+  let {
+    title,
+    thumbnail,
+    description,
+    contentRaw,
+    blogSeriesId,
+    status,
+    blogCateId,
+    tags
+  } = req.body;
+
+  const user = (req as any).user;
+  let blogSeries = null;
   const updateField: any = {};
 
-  if (req.body.status == "public" && (req as any).user.role !== "mentor") {
-    return next(
-      new AppError(403, "fail", "You are not allowed to do this action")
-    );
+  const blogInfo = await Blog.findById(req.params.id);
+  const currentStatus = blogInfo.status;
+
+  // Nếu trạng thái của bài viết là draft thì chỉ được chuyển sang waiting chờ duyệt
+  if (currentStatus === BlogState.DRAFT && status !== BlogState.WAITING && status !== BlogState.DRAFT) {
+    const error = new AppError(403, "fail", "Invalid status");
+    return next(error);
   }
 
-  // Nếu status là draft thì sẽ không thay đổi status vì bài viết chưa được công khai
-  if (updateField.status !== "draft") {
-    updateField.status = "private";
+  // Nếu trạng thái đang là reject thì chỉ được chuyển sang waiting chờ duyệt hoặc draft
+  if (
+    currentStatus === BlogState.REJECTED &&
+    status !== BlogState.WAITING &&
+    status !== BlogState.DRAFT
+  ) {
+    const error = new AppError(403, "fail", "Invalid status");
+    return next(error);
   }
-  updateField.title = req.body.title;
-  updateField.content = req.body.content;
-  updateField.description = req.body.description;
-  updateField.contentRaw = req.body.contentRaw;
-  updateField.blogSeriesId = req.body.blogSeriesId;
+
+
+  // Kiểm tra xem tiêu đề có hợp lệ hay không
+  if (!title || title.length > 150 || title.length < 3) {
+    const error = new AppError(403, "fail", "Title is not valid");
+    return next(error);
+  }
+
+  // Kiểm tra content có hợp lệ hay không
+  if (!contentRaw || contentRaw.length < 10) {
+    const error = new AppError(403, "fail", "Content is not valid");
+    return next(error);
+  }
+
+
+  // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
+  if (blogSeriesId) {
+    blogSeries = await BlogSeries.findById(blogSeriesId);
+    if (!blogSeries) {
+      const error = new AppError(403, "fail", "BlogSeries is not exist");
+      next(error);
+    }
+
+    if (blogSeries.userId.toString() !== user._id.toString()) {
+      const error = new AppError(403, "fail", "Invalid BlogSeries");
+      next(error);
+    }
+
+  }
+
+  // Bài viết mới tạo sẽ có thể là daft hoặc watting
+  // Đoạn này BlogState đang = undefined
+  if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
+    const error = new AppError(403, "fail", "Invalid status");
+    next(error);
+  }
+
+  contentRaw = he.decode(contentRaw)
+
+  const tagIds: Array<String> = [];
+
+  for (const tag of tags) {
+    // Kiểm tra xem tag có quá dài hay không
+    if (tag.length > 20) {
+      const error = new AppError(403, "fail", "Tag is too long");
+      return next(error);
+    }
+
+    // Kiểm tra xem tag có chứa kí tự đặc biệt hay không
+    const regex = /^[a-zA-Z0-9]+$/;
+    if (!regex.test(tag)) {
+      const error = new AppError(403, "fail", "Tag is not valid");
+      return next(error);
+    }
+
+    const lowercasedTag = tag.toLowerCase();
+    try {
+      // Tìm tag trong cơ sở dữ liệu
+      let tagExist = await Tag.findOne({ name: lowercasedTag });
+
+      if (tagExist) {
+        tagExist.numBlog += 1;
+        await tagExist.save();
+        tagIds.push(tagExist._id);
+      } else {
+        // Nếu tag không tồn tại, tạo mới
+        const newTag = await Tag.create({ name: lowercasedTag });
+        newTag.numBlog = 1;
+        await newTag.save();
+        tagIds.push(newTag._id);
+      }
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      return next(error);
+    }
+  }
+
+  // Gán lại các trường cần update
+  updateField.title = title;
+  updateField.description = description;
+  updateField.contentRaw = contentRaw;
+  updateField.blogSeriesId = blogSeriesId;
+  updateField.status = status;
+  updateField.blogCateId = blogCateId;
+  updateField.tagIds = tagIds;
+  updateField.thumbnail = thumbnail;
 
   req.body = updateField;
   next();

@@ -2,6 +2,7 @@
 import { Button, Popover, Select } from "antd";
 import React from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 const Posts = () => {
   const handleChange = (value: string) => {
@@ -28,7 +29,7 @@ const Posts = () => {
               <div className="flex flex-col">
                 <NavLink to="#">
                   <Button type="primary" className="bg-blue-500">
-                    Chỉnh sửa
+                    <Link to={`/edit-blog/`} >Chỉnh sửa</Link>
                   </Button>
                 </NavLink>
                 <NavLink to="#">
