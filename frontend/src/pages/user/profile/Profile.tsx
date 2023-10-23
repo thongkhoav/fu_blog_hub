@@ -95,9 +95,29 @@ export default function Profile() {
             <p className="text-sm">điểm</p>
           </div>
         </div>
-        <p className="text-center mt-[10px] text-base  font-light ">
+        <p className="text-center my-2 text-base  font-light ">
           {user?.userTitle || "Chưa có chức danh"}
         </p>
+        <div className="flex p-3 justify-center gap-4 items-center">
+          {user?.instagram && (
+            <a href={user?.instagram}>
+              <img
+                src="/image/instagram.png"
+                alt=""
+                className="w-10 h-10 rounded cursor-pointer hover:opacity-80"
+              />
+            </a>
+          )}
+          {user?.facebook && (
+            <a href={user?.facebook}>
+              <img
+                src="/image/facebook.png"
+                alt=""
+                className="w-8 h-8 rounded cursor-pointer hover:opacity-80"
+              />
+            </a>
+          )}
+        </div>
       </div>
       {/* phan ben phai */}
       <div className="col-span-9">
