@@ -17,6 +17,8 @@ export interface LoginUser {
     bannedUntil: Date;
     bannedAt: Date;
   };
+  favoriteCates?:string[];
+  phone?:string;
   numBlog?: number;
   numComment?: number;
   numFollower?: number;
