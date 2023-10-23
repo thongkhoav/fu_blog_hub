@@ -15,6 +15,14 @@ router.get(
   blogController.getOnePublicBlog
 );
 
+router.delete(
+  "/:id",
+  authController.protect,
+  authController.restrictTo("student", "mentor"),
+  blogController.softDeleteBlog,
+);
+
+
 // Protect all routes after this middleware
 router.get(
   "/self/:id",

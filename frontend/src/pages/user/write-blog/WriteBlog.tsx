@@ -107,7 +107,6 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       });
     }
     const response = info.file.response;
-    console.log(response);
     if (!response) return;
     setImageUrl(response.file.url);
   };
@@ -155,19 +154,25 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     }
 
     if (mode === "Edit") {
-      axiosPrivate
-        .patch(`${updateBlogApiPath}/${idBlog}`, values)
-        .then(res => {
-          setIsModalOpen(false);
-          toast.success("Cập nhật bài viết thành công", toastOption);
-        })
-        .catch(err => {
-          toast.error(err.response.data.message, toastOption);
-        });
+      console.log(values);
 
-      form.validateFields().then(values => {
-        showModal(false);
-      });
+      try {
+        axiosPrivate
+          .patch(`${updateBlogApiPath}/${idBlog}`, values)
+          .then(res => {
+            setIsModalOpen(false);
+            toast.success("Cập nhật bài viết thành công", toastOption);
+          })
+          .catch(err => {
+            toast.error(err.response.data.message, toastOption);
+          });
+
+        form.validateFields().then(values => {
+          showModal(false);
+        });
+      } catch (error: any) {
+        toast.error(error.message, toastOption);
+      }
     }
   };
 
@@ -177,6 +182,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       .get(`${getSeftBlogDetailApiPath}/${idBlog}`)
       .then(response => {
         const data = response.data.data;
+        console.log(data);
 
         form.setFieldsValue({
           description: data.description,
@@ -190,7 +196,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       })
       .catch(err => {
         // Redirect to home page
-        window.location.href = "/";
+        // window.location.href = "/";
       });
   }, []);
 

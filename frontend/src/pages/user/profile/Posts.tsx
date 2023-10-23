@@ -9,10 +9,13 @@ import axios from "~/config/axios";
 import { HOST } from "~/utils/constants";
 import { useAuth } from "~/utils/helpers";
 import { BlogItem } from "~/utils/models/blog.model";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+
 const Posts = () => {
   const { idUser } = useParams();
   const { userGlobal } = useAuth();
   const [blogList, setBlogList] = useState<BlogItem[]>([]);
+  const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     (async function () {
@@ -24,6 +27,16 @@ const Posts = () => {
       }
     })();
   }, [idUser, userGlobal?._id]);
+
+  const handleDeleteBlog = async (id: string) => {
+    try {
+      const { data } = await axiosPrivate.delete(`${HOST}/api/v1/blogs/${id}`);
+      toast.success(data.message);
+      setBlogList(prev => prev.filter(blog => blog._id !== id));
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
   const handleChange = (value: string) => {
     console.log(`selected ${value}`);
@@ -49,13 +62,13 @@ const Posts = () => {
             <Popover
               content={
                 <div className="flex flex-col">
-                  <NavLink to="#">
+                  <NavLink to={`/edit-blog/${blog._id}`}>
                     <Button type="primary" className="bg-blue-500">
                       Chỉnh sửa
                     </Button>
                   </NavLink>
                   <NavLink to="#">
-                    <Button type="primary" danger className="w-full">
+                    <Button type="primary" onClick={() => handleDeleteBlog(blog._id)} danger className="w-full">
                       Xoá
                     </Button>
                   </NavLink>

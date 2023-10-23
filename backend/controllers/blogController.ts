@@ -135,7 +135,46 @@ export const createBlog = async (
   }
 };
 
-export const getOneBlog = base.getOne(Blog);
+export const getOneBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const blogPopulate = await Blog.findById(req.params.id)
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: ["_id", "name"],
+      })
+      .populate({
+        path: "blogTagIds",
+        select: ["_id", "name"],
+      });
+
+    res.status(200).json({
+      status: "success",
+      data: blogPopulate,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const softDeleteBlog = async (req: Request,
+  res: Response,
+  next: NextFunction) => {
+  const blog = await Blog.findById(req.params.id);
+  blog.status = BlogState.REMOVED;
+  await blog.save();
+  res.status(200).json({
+    status: "success",
+    data: blog,
+  });
+}
 
 export const getOnePublicBlog = async (
   req: Request,
@@ -417,6 +456,7 @@ export const formatUpdateData = async (
 
   const tagIds: Array<String> = [];
 
+
   for (const tag of tags) {
     // Kiểm tra xem tag có quá dài hay không
     if (tag.length > 20) {
@@ -460,7 +500,7 @@ export const formatUpdateData = async (
   updateField.blogSeriesId = blogSeriesId;
   updateField.status = status;
   updateField.blogCateId = blogCateId;
-  updateField.tagIds = tagIds;
+  updateField.blogTagIds = tagIds;
   updateField.thumbnail = thumbnail;
 
   req.body = updateField;

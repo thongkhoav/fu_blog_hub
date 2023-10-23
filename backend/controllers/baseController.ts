@@ -27,6 +27,7 @@ export const deleteOne =
 
 export const updateOne =
   (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
+
     try {
       const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
@@ -65,14 +66,14 @@ export const createOne =
 export const getOne =
   (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { id } = req.params;
+      const { id } = req.params;
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            // If the provided id is not a valid ObjectID, return a 400 Bad Request response
-            return next(new AppError(400, 'fail', 'Invalid ID'));
-        }
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        // If the provided id is not a valid ObjectID, return a 400 Bad Request response
+        return next(new AppError(400, 'fail', 'Invalid ID'));
+      }
 
-        const doc = await Model.findById(id);
+      const doc = await Model.findById(id);
 
       if (!doc) {
         return next(
