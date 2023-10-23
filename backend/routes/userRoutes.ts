@@ -83,7 +83,6 @@ router.post("/refresh-token", userController.getNewAccessToken);
  */
 router.post("/login", authController.login);
 
-
 /**
  * @swagger
  * /api/v1/users/signup:
@@ -152,7 +151,6 @@ router.get("/basic/:id", userController.getBasicProfile);
 router.use(authController.protect);
 
 router.post("/logout", authController.logout);
-
 router.post(
   "/mentor",
   authController.restrictTo("admin"),

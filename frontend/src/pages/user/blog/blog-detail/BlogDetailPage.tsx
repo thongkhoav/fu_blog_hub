@@ -31,9 +31,9 @@ function BlogDetailPage() {
     } catch (error) {}
   }, [idBlog]);
   return (
-    <div className="flex gap-5 px-8">
+    <div className="flex gap-5 px-8 mt-4 w-full">
       {blogDetail && <BlogInfoSide blogDetail={blogDetail} />}
-      <div className="flex-[2]">
+      <div className="flex-[2] max-w-xl -mt-4">
         <img src={blogDetail?.thumbnail} alt="" className="h-[320px] w-full object-cover mb-6" />
         <div className="flex justify-between items-center">
           <h2 className="capitalize text-[#404040] opacity-80 mb-2">
@@ -47,15 +47,16 @@ function BlogDetailPage() {
           Tag:
           {blogDetail?.blogTagIds.map(tag => (
             <Link
-              to={`${PATH.BLOG}?tag=${tag.name}`}
+              to={`${PATH.BLOG}`}
               key={tag._id}
+              state={{ tag: tag._id }}
               className="text-sm text-inherit px-3 py-2 mr-3 rounded-sm underline hover:opacity-100 text-gray-800 opacity-80"
             >
               {tag.name}
             </Link>
           ))}
         </div>
-        <h1 className="text-[42px] mb-2">{blogDetail?.title}</h1>
+        <h1 className="text-4xl max-w-full mb-2 text-justify">{blogDetail?.title}</h1>
 
         <hr />
         <div className="mt-5">{blogDetail?.contentRaw && parse(`${blogDetail?.contentRaw}`)}</div>

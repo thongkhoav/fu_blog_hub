@@ -94,7 +94,7 @@ export default function Comment() {
   };
 
   return (
-    <div className="flex mx-28 pt-5 pb-16 justify-between text-gray-400 border-t border-gray-200">
+    <div className="flex ml-2 pt-5 pb-16 justify-between text-gray-400 border-t border-gray-200">
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
         <div className="max-w-2xl mx-auto px-4">
           {/* //title */}

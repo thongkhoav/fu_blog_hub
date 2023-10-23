@@ -46,7 +46,6 @@ export const createBlog = async (
       return next(error);
     }
 
-
     // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
     if (blogSeriesId) {
       blogSeries = await BlogSeries.findById(blogSeriesId);
@@ -164,9 +163,11 @@ export const getOneBlog = async (
   }
 };
 
-export const softDeleteBlog = async (req: Request,
+export const softDeleteBlog = async (
+  req: Request,
   res: Response,
-  next: NextFunction) => {
+  next: NextFunction
+) => {
   const blog = await Blog.findById(req.params.id);
   blog.status = BlogState.REMOVED;
   await blog.save();
@@ -174,7 +175,7 @@ export const softDeleteBlog = async (req: Request,
     status: "success",
     data: blog,
   });
-}
+};
 
 export const getOnePublicBlog = async (
   req: Request,
@@ -205,6 +206,76 @@ export const getOnePublicBlog = async (
   }
 };
 
+export const getSameAuthorBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const blogPopulate = await Blog.find({
+      status: BlogState.PUBLIC,
+      userId: req.params.userId,
+      _id: { $ne: req.params.blogId },
+    })
+      .select("-contentRaw")
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: "name",
+      })
+      .populate({
+        path: "blogTagIds",
+        select: ["_id", "name"],
+      });
+
+    res.status(200).json({
+      status: "success",
+      results: blogPopulate.length,
+      data: blogPopulate,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getSameCateBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const blogPopulate = await Blog.find({
+      status: BlogState.PUBLIC,
+      blogCateId: req.params.cateId,
+      _id: { $ne: req.params.blogId },
+    })
+      .select("-contentRaw")
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: "name",
+      })
+      .populate({
+        path: "blogTagIds",
+        select: ["_id", "name"],
+      });
+
+    res.status(200).json({
+      status: "success",
+      results: blogPopulate.length,
+      data: blogPopulate,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllPublicBlogs = async (
   req: Request,
   res: Response,
@@ -225,63 +296,6 @@ export const getAllPublicBlogs = async (
         path: "blogTagIds",
         select: ["_id", "name"],
       });
-    // const blogWithTags = await Blog.aggregate([
-    //   {
-    //     $lookup: {
-    //       from: "blogtags", // Tên của collection cho BlogTag model
-    //       localField: "_id", // Trường trong collection "Blog" để so khớp
-    //       foreignField: "blogId", // Trường trong collection "BlogTag" để so khớp
-    //       as: "tags", // Tên của trường trong kết quả là "tags"
-    //     },
-    //   },
-    //   {
-    //     $unwind: "$tags", // Mở rộng các kết quả từ trường "tags"
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: "tags", // Tên của collection cho Tag model
-    //       localField: "tags.tagId", // Trường trong collection "BlogTag" để so khớp với _id trong collection "Tag"
-    //       foreignField: "_id",
-    //       as: "tags.tagInfo", // Tên của trường trong kết quả là "tagInfo"
-    //     },
-    //   },
-    //   {
-    //     $group: {
-    //       _id: "$_id", // Gom nhóm kết quả theo _id của Blog
-    //       tags: {
-    //         $push: {
-    //           _id: "$tags.tagInfo._id",
-    //           name: "$tags.tagInfo.name",
-    //         }, // Đưa thông tin của các Tag vào một mảng "tags"
-    //       },
-    //       // Bạn có thể thêm các trường khác của Blog vào đây nếu cần
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       _id: 1,
-    //       tags: 1,
-    //       // Bạn có thể chọn các trường của Blog mà bạn muốn bao gồm ở đây
-    //     },
-    //   },
-    // ]);
-
-    // Gộp kết quả từ 2 mảng trên lại với nhau
-    // lấy tag gắn qua, nếu lấy theo index mà id của blog với id của blogtag khác nhau thì find lại
-    // const result = blogPopulate.map((blog: any, index: any) => {
-    //   let blogTag = blogWithTags[index];
-
-    //   if (blogTag._id.toString() !== blog._id.toString()) {
-    //     blogTag = blogWithTags.find(
-    //       (item: any) => item._id.toString() === blog._id.toString()
-    //     );
-    //   }
-
-    //   return {
-    //     ...blog._doc,
-    //     tags: blogTag.tags,
-    //   };
-    // });
 
     res.status(200).json({
       status: "success",
@@ -381,7 +395,6 @@ export const formatUpdateData = async (
   res: Response,
   next: NextFunction
 ) => {
-
   let {
     title,
     thumbnail,
@@ -390,7 +403,7 @@ export const formatUpdateData = async (
     blogSeriesId,
     status,
     blogCateId,
-    tags
+    tags,
   } = req.body;
 
   const user = (req as any).user;
@@ -401,7 +414,11 @@ export const formatUpdateData = async (
   const currentStatus = blogInfo.status;
 
   // Nếu trạng thái của bài viết là draft thì chỉ được chuyển sang waiting chờ duyệt
-  if (currentStatus === BlogState.DRAFT && status !== BlogState.WAITING && status !== BlogState.DRAFT) {
+  if (
+    currentStatus === BlogState.DRAFT &&
+    status !== BlogState.WAITING &&
+    status !== BlogState.DRAFT
+  ) {
     const error = new AppError(403, "fail", "Invalid status");
     return next(error);
   }
@@ -416,7 +433,6 @@ export const formatUpdateData = async (
     return next(error);
   }
 
-
   // Kiểm tra xem tiêu đề có hợp lệ hay không
   if (!title || title.length > 150 || title.length < 3) {
     const error = new AppError(403, "fail", "Title is not valid");
@@ -428,7 +444,6 @@ export const formatUpdateData = async (
     const error = new AppError(403, "fail", "Content is not valid");
     return next(error);
   }
-
 
   // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
   if (blogSeriesId) {
@@ -442,7 +457,6 @@ export const formatUpdateData = async (
       const error = new AppError(403, "fail", "Invalid BlogSeries");
       next(error);
     }
-
   }
 
   // Bài viết mới tạo sẽ có thể là daft hoặc watting
@@ -452,10 +466,9 @@ export const formatUpdateData = async (
     next(error);
   }
 
-  contentRaw = he.decode(contentRaw)
+  contentRaw = he.decode(contentRaw);
 
   const tagIds: Array<String> = [];
-
 
   for (const tag of tags) {
     // Kiểm tra xem tag có quá dài hay không
@@ -519,9 +532,14 @@ export const checkBlogStatus = (...status: any) => {
   };
 };
 
-export const getApproveBlogs = async (req: Request, res: Response, next: NextFunction) => {
-  const majorId = (req as any).user.majorId
-  const statusBlogs = req.query.status === "all" ? ["waiting", "rejected"] : [req.query.status];
+export const getApproveBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const majorId = (req as any).user.majorId;
+  const statusBlogs =
+    req.query.status === "all" ? ["waiting", "rejected"] : [req.query.status];
   const blogs = await Blog.find()
     .populate({
       path: "userId",

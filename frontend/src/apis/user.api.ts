@@ -46,7 +46,7 @@ interface AccessTokenRes extends AxiosResponse {
 export const loginApi = async (body: ReqLogin): Promise<UserLoginRes> =>
   await axios.post(`${HOST}/api/v1/users/login`, body);
 
-export const logoutApi = async (accessToken: string, refreshToken: string,) => {
+export const logoutApi = async (accessToken: string, refreshToken: string) => {
   const headers = {
     Authorization: `Bearer ${accessToken}`
   };
@@ -56,7 +56,7 @@ export const logoutApi = async (accessToken: string, refreshToken: string,) => {
   };
 
   return await axios.post(`${HOST}/api/v1/users/logout`, data, { headers });
-}
+};
 
 export const getAccessTokenApi = async (refreshToken: string): Promise<AccessTokenRes> =>
   await axios.post(`${HOST}/api/v1/users/refresh-token`, {
@@ -65,7 +65,7 @@ export const getAccessTokenApi = async (refreshToken: string): Promise<AccessTok
 
 export const loginGoogleApi = async (): Promise<UserLoginRes> => {
   const res = await axios.get(`${HOST}/api/auth/google/success`, {
-    withCredentials: true,
+    withCredentials: true
   });
   return res;
-}
+};

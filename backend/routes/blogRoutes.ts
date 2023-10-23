@@ -15,13 +15,21 @@ router.get(
   blogController.getOnePublicBlog
 );
 
+router.get("/:blogId/author/:userId", blogController.getSameAuthorBlogs);
+router.get("/:blogId/category/:cateId", blogController.getSameCateBlogs);
+
+router.get(
+  "/:id",
+  blogController.checkBlogStatus("public"),
+  blogController.getOnePublicBlog
+);
+
 router.delete(
   "/:id",
   authController.protect,
   authController.restrictTo("student", "mentor"),
-  blogController.softDeleteBlog,
+  blogController.softDeleteBlog
 );
-
 
 // Protect all routes after this middleware
 router.get(

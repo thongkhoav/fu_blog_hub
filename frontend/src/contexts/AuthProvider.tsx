@@ -76,15 +76,15 @@ function AuthProvider({ children }: any) {
 
   const handleLogout = async () => {
     try {
-      await logoutApi(localAccessToken, getRefreshToken());
+      // await logoutApi(localAccessToken, getRefreshToken());
+      if (userGlobal.role === Role.ADM) {
+        navigate("/login");
+      }
+      clearUserData();
+      setUserGlobal(null);
     } catch (error: any) {
       console.log(error);
     }
-    if (userGlobal.role === Role.ADM) {
-      navigate("/login");
-    }
-    clearUserData();
-    setUserGlobal(null);
   };
 
   const value = useMemo(

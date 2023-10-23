@@ -157,15 +157,19 @@ exports.loginGoogleSuccess = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => { };
+) => {};
 
 exports.logout = (req: Request, res: Response, next: NextFunction) => {
   console.log("logout");
   (req as any).logout(function (err: any) {
-    if (err) { return next(err); }
+    if (err) {
+      return next(err);
+    }
+    console.log("gfdggd");
+
     return res.status(200).json({
       status: "success",
       message: "Đăng xuất thành công",
-    })
+    });
   });
 };

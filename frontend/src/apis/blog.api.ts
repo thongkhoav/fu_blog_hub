@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { HOST } from "~/utils/constants";
 import { BlogDetail, BlogItem } from "~/utils/models/blog.model";
-import useAxiosPrivate from "~/config/useAxiosPrivate";
 interface HighlightBlogsRes extends AxiosResponse {
   data: {
     highlightBlogs: BlogItem[];
@@ -22,6 +21,12 @@ export const getProfileSeriesApi = async (id: string) =>
   await axios.get(`${HOST}/api/v1/series/user/${id}`);
 
 export const getAllPublicBlogs = async () => await axios.get(`${HOST}/api/v1/blogs`);
+
+export const getSameAuthorBlogs = async (blogId: string, userId: string) =>
+  await axios.get(`${HOST}/api/v1/blogs/${blogId}/author/${userId}`);
+
+export const getSameCateBlogs = async (blogId: string, cateId: string) =>
+  await axios.get(`${HOST}/api/v1/blogs/${blogId}/category/${cateId}`);
 
 export const createBlogApiPath = `${HOST}/api/v1/blogs`;
 export const updateBlogApiPath = `${HOST}/api/v1/blogs`;
