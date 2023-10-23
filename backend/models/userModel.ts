@@ -6,11 +6,16 @@ interface IBan extends Document {
   bannedReason: string;
   banAt: Date;
   banUntil: Date;
+  isBanned: boolean;
 }
 
 let banSchema: Schema<IBan>;
 banSchema = new mongoose.Schema(
   {
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
     bannedReason: {
       type: String,
       default: null,
@@ -74,6 +79,7 @@ userSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Categories",
     },
+
     favoriteCates: {
       type: [
         {

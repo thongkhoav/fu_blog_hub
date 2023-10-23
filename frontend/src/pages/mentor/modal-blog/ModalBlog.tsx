@@ -18,7 +18,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
           <Link to={`/profile/${blogDetail?.userId?._id}`}>{blogDetail?.userId?.fullName}</Link>
         </p>
         <p style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
-          {moment(blogDetail?.createdAt).utc().format("DD-MM-YYYY HH:mm")} -{" "}
+          {moment(blogDetail?.createdAt).utc().format("DD/MM/YYYY HH:mm")} -{" "}
           {blogDetail?.status === "waiting" ? "Chờ duyệt" : "Đã từ chối"}
         </p>
       </Col>

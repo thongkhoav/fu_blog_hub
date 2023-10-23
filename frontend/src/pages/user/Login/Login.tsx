@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "~/utils/helpers";
 import { FcGoogle } from "react-icons/fc";
 import { HOST } from "~/utils/constants";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,11 +28,10 @@ const Login = () => {
     event.preventDefault();
     try {
       await onLogin(email, password);
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
     }
   };
-
-
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
@@ -65,7 +66,10 @@ const Login = () => {
           </button>
         </form>
         <p className="text-gray-500 text-center text-sm">Or login with</p>
-        <a href={`${HOST}/api/auth/google`} className="p-2 inline-block rounded-full cursor-pointer border border-slate-700">
+        <a
+          href={`${HOST}/api/auth/google`}
+          className="p-2 inline-block rounded-full cursor-pointer border border-slate-700"
+        >
           <FcGoogle className="text-lg" />
         </a>
       </div>

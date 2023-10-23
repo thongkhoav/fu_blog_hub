@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
 import { ITag } from "../models/tagModel";
+import AppError from "../utils/appError";
 const Tag = require("../models/tagModel");
 
 export const createTag = async (
@@ -28,7 +29,35 @@ export const createTag = async (
 };
 
 export const getOneTag = base.getOne(Tag);
-export const deleteTag = base.deleteOne(Tag);
+export const deleteTag = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const doc = await Tag.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: false,
+      },
+      {
+        new: true,
+      }
+    );
+
+    if (!doc) {
+      return next(new AppError(404, "fail", "No tag found with that id"));
+    }
+
+    res.status(204).json({
+      status: "success",
+      data: null,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 export const getAllTag = async (
   req: Request,
   res: Response,

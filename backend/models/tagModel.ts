@@ -3,6 +3,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface ITag extends Document {
   name: string;
   numBlog: number;
+  status: boolean;
 }
 
 let tagSchema: Schema<ITag>;
@@ -19,6 +20,10 @@ tagSchema = new mongoose.Schema(
         },
         message: "Name must not contain spaces.",
       },
+    },
+    status: {
+      type: Boolean,
+      default: true,
     },
     numBlog: {
       type: Number,

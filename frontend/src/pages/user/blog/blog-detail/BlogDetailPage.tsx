@@ -11,6 +11,7 @@ import toastOption from "~/utils/constants/toastOption";
 import parse from "html-react-parser";
 import { toast } from "react-toastify";
 import BlogsSide from "~/pages/user/blog/blog-detail/blogs-side/BlogsSide";
+import { getBlogDetailApi } from "~/apis/blog.api";
 
 // comment được fetch sau
 function BlogDetailPage() {
@@ -21,7 +22,7 @@ function BlogDetailPage() {
     // fetch blog
     (async function () {
       try {
-        const { data } = await axios.get("/api/v1/blogs/" + idBlog);
+        const { data } = await getBlogDetailApi(idBlog!);
         setBlogDetail(data.data);
       } catch (error: any) {
         toast.error(error.message, toastOption);

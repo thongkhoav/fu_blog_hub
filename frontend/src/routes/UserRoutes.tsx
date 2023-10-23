@@ -71,8 +71,8 @@ export default function HomeRoutes() {
             </ProtectedRoute>
           )}
         >
-          <Route index element={<Posts />} />
-          <Route path="information" element={<Information/>} />
+          <Route index element={<Posts isEdit={true} />} />
+          <Route path="information" element={<Information />} />
           <Route path="series" element={<Series isPersonalProfile={true} />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
@@ -87,7 +87,7 @@ export default function HomeRoutes() {
             </Suspense>
           )}
         >
-          <Route index element={<Posts />} />
+          <Route index element={<Posts isEdit={false} />} />
           <Route path="series" element={<Series />} />
         </Route>
       </Route>
