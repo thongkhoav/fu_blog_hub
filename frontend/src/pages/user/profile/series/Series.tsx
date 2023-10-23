@@ -103,7 +103,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
                     title="Delete the series"
                     description="Are you sure to delete this series?"
                     onConfirm={() => deleteSeries(series._id)}
-                    onCancel={() => { }}
+                    onCancel={() => {}}
                     okText="Yes"
                     cancelText="No"
                   >
@@ -131,7 +131,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
                       title="Delete the series"
                       description="Are you sure to delete this series?"
                       onConfirm={() => deleteSeries(series._id)}
-                      onCancel={() => { }}
+                      onCancel={() => {}}
                       okText="Yes"
                       cancelText="No"
                     >
@@ -149,7 +149,6 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
                 </div>
               </Popover>
             )}
-
             <p className="line-clamp-2 flex-1">{series.description}</p>
 
             <div className="flex justify-between items-center mt-2">

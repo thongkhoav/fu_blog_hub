@@ -182,7 +182,6 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       .get(`${getSeftBlogDetailApiPath}/${idBlog}`)
       .then(response => {
         const data = response.data.data;
-        console.log(data);
 
         form.setFieldsValue({
           description: data.description,
@@ -196,7 +195,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       })
       .catch(err => {
         // Redirect to home page
-        // window.location.href = "/";
+        window.location.href = "/";
       });
   }, []);
 

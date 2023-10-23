@@ -165,8 +165,6 @@ exports.logout = (req: Request, res: Response, next: NextFunction) => {
     if (err) {
       return next(err);
     }
-    console.log("gfdggd");
-
     return res.status(200).json({
       status: "success",
       message: "Đăng xuất thành công",
