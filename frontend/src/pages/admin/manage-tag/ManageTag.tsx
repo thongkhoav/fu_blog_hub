@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Layout, Space, Table, Typography } from "antd";
+import { Button, Input, Layout, Popconfirm, Space, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import "./manage-tag.scss";
 import { toast } from "react-toastify";
@@ -76,7 +76,18 @@ const ManageTag = () => {
       title: "Action",
       dataIndex: "",
       key: "x",
-      render: (_, record) => <Button onClick={() => handleDeleteTag(record)}>Delete</Button>
+      render: (_, record) => (
+        <Popconfirm
+          title="Delete the tag"
+          description="Are you sure to delete this tag?"
+          onConfirm={() => handleDeleteTag(record)}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button danger>Delete</Button>
+        </Popconfirm>
+      )
     }
   ];
 

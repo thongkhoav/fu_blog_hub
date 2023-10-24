@@ -103,6 +103,14 @@ router.patch(
   blogController.updateBlog
 );
 
+router.post(
+  `/filterBlogList`,
+  authController.protect,
+  blogController.filterBloglist
+);
+
+router.post(`/getLastesBlog`, blogController.getLastesBlog);
+
 /**
  * @swagger
  * tags:

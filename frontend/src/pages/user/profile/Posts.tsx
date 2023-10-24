@@ -68,7 +68,7 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
     <div>
       <div className="flex justify-end">
         <Select
-          defaultValue="lucy"
+          defaultValue="createdAt"
           size="middle"
           style={{ width: 150 }}
           onChange={handleChange}

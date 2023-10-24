@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { BiBookmark } from "react-icons/bi";
-import { AiOutlineEye } from "react-icons/ai";
-import { BlogItem } from "~/utils/models/blog.model";
+import { Link, useLocation } from "react-router-dom";
 import BlogList from "./blog-list/BlogList";
 import OptionSideBlogs from "./option-side-blogs/OptionSideBlogs";
 
-interface FilterList {
+export interface FilterList {
   category: string[];
   tag: string[];
 }
 
 const BlogListPage = () => {
-  const [filters, setFilters] = useState<FilterList>({ category: [], tag: [] });
+  const { state } = useLocation();
+  const [filters, setFilters] = useState<FilterList>({ category: [], tag: [], ...state });
   return (
     <div className="flex mt-5 gap-4">
       <div className="flex-1">

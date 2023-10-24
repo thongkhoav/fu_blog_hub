@@ -12,13 +12,8 @@ export interface LoginUser {
   updatedAt: Date;
   avatar?: string;
   coverAvatar?: string;
-  ban?: {
-    bannedReason: Date;
-    bannedUntil: Date;
-    bannedAt: Date;
-  };
-  favoriteCates?:string[];
-  phone?:string;
+  favoriteCates?: string[];
+  phone?: string;
   numBlog?: number;
   numComment?: number;
   numFollower?: number;

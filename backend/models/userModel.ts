@@ -6,16 +6,11 @@ interface IBan extends Document {
   bannedReason: string;
   banAt: Date;
   banUntil: Date;
-  isBanned: boolean;
 }
 
 let banSchema: Schema<IBan>;
 banSchema = new mongoose.Schema(
   {
-    isBanned: {
-      type: Boolean,
-      default: false,
-    },
     bannedReason: {
       type: String,
       default: null,
@@ -39,6 +34,7 @@ interface IUser extends Document {
   email: string;
   password: string;
   phone?: string;
+  isBanned: boolean;
   role: "admin" | "mentor" | "student";
   majorId?: Schema.Types.ObjectId; // mentor will have major(category)
   active: boolean; // account only login at 1 time
@@ -79,7 +75,10 @@ userSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Categories",
     },
-
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
     favoriteCates: {
       type: [
         {

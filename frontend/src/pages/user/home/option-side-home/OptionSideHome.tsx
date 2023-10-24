@@ -1,83 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants";
-import { BiUpArrow, BiDownArrow, BiBookmark, BiCommentDetail } from "react-icons/bi";
-import { MdOutlineReportProblem } from "react-icons/md";
-import { Dropdown, Modal, Button, Tooltip } from "antd";
 
 import type { MenuProps } from "antd";
 import { Category, Tag } from "~/utils/models/blog.model";
-
-const categoriess: Category[] = [
-  {
-    _id: "1",
-    name: "Kinh tế"
-  },
-  {
-    _id: "2",
-    name: "Công nghệ thông tin"
-  },
-  {
-    _id: "3",
-    name: "Ngôn ngữ"
-  },
-  {
-    _id: "4",
-    name: "Thiết kế"
-  },
-  {
-    _id: "5",
-    name: "Trí tuệ nhân tạo"
-  },
-  {
-    _id: "6",
-    name: "Tiếng anh dự bị"
-  },
-  {
-    _id: "7",
-    name: "Thực tập"
-  },
-  {
-    _id: "8",
-    name: "Khách sạn"
-  },
-  {
-    _id: "9",
-    name: "Soft skills"
-  }
-];
-
-const tagsData: Tag[] = [
-  {
-    _id: "1",
-    name: ".Net"
-  },
-  {
-    _id: "2",
-    name: "Tiếng Nhật"
-  },
-  {
-    _id: "3",
-    name: "Kinh doanh quốc tế"
-  },
-  {
-    _id: "4",
-    name: "LUK"
-  },
-  {
-    _id: "5",
-    name: "Networking"
-  },
-  {
-    _id: "6",
-    name: "Thuyết trình"
-  }
-];
+import { toast } from "react-toastify";
+import axios from "~/config/axios";
+import toastOption from "~/utils/constants/toastOption";
 
 // cố định khi scroll
 function OptionSideHome({ isBlogDetail = false }) {
-  const [categories, setCategories] = useState<Category[]>(categoriess);
-  const [tags, setTags] = useState<Tag[]>(tagsData);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [point, setPoint] = useState<number>(15);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
@@ -94,13 +28,18 @@ function OptionSideHome({ isBlogDetail = false }) {
     }
   ];
 
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data: cates } = await axios.get("/api/v1/categories");
+        const { data: tags } = await axios.get("/api/v1/tags");
+        setTags(tags.data);
+        setCategories(cates.data);
+      } catch (error: any) {
+        toast.error(error.message, toastOption);
+      }
+    })();
+  }, []);
   return (
     <div className=" flex-1 m-5 mr-0">
       {/* category contains blog category - chip list */}
@@ -109,8 +48,9 @@ function OptionSideHome({ isBlogDetail = false }) {
         <div className="flex flex-wrap">
           {categories.map(cate => (
             <Link
-              to={`${PATH.BLOG}?cate=${cate.name}`}
+              to={`${PATH.BLOG}`}
               key={cate._id}
+              state={{ category: [cate._id] }}
               className="text-sm text-inherit px-4 py-2 mb-2 border border-[#c4c4c4] border-solid rounded-3xl mr-2 hover:bg-[#f1f1f1]"
             >
               {cate.name}
@@ -125,8 +65,9 @@ function OptionSideHome({ isBlogDetail = false }) {
         <div className="flex flex-wrap ">
           {tags.map(tag => (
             <Link
-              to={`${PATH.BLOG}?tag=${tag.name}`}
+              to={`${PATH.BLOG}`}
               key={tag._id}
+              state={{ tag: [tag._id] }}
               className="text-sm text-inherit px-4 py-2 mb-3 mr-3 rounded-sm bg-[#f2f2f2]"
             >
               {tag.name}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { PATH } from "src/utils/constants/paths";
 import { BiBookmark } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
@@ -12,9 +12,17 @@ import { BsBookmarkFill } from "react-icons/bs";
 import toastOption from "~/utils/constants/toastOption";
 import { useStoreContext } from "~/contexts/StoreProvider";
 import { useAuth } from "~/utils/helpers";
+import { DEFAULT_IMG } from "~/utils/constants";
+import { FilterList } from "../BlogListPage";
 
-const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) => {
-  const [blogList, setBlogList] = useState<BlogItem[]>([]);
+interface BlogListProps {
+  filters: FilterList;
+  setFilters: React.Dispatch<React.SetStateAction<FilterList>>;
+}
+
+const BlogList = ({ filters, setFilters }: BlogListProps) => {
+  const [fullBlogList, setFullBlogList] = useState<BlogItem[]>([]);
+  const [filteredBlogs, setFilteredBlogs] = useState<BlogItem[]>([]);
   const axiosPrivate = useAxiosPrivate();
   const { bookmarkList, setBookmarkList } = useStoreContext();
   const { userGlobal } = useAuth();
@@ -23,12 +31,31 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
     (async function () {
       try {
         const { data } = await getAllPublicBlogs();
-        setBlogList(data.data);
+        setFullBlogList(data.data);
+
+        if (filters.category.length === 0 && filters.tag.length === 0) {
+          setFilteredBlogs(data.data);
+        }
       } catch (error: any) {
         toast.error(error.message);
       }
     })();
-  }, [filters]);
+  }, [filters.category.length, filters.tag.length]);
+
+  useEffect(() => {
+    if (filters.category.length === 0 && filters.tag.length === 0) {
+      setFilteredBlogs(fullBlogList);
+    } else {
+      const filtered = fullBlogList.filter(blog => {
+        const isCategoryMatch =
+          filters.category.length === 0 || filters.category.includes(blog.blogCateId._id);
+        const isTagMatch =
+          filters.tag.length === 0 || blog.blogTagIds.some(tag => filters.tag.includes(tag._id));
+        return isCategoryMatch && isTagMatch;
+      });
+      setFilteredBlogs(filtered);
+    }
+  }, [filters, fullBlogList]);
 
   const toggleBookmark = async (blogId: string, toRemove: boolean) => {
     try {
@@ -48,13 +75,17 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
 
   return (
     <>
-      {blogList?.map(blog => (
+      {filteredBlogs?.map(blog => (
         <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
           <Link
             to={`${PATH.BLOG}/${blog._id}`}
             className="w-1/3 rounded-md overflow-hidden max-h-fit"
           >
-            <img src={blog.thumbnail} alt="thumbnail" className="object-cover h-full w-full" />
+            <img
+              src={blog.thumbnail || DEFAULT_IMG}
+              alt="thumbnail"
+              className="object-cover h-full w-full"
+            />
           </Link>
           <div className="flex flex-col justify-between w-2/3">
             <div>
@@ -78,7 +109,10 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
                   </span>
                 )}
               </div>
-              <Link to={`${PATH.BLOG}/${blog._id}`} className=" text-base font-bold line-clamp-2">
+              <Link
+                to={`${PATH.BLOG}/${blog._id}`}
+                className=" text-base font-bold break-words line-clamp-2"
+              >
                 {blog.title}
               </Link>
               <p className="text-sm line-clamp-3">{blog.description}</p>
@@ -107,7 +141,7 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
                 {blog.blogTagIds?.map(tag => (
                   <span
                     key={tag._id}
-                    onClick={() => setFilters({ ...filters, tag: [tag] })}
+                    onClick={() => setFilters({ ...filters, tag: [tag._id] })}
                     className="cursor-pointer text-sm text-inherit px-2 py-1 mr-2 rounded-sm bg-[#f2f2f2]"
                   >
                     {tag.name}

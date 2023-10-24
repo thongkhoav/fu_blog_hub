@@ -20,6 +20,7 @@ export const AuthContext = createContext<IAuthContext>({
     isVerifiedEmail: false,
     createdAt: new Date(),
     updatedAt: new Date(),
+    favoriteCates: [],
     accessToken: "",
     refreshToken: ""
   },

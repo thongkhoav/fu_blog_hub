@@ -129,6 +129,10 @@ export default function Information() {
           <Input placeholder="Input your Facebook URL" maxLength={100} />
         </Form.Item>
 
+        <Form.Item name="userTitle" label="Bio">
+          <Input placeholder="Bio của bạn" maxLength={100} />
+        </Form.Item>
+
         <Form.Item name="instagram" label="Instagram">
           <Input placeholder="Input your Instagram URL" maxLength={100} />
         </Form.Item>

@@ -15,7 +15,7 @@ export default function HighlightBlogs({ blogsData }: { blogsData: BlogItem[] })
     [&>*:nth-child(even)]:pl-4 mb-4"
     >
       {[...hlBlogs, ...hlBlogs].map(blog => (
-        <div key={blog._id} className="h-48 flex gap-5 mb-5 flex-[1] box-border">
+        <div key={blog._id + "asdsd"} className="h-48 flex gap-5 mb-5 flex-[1] box-border">
           <Link to={`${PATH.BLOG}/${blog._id}`} className="w-1/3 rounded-sm max-h-fit">
             <img src={blog.thumbnail} alt="thumbnail" className="object-cover h-full w-full" />
           </Link>

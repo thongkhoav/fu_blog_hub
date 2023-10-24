@@ -1,11 +1,12 @@
 import HighlightBlogs from "./highlight-blogs/HighlightBlogs";
 import { BlogItem } from "~/utils/models/blog.model";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LatestBlogs from "./latest-blogs/LatesBlogs";
 import OptionSideHome from "./option-side-home/OptionSideHome";
 import { useAuth } from "~/utils/helpers";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import Comment from "~/components/Comment/Comment";
+import axios from "~/config/axios";
 
 const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 
@@ -63,37 +64,25 @@ const blogsData: BlogItem[] = [
 ];
 
 export default function Home() {
-  const [highlightBlogs, setHighlightBlogs] = useState<BlogItem[]>(blogsData);
-  const { userGlobal } = useAuth();
-  const axiosPrivate = useAxiosPrivate();
+  //lỗi
 
-  const checkownerblog = async () => {
-    try {
-      const res = await axiosPrivate.get("/api/v1/blogs/self/6514f09bee00ce82d4a4e93f");
-      console.log(res.data);
-    } catch (error) {}
-  };
   return (
     <div>
       <div className="relative">
         <img src={thumbnail} alt="thumbnail" className="w-full max-h-96" />
         <div className="absolute flex flex-col gap-1 bottom-16 left-12 text-white p-5 rounded-lg">
           <h1 className="text-3xl font-bold">Nền tảng chia sẻ bài viết dành cho FPTU</h1>
-          <p className="text-lg font-medium" onClick={() => console.log(userGlobal)}>
-            Viết để hiểu
-          </p>
-          <p className="text-lg font-medium" onClick={checkownerblog}>
-            Chia sẻ để kết nối
-          </p>
+          <p className="text-lg font-medium">Viết để hiểu</p>
+          <p className="text-lg font-medium">Chia sẻ để kết nối</p>
         </div>
       </div>
       {/* Nổi bật 4 cái - 3 slide*/}
       <div className="max-w-[1192px] mx-auto">
         <h1>Nổi bật</h1>
-        <HighlightBlogs blogsData={highlightBlogs} />
+        <HighlightBlogs blogsData={blogsData} />
         {/* Latest */}
         <h1>Tải lên gần đây</h1>
-        <LatestBlogs blogsData={highlightBlogs} />
+        <LatestBlogs />
         {/* Dành cho bạn gồm những chủ đề bạn yêu thích */}
         <h1>Dành cho bạn</h1>
         <div className="flex gap-5">

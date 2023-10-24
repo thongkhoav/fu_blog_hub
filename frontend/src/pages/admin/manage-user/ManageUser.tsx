@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Input, Layout, Modal, Space, Table, Typography } from "antd";
+import { Button, Input, Layout, Modal, Popconfirm, Space, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { toast } from "react-toastify";
 import toastOption from "~/utils/constants/toastOption";
@@ -14,6 +14,7 @@ interface User {
   fullName: string;
   role: string;
   key: string;
+  isBanned: boolean;
   ban?: {
     bannedReason: string;
     banUntil: Date;
@@ -64,6 +65,19 @@ const ManageUser = () => {
     return date > new Date();
   };
 
+  const banUser = async (isBanned: boolean) => {
+    // isBanned true to unban, false to ban
+    try {
+      // const res = await axiosPrivate.patch("/api/v1/users/ban", {
+      //   userId: "60b9d8b6c9e3c40015a8f8c0",
+      //   isBanned
+      // });
+      console.log("ban");
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
+  };
+
   const columns: ColumnsType<User> = [
     {
       title: "Email",
@@ -85,7 +99,18 @@ const ManageUser = () => {
       title: "Action",
       dataIndex: "",
       key: "x",
-      render: (_, record) => <Button>{compareTime(record?.ban?.banUntil) ? "Unban" : "Ban"}</Button>
+      render: (_, record) => (
+        <Popconfirm
+          title="Xoá user"
+          description={`Bạn có chắc xoá ${record.role} ${record.fullName}?`}
+          onConfirm={() => banUser(compareTime(record?.ban?.banUntil))}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button danger>{compareTime(record?.ban?.banUntil) ? "Unban" : "Ban"}</Button>
+        </Popconfirm>
+      )
     }
   ];
 

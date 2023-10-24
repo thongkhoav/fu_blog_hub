@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { PATH } from "~/utils/constants";
 import { BlogDetail, Tag } from "~/utils/models/blog.model";
@@ -17,8 +17,11 @@ import { getBlogDetailApi } from "~/apis/blog.api";
 function BlogDetailPage() {
   const { idBlog } = useParams<{ idBlog: string }>();
   const [blogDetail, setBlogDetail] = useState<BlogDetail>();
+  const { state } = useLocation();
   // const refBlog = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    console.log(state);
+
     // fetch blog
     (async function () {
       try {

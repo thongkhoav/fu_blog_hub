@@ -32,8 +32,8 @@ const tabItems = [
   },
   {
     label: "Information",
-    path: PATH.PROFILE + "/me/information"
-    // icon: <BsPersonFillLock />
+    path: PATH.PROFILE + "/me/information",
+    icon: <BsPersonFillLock />
   }
 ];
 
