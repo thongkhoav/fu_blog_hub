@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { getAllPublicBlogs } from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { useStoreContext } from "~/contexts/StoreProvider";
+import { DEFAULT_IMG } from "~/utils/constants";
 import toastOption from "~/utils/constants/toastOption";
 import { useAuth } from "~/utils/helpers";
 import { BlogDetail, BlogItem, BlogNavItem } from "~/utils/models/blog.model";
@@ -99,7 +100,7 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
         >
           <Link to="/profile/123" className="flex-1">
             <img
-              src={blog.thumbnail}
+              src={blog.thumbnail || DEFAULT_IMG}
               alt="thumbnail"
               className="w-full h-full object-cover rounded-sm"
             />

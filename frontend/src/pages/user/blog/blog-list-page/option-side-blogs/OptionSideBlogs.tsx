@@ -3,83 +3,28 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { toast } from "react-toastify";
 import { Category, Tag } from "~/utils/models/blog.model";
 import toastOption from "~/utils/constants/toastOption";
-
-const categoriess: Category[] = [
-  {
-    _id: "6521646128d9f680f0e0f4eb",
-    name: "Kinh tế"
-  },
-  {
-    _id: "65217b0d3e5240adb158f660",
-    name: "Công nghệ thông tin"
-  },
-  {
-    _id: "3",
-    name: "Ngôn ngữ"
-  },
-  {
-    _id: "4",
-    name: "Thiết kế"
-  },
-  {
-    _id: "5",
-    name: "Trí tuệ nhân tạo"
-  },
-  {
-    _id: "6",
-    name: "Tiếng anh dự bị"
-  },
-  {
-    _id: "7",
-    name: "Thực tập"
-  },
-  {
-    _id: "8",
-    name: "Khách sạn"
-  },
-  {
-    _id: "9",
-    name: "Soft skills"
-  }
-];
-
-const tagsData: Tag[] = [
-  {
-    _id: "652154c7f34c483654663245",
-    name: ".Net"
-  },
-  {
-    _id: "652154d6f34c48365466324e",
-    name: "Tiếng Nhật"
-  },
-  {
-    _id: "65214fd3e5d11209b2a22967",
-    name: "Kinh doanh quốc tế"
-  },
-  {
-    _id: "4",
-    name: "LUK"
-  },
-  {
-    _id: "5",
-    name: "Networking"
-  },
-  {
-    _id: "6",
-    name: "Thuyết trình"
-  }
-];
+import axios from "~/config/axios";
 
 // cố định khi scroll
 function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: any }) {
-  const [categories, setCategories] = useState<Category[]>(categoriess);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [filterCategory, setFilterCategory] = useState<string[]>([]);
-  const [tags, setTags] = useState<Tag[]>(tagsData);
+  const [tags, setTags] = useState<Tag[]>([]);
   const [filterTag, setFilterTag] = useState<string[]>([]);
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
     //fetch category list and tag list
+    (async function () {
+      try {
+        const { data: tagData } = await axios.get("/api/v1/tags");
+        const { data: cateData } = await axios.get("/api/v1/categories");
+        setTags(tagData.data);
+        setCategories(cateData.data);
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    })();
   }, []);
 
   const toggleCategoryFilter = (cateId: string) => {
@@ -99,14 +44,17 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
   };
 
   const hanleFilter = async () => {
-    // setFilters({ category: filterCategory, tag: filterTag });
-    var res =  await axiosPrivate.post(`/api/v1/blogs/filterBlogList`,{ category: filterCategory, tag: filterTag })
-    if(res.data.status === "success") {
-      setFilters(res.data.data);
-    } else {
-      toast.error(res.data.msg, toastOption);
-      setFilters([]);
-    }
+    setFilters({ category: filterCategory, tag: filterTag });
+    // var res = await axiosPrivate.post(`/api/v1/blogs/filterBlogList`, {
+    //   category: filterCategory,
+    //   tag: filterTag
+    // });
+    // if (res.data.status === "success") {
+    //   setFilters(res.data.data);
+    // } else {
+    //   toast.error(res.data.msg, toastOption);
+    //   setFilters([]);
+    // }
   };
 
   return (

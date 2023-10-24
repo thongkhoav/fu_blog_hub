@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { PATH } from "src/utils/constants/paths";
 import { BiBookmark } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
@@ -12,20 +12,30 @@ import { BsBookmarkFill } from "react-icons/bs";
 import toastOption from "~/utils/constants/toastOption";
 import { useStoreContext } from "~/contexts/StoreProvider";
 import { useAuth } from "~/utils/helpers";
+import { DEFAULT_IMG } from "~/utils/constants";
+import { FilterList } from "../BlogListPage";
 
-const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) => {
-  const [blogList, setBlogList] = useState<BlogItem[]>([]);
+interface BlogListProps {
+  filters: FilterList;
+  setFilters: React.Dispatch<React.SetStateAction<FilterList>>;
+}
+
+const BlogList = ({ filters, setFilters }: BlogListProps) => {
+  const [fullBlogList, setFullBlogList] = useState<BlogItem[]>([]);
   const axiosPrivate = useAxiosPrivate();
   const { bookmarkList, setBookmarkList } = useStoreContext();
   const { userGlobal } = useAuth();
+  const { state } = useLocation();
 
   useEffect(() => {
+    console.log(state);
+
     (async function () {
       try {
         const { data } = await getAllPublicBlogs();
-        setBlogList(data.data);
-        if(filters.length >= 0) {
-        setBlogList(filters);
+        setFullBlogList(data.data);
+        if (filters.category.length === 0 || filters.tag.length === 0) {
+          // setBlogList(filters);
         }
       } catch (error: any) {
         toast.error(error.message);
@@ -51,13 +61,17 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
 
   return (
     <>
-      {blogList?.map(blog => (
+      {fullBlogList?.map(blog => (
         <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
           <Link
             to={`${PATH.BLOG}/${blog._id}`}
             className="w-1/3 rounded-md overflow-hidden max-h-fit"
           >
-            <img src={blog.thumbnail} alt="thumbnail" className="object-cover h-full w-full" />
+            <img
+              src={blog.thumbnail || DEFAULT_IMG}
+              alt="thumbnail"
+              className="object-cover h-full w-full"
+            />
           </Link>
           <div className="flex flex-col justify-between w-2/3">
             <div>
@@ -110,7 +124,7 @@ const BlogList = ({ filters, setFilters }: { filters: any; setFilters: any }) =>
                 {blog.blogTagIds?.map(tag => (
                   <span
                     key={tag._id}
-                    onClick={() => setFilters({ ...filters, tag: [tag] })}
+                    onClick={() => setFilters({ ...filters, tag: [tag._id] })}
                     className="cursor-pointer text-sm text-inherit px-2 py-1 mr-2 rounded-sm bg-[#f2f2f2]"
                   >
                     {tag.name}

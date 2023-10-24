@@ -1,4 +1,12 @@
-import { JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from "react";
+import {
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  useEffect,
+  useState
+} from "react";
 import { BiBookmark } from "react-icons/bi";
 import { AiOutlineEye } from "react-icons/ai";
 import { FcLikePlaceholder } from "react-icons/fc";
@@ -7,7 +15,7 @@ import { Link } from "react-router-dom";
 
 export default function LatestBlogs({ latesBlogs }: { latesBlogs: BlogItem[] }) {
   // const [latestBlogs, setLatestBlogs] = useState<BlogItem[]>(latesBlogs);
-  console.log('asda', latesBlogs)
+  // console.log('asda', latesBlogs)
   // useEffect(() => {
 
   // }, []);
@@ -26,18 +34,17 @@ export default function LatestBlogs({ latesBlogs }: { latesBlogs: BlogItem[] }) 
   };
 
   const activeSlides = (idx: number) => {
-    console.log(activeSlide)
+    console.log(activeSlide);
     if (idx === activeSlide || idx === activeSlide + 1 || idx === activeSlide + 2) return true;
     return false;
   };
 
   return (
-    <div  className="w-full grid grid-cols-3 gap-8 px-5 relative" data-carousel="slide">
-
-      {latesBlogs.map((blog: { _id: Key | null | undefined; thumbnail: string | undefined; title: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; description: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined; numView: string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | null | undefined, blogCateId :any,userId : any }, index) => (
+    <div className="w-full grid grid-cols-3 gap-8 px-5 relative" data-carousel="slide">
+      {latesBlogs.map((blog: BlogItem, index) => (
         <div
           key={blog._id}
-          className={`h-96 flex flex-col flex-[1] box-border ${activeSlides(index) ? "block" : "hidden"}`}
+          className={`h-96 flex flex-col box-border ${activeSlides(index) ? "block" : "hidden"}`}
           data-carousel-item
         >
           <img
@@ -53,7 +60,7 @@ export default function LatestBlogs({ latesBlogs }: { latesBlogs: BlogItem[] }) 
                   <BiBookmark />
                 </span>
               </div>
-              <h1 className=" text-xl font-bold mb-2">{blog.title}</h1>
+              <h1 className="break-words text-xl font-bold mb-2 max-w-full">{blog.title}</h1>
               <p className="text-xs line-clamp-2 text-justify mb-2">{blog.description}</p>
             </div>
             <div>
@@ -65,7 +72,7 @@ export default function LatestBlogs({ latesBlogs }: { latesBlogs: BlogItem[] }) 
                     alt="avatar author"
                     className="w-6 h-6 rounded-full object-cover"
                   />
-                  <span className="text-xs font-bold">{blog?.userId?.fullName}</span> 
+                  <span className="text-xs font-bold">{blog?.userId?.fullName}</span>
                 </Link>
                 <span className="flex items-center text-xs">
                   <AiOutlineEye className="text-xl mr-1" />
@@ -77,20 +84,49 @@ export default function LatestBlogs({ latesBlogs }: { latesBlogs: BlogItem[] }) 
         </div>
       ))}
       <div className="flex justify-center space-x-4 mt-4">
-        <button onClick={prevSlide} className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-          <svg className="w-4 h-4 text-white dark:text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+        <button
+          onClick={prevSlide}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          <svg
+            className="w-4 h-4 text-white dark:text-gray-800"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 1 1 5l4 4"
+            />
           </svg>
           <span className="sr-only">Previous</span>
         </button>
-        <button onClick={nextSlide} className="bg-blue-500 text-white px-4 py-2 rounded hover-bg-blue-600">
-          <svg className="w-4 h-4 text-white dark:text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+        <button
+          onClick={nextSlide}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover-bg-blue-600"
+        >
+          <svg
+            className="w-4 h-4 text-white dark:text-gray-800"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
           </svg>
           <span className="sr-only">Next</span>
         </button>
       </div>
-
     </div>
   );
 }
