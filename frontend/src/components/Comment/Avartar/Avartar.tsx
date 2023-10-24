@@ -1,148 +1,318 @@
 import { useContext, useEffect, useState } from "react";
-import DropDown from "../DropDown/DropDown";
 import { SendOutlined } from "@ant-design/icons";
-import { Button, Space } from "antd";
-import { RenderListContext, getDate } from "../Comment";
-
+import { Button, Dropdown, MenuProps, Space } from "antd";
+import { RenderListContext } from "../Comment";
+import { EllipsisOutlined } from "@ant-design/icons";
+import { useAuth } from "~/utils/helpers";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import DropDown from "../DropDown/DropDown";
+import moment from "moment";
 export interface AvartarProps {
-  id: number;
+  _id: string;
   parentId: number;
-  srcAvartar: string;
-  nameAvartar: string;
-  timeComment: string;
-  comment: string;
-  childrent: AvartarProps[];
+  userId: {
+    avatar: string;
+    fullName: string;
+  }
+  createdAt: string;
+  content: string;
+  children: AvartarProps[];
   replyStatus: boolean;
+  editStatus: boolean;
+  status: boolean;
+  isParent: boolean;
 }
-export function Avartar({ RenderParentList }: any) {
-  const [Reply, SetReply] = useState(false);
+
+export function Avartar({ RenderParentList, blogId }: any) {
+  const axiosPrivate = useAxiosPrivate();
+  const { userGlobal } = useAuth();
+  const [Edit, setEdit] = useState(false);
+  const [Reply, setReply] = useState(false);
+  const [Status, setStatus] = useState(true);
+  const [EditValue, setEditValue] = useState("")
   const { renderList, setRenderList } = useContext(RenderListContext);
   const { ComId, SetComId } = useContext(RenderListContext);
   const [ReplyContent, setReplyContent] = useState("");
   const parentData = RenderParentList;
-  console.log("🚀 ~ file: Avartar.tsx:30 ~ Avartar ~ parentData:", parentData);
+  useEffect(() => { }, []);
 
-  useEffect(() => {
-    console.log("RenderList updated:", RenderList);
-  }, [parentData]);
+
+
+  const handleEditChange = (event: any) => {
+    setEditValue(event.target.value);
+  }
 
   const handlerReplyChange = (event: any) => {
     setReplyContent(event.target.value);
   };
-  const handlerReply = (parentId: number) => {
-    SetComId(ComId + 1);
-    const AvatarValue: AvartarProps = {
-      id: ComId,
-      parentId: parentId,
-      srcAvartar:
-        "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
-      nameAvartar: "Test Name",
-      timeComment: getDate(),
-      comment: ReplyContent,
-      childrent: [],
-      replyStatus: false
-    };
-    parentData.map((data: AvartarProps) => {
-      if (data.id === parentId) {
-        data.childrent.push(AvatarValue);
-        console.log("🚀 ~ file: Avartar.tsx:50 ~ parentData.map ~ AvatarValue:", AvatarValue);
+
+  const handleEditPost = async (comment: any) => {
+
+    try {
+      const updateComment = await axiosPrivate.put(`/api/v1/comment/edit/${comment.id}`, {
+        contentProps: EditValue as string,
+      });
+      const data = updateComment.data.data
+
+      let list = parentData.map((com: any) => {
+        com.key = com.id
+        if (com.id == data._id) {
+          com.content = data.content;
+          com.editStatus = false;
+          setEdit(false)
+          return com;
+        // }else if(com.children.length > 0){
+        //   let childComment = com.children.map((child: any) =>{
+        //     if(child.id == data._id){
+        //       child.content = data.content;
+        //       child.editStatus = !child.editStatus;
+        //       setEdit(false);
+        //       return child;
+        //     }else{
+        //       return child;
+        //     }
+        //   })
+        //   return childComment;
+        }else {
+          return com;
+        }
+      })
+      setRenderList(list);
+      window.location.reload();
+      //  parentData.map((comment: AvartarProps) => {
+      //   if (comment._id == parent._id) {
+      //     return (comment.content = EditValue, comment.editStatus = false, setEdit(false));
+      //   }else if(comment.children.length > 0){
+      //       let list = comment.children.map((child: any) =>{
+      //         if(child._id == parent._id){
+      //           return (child.content = EditValue, child.editStatus = false, setEdit(false));
+      //         }            
+      //       }
+  
+      //     )
+      //     return list;
+      //   }
+      // });
+  
+  
+    } catch (error) {
+      console.log(error)
+    }
+   
+  }
+
+  const handlerNewReply = async (parenId: string) => {
+    try {
+      if(!userGlobal){
+        return;
       }
-    });
+      const updateParentComment = await axiosPrivate.put(`/api/v1/comment/${parenId}`, {
+        userId: userGlobal._id as string,
+        blogId: blogId,
+        content: ReplyContent,
+      });
+      const data = updateParentComment.data.data
+      console.log(data)
 
-    setRenderList([...parentData]);
-    SetReply(false);
-  };
+      let avatarValue = {
+        key: data._id,
+        id: data._id,
+        parentId: -1,
+        srcAvartar: data.userId.avatar,
+        nameAvartar: data.userId.fullName,
+        timeComment: moment(data.createdAt).format("DD-MM-YYYY"),
+        content: data.content,
+        replyStatus: false,
+        editStatus: false,
+        status: true,
+        isParent: data.isParent,
+        children: data.children?.map((children: any) => ({
+          key: children._id,
+          id: children._id,
+          parentId: data._id,
+          srcAvartar: children.userId.avatar,
+          nameAvartar: children.userId.fullName,
+          timeComment: moment(children.createdAt).format("DD-MM-YYYY"),
+          content: children.content,
+          replyStatus: false,
+          editStatus: false,
+          status: true,
+          children: [],
+          isParent: false,
+        })),
+      }
 
-  const handlerButtonReply = (commentId: number) => {
-    const list = parentData.map((comment: AvartarProps) => {
-      if (comment.id == commentId) {
-        return (comment.replyStatus = !comment.replyStatus), SetReply(!Reply);
+      let list = parentData.map((com: any) => {
+
+        if (com.id == avatarValue.id) {
+          return avatarValue;
+        } else {
+          return com;
+        }
+      })
+      setRenderList(list);
+
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  const handlerButtonReply = (commentId: any) => {
+    console.log(commentId)
+    const list = parentData.map((com: any) => {
+      if (com.id == commentId) {
+        com.replyStatus = true;
+        setReply(!Reply)
+        return com;
       } else {
-        return (comment.replyStatus = false);
+        com.replyStatus = false;
+        return com;
       }
     });
     setRenderList(list);
+
+
   };
 
   const RenderList: any = (
     <>
-      {parentData.map((parent: AvartarProps) => {
-        return (
-          <>
-            <article key={parent.id} className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
-              <footer className="flex justify-between items-center mb-2">
-                <div className="flex items-center">
-                  <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-                    <img
-                      className="mr-2 w-6 h-6 rounded-full"
-                      src={parent.srcAvartar}
-                      alt={parent.id + parent.nameAvartar}
-                    />
-                    {parent.nameAvartar}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    <time>{parent.timeComment}</time>
-                  </p>
-                </div>
-                <DropDown />
-              </footer>
-              <p className="text-gray-500 dark:text-gray-400">{parent.comment}</p>
+      {parentData.filter((parent: any) => parent.status && parent.isParent)
+        .map((parent: any) => {
 
-              <div className="flex items-center mt-4 space-x-4">
-                <Space>
-                  <Button type="text" onClick={() => handlerButtonReply(parent.id)}>
-                    <SendOutlined />
-                    Reply
-                  </Button>
-                  {Reply && parent.replyStatus && (
-                    <div>
-                      <textarea onChange={handlerReplyChange}></textarea>
-                      <button
-                        onClick={() => handlerReply(parent.id)}
-                        className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-                      >
-                        Reply
-                      </button>
-                    </div>
-                  )}
-                </Space>
-              </div>
-            </article>
-            {parent.childrent != undefined &&
-              parent.childrent.length > 0 &&
-              parent.childrent.map((childrent: AvartarProps) => (
-                <>
-                  <article
-                    key={childrent.id}
-                    className="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-90"
-                  >
-                    <>
-                      <footer className="flex justify-between items-center mb-2">
-                        <div className="flex items-center">
-                          <p className="p-6 mb-3 ml-6 lg:ml-12 text-base bg-white rounded-lg dark:bg-gray-900">
-                            <img
-                              className="mr-2 w-6 h-6 rounded-full"
-                              src={childrent.srcAvartar}
-                              alt={childrent.nameAvartar}
-                            />
-                            {childrent.nameAvartar}
-                          </p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">
-                            <time>{childrent.timeComment}</time>
-                          </p>
-                        </div>
-                        <DropDown />
-                      </footer>
-                      <p className="p-6 mb-3 ml-6 lg:ml-12  text-gray-500 dark:text-gray-400">
-                        {childrent.comment}
-                      </p>
-                    </>
-                  </article>
-                </>
-              ))}
-          </>
-        );
-      })}
+          return (
+            <>
+              <article key={parent.id} className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
+                <footer className="flex justify-between items-center mb-2">
+                  <div className="flex items-center">
+                    <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                      <img
+                        className="mr-2 w-6 h-6 rounded-full"
+                        src={parent.srcAvartar}
+                        alt={parent._id + parent.nameAvartar}
+                      />
+                      {parent.nameAvartar}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <time>{parent.timeComment}</time>
+                    </p>
+                  </div>
+                  <>
+                    <DropDown comment={parent} parentData={parentData} updateRenderList={setRenderList} setEdit={setEdit} Edit={Edit} />
+                  </>
+                </footer>
+                {(Edit && parent.editStatus) && (
+                  <>
+                    <textarea
+                      id="comment"
+                      className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                      required
+                      onChange={handleEditChange}
+                      placeholder={parent.content}
+                    ></textarea>
+
+                    <button
+                      className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                      onClick={() => handleEditPost(parent)}
+                    >
+                      Post Edit
+                    </button>
+                  </>
+                )}
+
+                {(!parent.editStatus) && <p className="text-gray-500 dark:text-gray-400">{parent.content}</p>}
+                <div className="flex items-center mt-4 space-x-4">
+                  <Space>
+                    <Button type="text" onClick={() => handlerButtonReply(parent.id)}>
+                      <SendOutlined />
+                      Reply
+                    </Button>
+                    
+                  </Space>
+                  
+                </div>
+                {Reply && parent.replyStatus && (
+                      <div>
+                        <form>
+                          <textarea
+                          className="px-0 w-full text-sm text-gray-400 border-1 rounded-lg focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-800 dark:bg-gray-600"
+                          onChange={handlerReplyChange}
+                          required></textarea>
+                          <button
+                            onClick={() => handlerNewReply(parent.id)}
+                            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                          >
+                            Reply
+                          </button>
+                        </form>
+
+                      </div>
+                    )}
+              </article>
+
+              {parent.children != undefined &&
+                parent.children.length > 0 &&
+                parent.children.filter((children: any) => children.status == true).map((children: any) => (
+                  <>
+                    
+                    <article
+                      key={children.id}
+                      className="border-t-2 p-3 mb-3 ml-6 lg:ml-12 text-base bg-white dark:bg-gray-900"
+                    >
+                      <>
+                        <footer className="flex justify-between items-center mb-2">
+                          <div className="inline-flex items-center">
+                            <p className="inline-flex items-center pr-8 mb-6 ml-6 lg:ml-12 text-gray-600 dark:text-white font-semibold">
+                              <img
+                                className=" w-6 h-6 rounded-full mr-2"
+                                src={children.srcAvartar}
+                                alt={children.nameAvartar}
+                              />
+                              {children.nameAvartar}
+                              <p className="ml-4 text-xs text-gray-500 dark:text-gray-500">
+                              <time>{children.timeComment}</time>
+                            </p>
+                            </p>
+                            
+                           
+                          </div>
+                          <DropDown comment={children} parentData={parentData} updateRenderList={setRenderList} setEdit={setEdit} Edit={Edit} />
+                        </footer>
+                        {(Edit && children.editStatus) && (
+                     
+                          <div className="pr-6">
+                            <textarea
+                              id="commentChildren"
+                              className="pt-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+                              required
+                              onChange={handleEditChange}
+                              placeholder={children.content}
+                            ></textarea>
+
+                            <button
+                              className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+                              onClick={() => handleEditPost(children)}
+                            >
+                              Post Edit
+                            </button>
+                            </div>
+                      
+                        )}
+                        <>
+                          {(!children.editStatus) &&
+                            <p className="mb-3  ml-6 lg:ml-12 text-gray-500 dark:text-gray-400">
+                              {children.content}
+                            </p>}
+                        </>
+
+                      </>
+                    </article>
+                  </>
+                ))}
+            </>
+          );
+        })}
     </>
   );
 

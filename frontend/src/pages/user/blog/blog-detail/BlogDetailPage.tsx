@@ -62,11 +62,11 @@ function BlogDetailPage() {
         <hr />
         <div className="mt-5">{blogDetail?.contentRaw && parse(`${blogDetail?.contentRaw}`)}</div>
         {/* blog tương tự */}
-        <Comment />
+        <Comment idBlog={idBlog as string} />
       </div>
       {blogDetail && <BlogsSide blogDetail={blogDetail} />}
     </div>
   );
 }
 
-export default BlogDetailPage;
+export default BlogDetailPage; 

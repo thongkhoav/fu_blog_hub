@@ -1,8 +1,9 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-interface IComment extends Document {
+export interface IComment extends Document {
   userId: Schema.Types.ObjectId;
   children?: Schema.Types.ObjectId[];
+  isParent: boolean;
   blogId: Schema.Types.ObjectId;
   content: string;
   status: boolean;
@@ -17,7 +18,13 @@ commentSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
-    children: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    children: [{  type: Schema.Types.ObjectId, 
+                  ref: "Comment" 
+              }],
+    isParent:{
+      type: Boolean,
+      default: true,
+    },
     blogId: {
       type: Schema.Types.ObjectId,
       ref: "Blog",
@@ -40,7 +47,6 @@ commentSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment : Model<IComment> = mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;

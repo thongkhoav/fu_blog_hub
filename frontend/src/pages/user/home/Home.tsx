@@ -5,7 +5,6 @@ import LatestBlogs from "./latest-blogs/LatesBlogs";
 import OptionSideHome from "./option-side-home/OptionSideHome";
 import { useAuth } from "~/utils/helpers";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
-import Comment from "~/components/Comment/Comment";
 
 const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 

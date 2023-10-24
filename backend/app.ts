@@ -21,6 +21,8 @@ const googleRoutes = require("./routes/googleRoutes");
 const tagRoutes = require("./routes/tagRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const blogSeriesRoutes = require("./routes/blogSeriesRoutes");
+const commentRoutes = require("./routes/commentRoutes");
+
 const { globalErrHandler } = require("./controllers/errorController");
 const BlogTag = require("./models/tagModel");
 
@@ -86,8 +88,9 @@ app.use("/api/v1/series", blogSeriesRoutes);
 app.use("/api/v1/tags", tagRoutes);
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/upload", uploadRouter);
-
+app.use("/api/v1/comment", commentRoutes)
 app.use(globalErrHandler);
+
 const swaggerOptions = {
   definition: {
     openapi: "3.1.0",
