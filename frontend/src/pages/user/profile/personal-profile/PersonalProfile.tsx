@@ -104,7 +104,7 @@ export default function PersonalProfile() {
         </div>
       </div>
       {/* phan ben phai */}
-      <div className="flex-[3] col-span-10">
+      <div className="col-span-10">
         <div className="flex gap-2">
           {tabItems.map(item => (
             <NavLink

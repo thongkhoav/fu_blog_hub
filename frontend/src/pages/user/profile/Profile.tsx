@@ -32,7 +32,6 @@ export default function Profile() {
 
   useEffect(() => {
     setTabItems(genTabItems(idUser!));
-
     (async function () {
       try {
         const { data } = await axios.get(`${HOST}/api/v1/users/basic/${idUser}`);
@@ -64,17 +63,31 @@ export default function Profile() {
   };
 
   return (
-    <div className="grid grid-cols-12 gap-5 mt-12 w-[1200px]">
-      <div className="col-span-3 h-screen mt-[80px] relative">
-        <div className="w-full flex items-center justify-center absolute top-[-105px] ">
+    <div className="mt-12 gap-5 grid grid-cols-12 w-full justify-between">
+      <div className="col-span-2 min-w-[200px]">
+        <div className="w-full flex items-center justify-center">
           <img
             className="w-[100px] h-[100px] rounded-full border border-slate-600"
             src={user?.avatar}
             alt=""
           />
         </div>
-        <p className="text-lg font-bold text-center">{user?.fullName}</p>
-        <button className="my-4 w-full bg-blue-400 items-center justify-center rounded-md py-2 text-white font-bold ">
+        <p className="text-sm text-center mt-2">{user?.fullName}</p>
+
+        <div className="flex justify-around mt-2">
+          <div className="col-span-1 text-center  ">
+            <p className="font-medium text-xs">{user?.numFollower || 0}</p>
+            <p className="text-xs">followers</p>
+          </div>
+          <div className="col-span-1 text-center ">
+            <p className="font-medium text-xs">{user?.numFollowing || 0}</p>
+            <p className="text-xs">following</p>
+          </div>
+        </div>
+        <button
+          className="w-full hover:opacity-70 mt-3 border border-blue-500 text-blue-500 items-center 
+        text-xs rounded justify-center py-1"
+        >
           {followingList.includes(idUser!) ? (
             <span onClick={unFollowUser}>Bỏ theo dõi</span>
           ) : (
@@ -95,7 +108,7 @@ export default function Profile() {
             <p className="text-sm">điểm</p>
           </div>
         </div>
-        <p className="text-center my-2 text-base  font-light ">
+        <p className="text-center text-xs my-3 font-light">
           {user?.userTitle || "Chưa có chức danh"}
         </p>
         <div className="flex p-3 justify-center gap-4 items-center">
@@ -120,17 +133,17 @@ export default function Profile() {
         </div>
       </div>
       {/* phan ben phai */}
-      <div className="col-span-9">
-        <div className="mb-4">
+      <div className="col-span-10">
+        <div className="flex gap-2">
           {tabItems.map(item => (
             <NavLink
               key={item.path}
               to={item.path}
-              className={`${
+              className={`flex items-center justify-center text-sm gap-1 ${
                 pathname === item.path
                   ? "text-blue-500  border-b-4 border-blue-500"
                   : "text-gray-500"
-              } px-3 py-2 hover:bg-gray-100 transition-colors duration-300`}
+              } px-2 py-1 hover:bg-gray-100 transition-colors duration-300`}
             >
               {item.label}
             </NavLink>

@@ -82,7 +82,9 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
       <List
         grid={{ gutter: 12, column: 4 }}
         dataSource={blogList}
-        renderItem={(blog: BlogItem) => <List.Item>{BlogCard(blog, handleDeleteBlog)}</List.Item>}
+        renderItem={(blog: BlogItem) => (
+          <List.Item>{BlogCard(blog, handleDeleteBlog, status != null)}</List.Item>
+        )}
       />
     </div>
   );
@@ -90,38 +92,40 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
 
 export default Posts;
 
-const BlogCard = (blog: BlogItem, onDelete: any) => {
+const BlogCard = (blog: BlogItem, onDelete: any, isEdit: boolean) => {
   const timeAgo = new TimeAgo("vi-VN");
   return (
     <div key={blog._id} className="h-auto relative w-full">
-      <Popover
-        content={
-          <div className="flex flex-col p-0">
-            <NavLink to={`/edit-blog/${blog._id}`}>
-              <Button className="text-blue-500 border-none h-fit rounded-none">Chỉnh sửa</Button>
-            </NavLink>
-            <Popconfirm
-              title="Xoá blog?"
-              description="Bạn có chắc chắn muốn xoá blog này?"
-              onConfirm={() => onDelete(blog._id)}
-              onCancel={() => {}}
-              okText="Có"
-              cancelText="Không"
-              okButtonProps={{ danger: true, className: "text-red-500" }}
-            >
-              <Button danger className=" text-red-500 border-none p-0 h-fit w-full rounded-none">
-                Xoá
-              </Button>
-            </Popconfirm>
+      {isEdit ? (
+        <Popover
+          content={
+            <div className="flex flex-col p-0">
+              <NavLink to={`/edit-blog/${blog._id}`}>
+                <Button className="text-blue-500 border-none h-fit rounded-none">Chỉnh sửa</Button>
+              </NavLink>
+              <Popconfirm
+                title="Xoá blog?"
+                description="Bạn có chắc chắn muốn xoá blog này?"
+                onConfirm={() => onDelete(blog._id)}
+                onCancel={() => {}}
+                okText="Có"
+                cancelText="Không"
+                okButtonProps={{ danger: true, className: "text-red-500" }}
+              >
+                <Button danger className=" text-red-500 border-none p-0 h-fit w-full rounded-none">
+                  Xoá
+                </Button>
+              </Popconfirm>
+            </div>
+          }
+          trigger="click"
+          placement="rightBottom"
+        >
+          <div className=" p-1 rounded bg-white opacity-60 absolute right-1 top-1 cursor-pointer ant-popover-open">
+            <AiOutlineSetting className="text-sm text-black" />
           </div>
-        }
-        trigger="click"
-        placement="rightBottom"
-      >
-        <div className=" p-1 rounded bg-white opacity-60 absolute right-1 top-1 cursor-pointer ant-popover-open">
-          <AiOutlineSetting className="text-sm text-black" />
-        </div>
-      </Popover>
+        </Popover>
+      ) : undefined}
       <img
         className="w-full h-[180px]"
         src={blog.thumbnail ? blog.thumbnail : "/images/default.png"}
@@ -139,8 +143,8 @@ const BlogCard = (blog: BlogItem, onDelete: any) => {
       <p className="line-clamp-2">{blog.description}</p>
       <div className="flex items-center justify-between mt-1">
         <p className="opacity-50 text-[13px]">{timeAgo.format(new Date(blog.createdAt))}</p>
-        <div className="">
-          <i className="fa-regular fa-eye mr-3"></i>
+        <div className="flex gap-1 items-center">
+          <AiOutlineEye />
           <span className="text-[13px]">{blog.numView}</span>
         </div>
       </div>

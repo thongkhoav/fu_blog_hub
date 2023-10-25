@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ButtonTitle } from "~/utils/constants/buttonTitle";
 import "./write-blog.scss";
 import Editor from "./EditorJS";
@@ -108,72 +109,55 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
     }
     const response = info.file.response;
     if (!response) return;
-    setImageUrl(response.file.url);
+    setImageUrl(response.file?.url);
   };
 
-  const handleSaveDraft = (formatValue: any) => {
-    handleSubmit(formatValue, "draft");
-    setIsModalOpen(false);
-  };
-
-  const handleSubmit = (formatValue: any, status?: string) => {
-    const regexH2 = /<h2[^>]*>(.*?)<\/h2>/;
-    let title = data.match(regexH2);
-
-    if (!title) {
-      const regexH3 = /<h3[^>]*>(.*?)<\/h3>/;
-      title = data.match(regexH3);
-    }
-
-    if (!title) {
-      return toast.error("Vui lòng nhập tiều đề của bạn!!!", toastOption);
-    }
+  const handleSubmit = (status?: string) => {
 
     const values = {
       ...form.getFieldsValue(),
       thumbnail: imageUrl,
       contentRaw: data,
-      title: title ? title[1] : "",
       status: status || "waiting"
     };
+    form.validateFields().then(values => {
 
-    if (mode === "Create") {
-      axiosPrivate
-        .post(createBlogApiPath, values)
-        .then(res => {
-          setIsModalOpen(false);
-          toast.success("Thêm bài viết thành công", toastOption);
-        })
-        .catch(err => {
-          toast.error(err.response.data.message, toastOption);
-        });
-
-      form.validateFields().then(values => {
-        showModal(false);
-      });
-    }
-
-    if (mode === "Edit") {
-      console.log(values);
-
-      try {
+      if (mode === "Create") {
         axiosPrivate
-          .patch(`${updateBlogApiPath}/${idBlog}`, values)
+          .post(createBlogApiPath, values)
           .then(res => {
             setIsModalOpen(false);
-            toast.success("Cập nhật bài viết thành công", toastOption);
+            toast.success("Thêm bài viết thành công", toastOption);
           })
           .catch(err => {
             toast.error(err.response.data.message, toastOption);
           });
-
-        form.validateFields().then(values => {
-          showModal(false);
-        });
-      } catch (error: any) {
-        toast.error(error.message, toastOption);
       }
-    }
+
+      if (mode === "Edit") {
+
+        try {
+          axiosPrivate
+            .patch(`${updateBlogApiPath}/${idBlog}`, values)
+            .then(res => {
+              setIsModalOpen(false);
+              toast.success("Cập nhật bài viết thành công", toastOption);
+            })
+            .catch(err => {
+              toast.error(err.response.data.message, toastOption);
+            });
+
+          form.validateFields().then(values => {
+            showModal(false);
+          });
+        } catch (error: any) {
+          toast.error(error.message, toastOption);
+        }
+      }
+
+      showModal(false);
+    }).catch(err => {
+    })
   };
 
   useEffect(() => {
@@ -201,7 +185,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
 
   useEffect(() => {
     setEditorLoaded(true);
-    const defaultData = "<h1>Tiêu đề ...</h1> <p>Nội dung ...</p>";
+    const defaultData = "<p>Nội dung ...</p>";
     setData(defaultData);
     getAllCategory();
     getAllTag();
@@ -276,15 +260,29 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               Tạo bài viết
             </Button>,
             <Button
-              key="draft"
+              key="customDraft"
               className="h-[40px] bg-blue-500 text-white"
-              onClick={handleSaveDraft}
+              onClick={() => handleSubmit("draft")}
             >
               Lưu bản nháp
             </Button>
           ]}
         >
-          <Form form={form} id="myForm" layout="vertical" onFinish={handleSubmit}>
+          <Form form={form} requiredMark id="myForm" layout="vertical" onFinish={handleSubmit}>
+            <Form.Item
+              label="Tiêu đề bài viết"
+              name="title"
+              rules={[{ required: true, message: "Vui lòng nhập tiêu đề bài viết" }]}
+            >
+              <Input maxLength={200}
+                style={{
+                  width: "100%",
+                  padding: "0px 6px",
+                  borderRadius: "5px",
+                  fontSize: "14px"
+                }} />
+            </Form.Item>
+
             <Form.Item
               label="Mô tả bài viết"
               name="description"

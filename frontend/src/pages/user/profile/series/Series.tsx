@@ -95,53 +95,26 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
       <div className="grid grid-cols-3 gap-4 mb-4">
         {seriesList.map((series: Series) => (
           <Card hoverable key={series._id} title={series.title} bordered style={{ width: "100%" }}>
-            <Popover
-              content={
-                <div className="flex flex-col">
-                  <Button className="text-blue-500 border-none h-fit rounded-none">
-                    Chỉnh sửa
-                  </Button>
-                  <Popconfirm
-                    title="Xoá series?"
-                    description="Bạn có chắc chắn muốn xoá series này?"
-                    onConfirm={() => deleteSeries(series._id)}
-                    onCancel={() => {}}
-                    okText="Có"
-                    cancelText="Không"
-                    okButtonProps={{ danger: true, className: "text-red-500" }}
-                  >
-                    <Button
-                      danger
-                      className=" text-red-500 border-none p-0 h-fit w-full rounded-none"
-                    >
-                      Xoá
-                    </Button>
-                  </Popconfirm>
-                </div>
-              }
-              trigger="click"
-              placement="rightBottom"
-            >
-              <div className=" p-1 rounded bg-white opacity-60 absolute right-1 top-1 cursor-pointer ant-popover-open">
-                <AiOutlineSetting className="text-sm text-black" />
-              </div>
-            </Popover>
-            {isPersonalProfile && (
+            {isPersonalProfile ? (
               <Popover
                 content={
                   <div className="flex flex-col">
-                    <Button type="primary" className="bg-blue-400">
+                    <Button className="text-blue-500 border-none h-fit rounded-none">
                       Chỉnh sửa
                     </Button>
                     <Popconfirm
-                      title="Delete the series"
-                      description="Are you sure to delete this series?"
+                      title="Xoá series?"
+                      description="Bạn có chắc chắn muốn xoá series này?"
                       onConfirm={() => deleteSeries(series._id)}
                       onCancel={() => {}}
-                      okText="Yes"
-                      cancelText="No"
+                      okText="Có"
+                      cancelText="Không"
+                      okButtonProps={{ danger: true, className: "text-red-500" }}
                     >
-                      <Button type="primary" danger>
+                      <Button
+                        danger
+                        className=" text-red-500 border-none p-0 h-fit w-full rounded-none"
+                      >
                         Xoá
                       </Button>
                     </Popconfirm>
@@ -150,11 +123,12 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
                 trigger="click"
                 placement="rightBottom"
               >
-                <div className="bg-transparent p-1 rounded absolute right-2 top-3 cursor-pointer hover:bg-gray-200">
-                  <BsThreeDotsVertical className="text-xl" />
+                <div className=" p-1 rounded bg-white opacity-60 absolute right-1 top-1 cursor-pointer ant-popover-open">
+                  <AiOutlineSetting className="text-sm text-black" />
                 </div>
               </Popover>
-            )}
+            ) : undefined}
+
             <p className="line-clamp-2 flex-1">{series.description}</p>
 
             <div className="flex justify-between items-center mt-2">
