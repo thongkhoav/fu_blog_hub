@@ -18,12 +18,6 @@ router.get(
 router.get("/:blogId/author/:userId", blogController.getSameAuthorBlogs);
 router.get("/:blogId/category/:cateId", blogController.getSameCateBlogs);
 
-router.get(
-  "/:id",
-  blogController.checkBlogStatus("public"),
-  blogController.getOnePublicBlog
-);
-
 router.delete(
   "/:id",
   authController.protect,

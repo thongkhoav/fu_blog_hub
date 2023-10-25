@@ -27,6 +27,7 @@ export interface IBlog extends Document {
   hideComment: boolean;
   thumbnail: string;
   blogTagIds: Array<Schema.Types.ObjectId>;
+  reports: Array<Schema.Types.ObjectId>;
 }
 
 let blogSchema: Schema<IBlog>;
@@ -101,6 +102,16 @@ blogSchema = new mongoose.Schema(
         ref: "Tag",
       },
     ],
+    reports: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Report",
+        },
+      ],
+      default: [],
+      select: false,
+    },
   },
   {
     timestamps: true,

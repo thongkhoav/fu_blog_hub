@@ -45,7 +45,6 @@ interface IUser extends Document {
   coverAvatar?: string;
   ban?: Schema;
   numBlog?: number;
-  numComment?: number;
   numFollower?: number;
   numFollowing?: number;
   userTitle?: string;
@@ -97,10 +96,6 @@ userSchema = new mongoose.Schema(
       default: 0,
     },
     numFollowing: {
-      type: Number,
-      default: 0,
-    },
-    numComment: {
       type: Number,
       default: 0,
     },

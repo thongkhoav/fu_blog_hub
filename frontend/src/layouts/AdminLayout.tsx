@@ -55,10 +55,6 @@ function AdminLayout() {
   const [openKeys, setOpenKeys] = useState([]);
   const { onLogout } = useAuth();
 
-  // const items = [
-  //   // Your menu items here
-  // ];
-
   const handleSubMenuClick = (key: never) => {
     if (openKeys.includes(key)) {
       // If the submenu is already open, close it

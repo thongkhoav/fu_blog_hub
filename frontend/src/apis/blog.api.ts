@@ -11,7 +11,7 @@ export const getHighlightBlogsApi = async (refreshToken: string): Promise<Highli
   await axios.get(`${HOST}/api/blogs/highlight`);
 
 export const getBlogDetailApi = async (idBlog: string) =>
-  await axios.get("/api/v1/blogs/" + idBlog);
+  await axios.get(`${HOST}/api/v1/blogs/` + idBlog);
 
 export const getBlogTagsApi = async () => await axios.get(`${HOST}/api/v1/tags`);
 

@@ -1,7 +1,6 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
 interface IResolve extends Document {
-  resolved: boolean;
   resolvedAt: Date;
   resolvedBy: Schema.Types.ObjectId;
   resolveContent?: string;
@@ -10,10 +9,6 @@ interface IResolve extends Document {
 let resolveSchema: Schema<IResolve>;
 
 resolveSchema = new mongoose.Schema({
-  resolved: {
-    type: Boolean,
-    default: false,
-  },
   resolvedAt: {
     type: Date,
     default: null,
@@ -35,6 +30,7 @@ interface IReport extends Document {
   type: "user" | "comment" | "blog";
   content: string;
   resolve: IResolve;
+  resolved: boolean;
 }
 
 let reportSchema: Schema<IReport>;
@@ -54,6 +50,10 @@ reportSchema = new mongoose.Schema(
       type: String,
       enum: ["user", "comment", "blog"],
       required: true,
+    },
+    resolved: {
+      type: Boolean,
+      default: false,
     },
     content: {
       type: String,
