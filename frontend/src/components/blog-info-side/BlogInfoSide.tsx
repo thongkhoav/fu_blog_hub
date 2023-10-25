@@ -104,18 +104,42 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
           onChange={e => setReportContent(e.target.value)}
         />
       </Modal>
-      <div className="flex px-4 gap-4 relative">
-        <Tooltip title="Bookmark">
-          {userGlobal && (
-            <span className="absolute -right-1 top-0 text-xl cursor-pointer">
-              {bookmarkList.includes(blogDetail._id) ? (
-                <BsBookmarkFill onClick={() => toggleBookmark(blogDetail._id, true)} />
-              ) : (
-                <BiBookmark onClick={() => toggleBookmark(blogDetail._id, false)} />
+      <div className="flex px-4 gap-4 relative flex-col justify-start">
+        <div className="flex flex-col justify-center gap-1 items-center">
+          <Link
+            to={userPath(PATH.PROFILE, blogDetail.userId._id)}
+            className="flex gap-1 items-center flex-col"
+          >
+            <img
+              src={blogDetail.userId.avatar || "/images/default-avatar.png"}
+              alt="avt author"
+              className="w-12 h-12 object-cover rounded-full border-2 border-solid border-orange-500"
+            />
+            <span className="text-xs">{blogDetail.userId.fullName}</span>
+          </Link>
+          <div className="flex gap-3">
+
+            <Tooltip title="Go to comments">
+              <BiCommentDetail className="text-xl cursor-pointer" />
+            </Tooltip>
+            <Dropdown menu={{ items: reportItems }}>
+              <MdOutlineReportProblem className="text-xl cursor-pointer" />
+            </Dropdown>
+
+            <Tooltip title="Bookmark">
+              {userGlobal && (
+                <span className="text-xl cursor-pointer">
+                  {bookmarkList.includes(blogDetail._id) ? (
+                    <BsBookmarkFill onClick={() => toggleBookmark(blogDetail._id, true)} />
+                  ) : (
+                    <BiBookmark onClick={() => toggleBookmark(blogDetail._id, false)} />
+                  )}
+                </span>
               )}
-            </span>
-          )}
-        </Tooltip>
+            </Tooltip>
+          </div>
+        </div>
+        <hr className="bg-slate-300 my-2" />
         <div className="flex flex-col justify-between items-center gap-2 min-w-[35px]">
           <BiUpArrow
             className="cursor-pointer text-xl select-none"
@@ -129,29 +153,9 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
             onClick={() => setPoint(point => point - 1)}
           />
         </div>
-        <div className="flex flex-col justify-center gap-5">
-          <Link
-            to={userPath(PATH.PROFILE, blogDetail.userId._id)}
-            className="flex gap-2 items-center"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/1995/1995562.png"
-              alt="avt author"
-              className="w-12 h-12 object-cover rounded-full border-2 border-solid border-orange-500"
-            />
-            <span>{blogDetail.userId.fullName}</span>
-          </Link>
-          <div className="flex gap-3">
-            <Tooltip title="Go to comments">
-              <BiCommentDetail className="text-2xl cursor-pointer" />
-            </Tooltip>
-            <Dropdown menu={{ items: reportItems }}>
-              <MdOutlineReportProblem className="text-2xl cursor-pointer" />
-            </Dropdown>
-          </div>
-        </div>
+
       </div>
-      <hr className="w-1px bg-slate-300 my-5" />
+
     </div>
   );
 }

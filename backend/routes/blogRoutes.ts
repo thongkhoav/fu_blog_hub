@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 const blogController = require("../controllers/blogController");
 const authController = require("./../controllers/authController");
+const RedisController = require("./../controllers/redisController");
 
 router.get("/", blogController.getAllPublicBlogs);
 router.get("/user/:userId", blogController.getProfilePublicBlogs);
@@ -12,6 +13,9 @@ router.get("/user/:userId", blogController.getProfilePublicBlogs);
 router.get(
   "/:id",
   blogController.checkBlogStatus("public"),
+
+  // Nếu anh em nào chưa cài redis thì comment dòng này đi nhé
+  RedisController.increaseViewWithCache,
   blogController.getOnePublicBlog
 );
 

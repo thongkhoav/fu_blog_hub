@@ -92,7 +92,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
       )}
       <div className="grid grid-cols-3 gap-4 mb-4">
         {seriesList.map((series: Series) => (
-          <Card hoverable title={series.title} bordered style={{ width: "100%" }}>
+          <Card hoverable key={series._id} title={series.title} bordered style={{ width: "100%" }}>
             <Popover
               content={
                 <div className="flex flex-col">

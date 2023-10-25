@@ -61,7 +61,7 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
   return (
     <div className="flex-1 flex flex-col gap-4 mt-2">
       {/* cùng tác giả thì bỏ author avatar và name */}
-      <h1 className="text-2xl uppercase font-bold">
+      <h1 className="text-base uppercase font-bold">
         Viết bởi tác giả {blogDetail.userId.fullName}
       </h1>
       {authorBlogs.length === 0 ? (
