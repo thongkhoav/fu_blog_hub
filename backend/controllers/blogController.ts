@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
 import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
+import { log } from "console";
 const Blog = require("../models/blogModel");
 const Tag = require("../models/tagModel");
 const BlogSeries = require("../models/blogSeriesModel");
@@ -283,6 +284,47 @@ export const getAllPublicBlogs = async (
 ) => {
   try {
     const blogPopulate = await Blog.find({ status: BlogState.PUBLIC })
+      .select("-contentRaw")
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: "name",
+      })
+      .populate({
+        path: "blogTagIds",
+        select: ["_id", "name"],
+      });
+
+    res.status(200).json({
+      status: "success",
+      results: blogPopulate.length,
+      data: blogPopulate,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllPrivateBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const blogStateArr = Object.values(BlogState);
+  const status = req.query.status ?? BlogState.PUBLIC;
+  if (!blogStateArr.includes(status.toString())) {
+    const error = new AppError(403, "fail", "Invalid status");
+    return next(error);
+  }
+
+  try {
+    const blogPopulate = await Blog.find({
+      status,
+      userId: (req as any).user._id,
+    })
       .select("-contentRaw")
       .populate({
         path: "userId",

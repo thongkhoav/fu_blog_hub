@@ -108,3 +108,17 @@ export const getAll =
       next(error);
     }
   };
+
+export const getWithFilter = (Model: any, query: any) => async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const doc = await Model.find(query);
+
+    res.status(200).json({
+      status: "success",
+      results: doc.length,
+      data: doc,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

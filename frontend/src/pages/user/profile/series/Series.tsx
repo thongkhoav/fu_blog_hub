@@ -8,6 +8,7 @@ import { useAuth } from "~/utils/helpers";
 import { NavLink, useParams } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import axios from "~/config/axios";
+import { AiOutlineSetting } from "react-icons/ai";
 
 interface Series {
   _id: string;
@@ -52,6 +53,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
           key: seri._id
         }));
         setSeriesList(formatedSeriesList);
+        console.log(formatedSeriesList);
       } catch (error: any) {
         toast.error(error.message, toastOption);
       }
@@ -74,7 +76,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
   };
   // cảu tôi thì được sửa
   return (
-    <Space direction="vertical">
+    <Space direction="vertical" className="w-full">
       {isPersonalProfile && (
         <>
           <Modal
@@ -96,18 +98,22 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
             <Popover
               content={
                 <div className="flex flex-col">
-                  <Button type="primary" className="bg-blue-400">
+                  <Button className="text-blue-500 border-none h-fit rounded-none">
                     Chỉnh sửa
                   </Button>
                   <Popconfirm
-                    title="Delete the series"
-                    description="Are you sure to delete this series?"
+                    title="Xoá series?"
+                    description="Bạn có chắc chắn muốn xoá series này?"
                     onConfirm={() => deleteSeries(series._id)}
                     onCancel={() => {}}
-                    okText="Yes"
-                    cancelText="No"
+                    okText="Có"
+                    cancelText="Không"
+                    okButtonProps={{ danger: true, className: "text-red-500" }}
                   >
-                    <Button type="primary" danger>
+                    <Button
+                      danger
+                      className=" text-red-500 border-none p-0 h-fit w-full rounded-none"
+                    >
                       Xoá
                     </Button>
                   </Popconfirm>
@@ -116,8 +122,8 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
               trigger="click"
               placement="rightBottom"
             >
-              <div className="bg-transparent p-1 rounded absolute right-2 top-3 cursor-pointer hover:bg-gray-200">
-                <BsThreeDotsVertical className="text-xl" />
+              <div className=" p-1 rounded bg-white opacity-60 absolute right-1 top-1 cursor-pointer ant-popover-open">
+                <AiOutlineSetting className="text-sm text-black" />
               </div>
             </Popover>
             {isPersonalProfile && (

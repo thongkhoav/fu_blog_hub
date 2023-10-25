@@ -1,5 +1,7 @@
 import { getNewAccessToken } from "../controllers/userController";
 import { checkBlogStatus, getOneBlog } from "../controllers/blogController";
+import * as base from "../controllers/baseController";
+const Blog = require("../models/blogModel");
 
 const express = require("express");
 const router = express.Router();
@@ -9,6 +11,12 @@ const RedisController = require("./../controllers/redisController");
 
 router.get("/", blogController.getAllPublicBlogs);
 router.get("/user/:userId", blogController.getProfilePublicBlogs);
+
+router.get("/user/private/:userId/",
+  authController.protect,
+  authController.restrictTo("student", "mentor"),
+  blogController.getAllPrivateBlogs
+);
 
 router.get(
   "/:id",

@@ -20,6 +20,14 @@ const Profile = lazy(() => import("~/pages/user/profile/Profile"));
 const Posts = lazy(() => import("~/pages/user/profile/Posts"));
 const Series = lazy(() => import("~/pages/user/profile/series/Series"));
 
+const BlogState = {
+  PUBLIC: "public",
+  REMOVED: "removed",
+  WAITING: "waiting",
+  DRAFT: "draft",
+  REJECTED: "rejected"
+};
+
 export default function HomeRoutes() {
   return (
     <Routes>
@@ -73,10 +81,15 @@ export default function HomeRoutes() {
         >
           <Route index element={<Posts isEdit={true} />} />
           <Route path="information" element={<Information />} />
+          <Route index element={<Posts />} />
+          <Route path={BlogState.DRAFT} element={<Posts />} />
+          <Route path={BlogState.WAITING} element={<Posts />} />
+          <Route path={BlogState.REJECTED} element={<Posts />} />
           <Route path="series" element={<Series isPersonalProfile={true} />} />
           <Route path="followers" element={<Followers />} />
           <Route path="following" element={<Following />} />
           <Route path="bookmark" element={<Bookmark />} />
+          <Route path="*" element={<Posts />} />
         </Route>
 
         <Route
