@@ -52,7 +52,7 @@ export const logoutApi = async (accessToken: string, refreshToken: string) => {
     refreshToken
   };
 
-  return await axios.post(`${HOST}/api/v1/users/logout`, data, { headers });
+  return await axios.post(`${HOST}/api/v1/users/logout`, data, { withCredentials: true });
 };
 
 export const getAccessTokenApi = async (refreshToken: string): Promise<AccessTokenRes> =>

@@ -119,7 +119,7 @@ function AdminLayout() {
         <Button
           type="primary"
           style={{ position: "absolute", bottom: 10, right: 0, left: 0 }}
-          onClick={onLogout}
+          onClick={() => onLogout()}
         >
           Logout
         </Button>

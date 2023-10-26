@@ -159,15 +159,11 @@ exports.loginGoogleSuccess = async (
   next: NextFunction
 ) => {};
 
-exports.logout = (req: Request, res: Response, next: NextFunction) => {
+exports.logout = (req: any, res: Response, next: NextFunction) => {
   console.log("logout");
-  (req as any).logout(function (err: any) {
-    if (err) {
-      return next(err);
-    }
-    return res.status(200).json({
-      status: "success",
-      message: "Đăng xuất thành công",
-    });
+  res.clearCookie("session");
+  res.status(200).json({
+    status: "success",
+    message: "Logout successfully",
   });
 };

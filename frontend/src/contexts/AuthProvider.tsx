@@ -39,7 +39,7 @@ function AuthProvider({ children }: any) {
           setUserGlobal(res.data);
           setUserData(res.data);
         })
-        .catch(err => {});
+        .catch(err => { });
     } catch (error) {
       console.log(error);
     }

@@ -38,7 +38,7 @@ app.use(
   cookieSession({
     name: "session",
     keys: ["cus"],
-    maxAge: 24 * 60 * 60 * 100 * 500,
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   })
 );
 app.use(passport.initialize());

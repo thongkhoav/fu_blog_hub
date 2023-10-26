@@ -147,6 +147,8 @@ router.post("/login", authController.login);
 router.post("/signup", authController.signup);
 router.get("/basic/:id", userController.getBasicProfile);
 
+router.post("/logout", authController.logout);
+
 // PROTECT ALL ROUTES AFTER THIS MIDDLEWARE
 router.use(authController.protect);
 
