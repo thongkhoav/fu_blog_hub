@@ -28,6 +28,8 @@ export interface IBlog extends Document {
   thumbnail: string;
   blogTagIds: Array<Schema.Types.ObjectId>;
   reports: Array<Schema.Types.ObjectId>;
+  voteUpUser: Array<Schema.Types.ObjectId>;
+  voteDownUser: Array<Schema.Types.ObjectId>;
 }
 
 let blogSchema: Schema<IBlog>;
@@ -112,6 +114,18 @@ blogSchema = new mongoose.Schema(
       default: [],
       select: false,
     },
+    voteUpUser: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    voteDownUser: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

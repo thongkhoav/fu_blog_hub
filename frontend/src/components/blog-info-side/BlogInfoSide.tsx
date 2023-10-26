@@ -88,6 +88,22 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
     setIsModalOpen(false);
   };
 
+  const onVoteBlog = async (blogId: string, vote: string) => {
+    await axiosPrivate.post(`/api/v1/blogs/vote`, { vote, blogId }).then(res => {
+      toast.success("Đã vote", toastOption);
+      if (vote === "up") {
+        setPoint(point => point + 1);
+      }
+      if (vote === "down") {
+        setPoint(point => point - 1);
+      }
+    }).catch(err => {
+      const response = err.response;
+      toast.error(response.data.message, toastOption);
+    })
+
+  }
+
   return (
     <div className=" flex-1 m-5 mr-0">
       <Modal
@@ -143,14 +159,14 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
         <div className="flex flex-col justify-between items-center gap-2 min-w-[35px]">
           <BiUpArrow
             className="cursor-pointer text-xl select-none"
-            onClick={() => setPoint(point => point + 1)}
+            onClick={() => onVoteBlog(blogDetail._id, "up")}
           />
           <Tooltip title="Blog point" placement="right">
             <span className="text-3xl font-normal tracking-wider ">{point}</span>
           </Tooltip>
           <BiDownArrow
             className="cursor-pointer text-xl select-none"
-            onClick={() => setPoint(point => point - 1)}
+            onClick={() => onVoteBlog(blogDetail._id, "down")}
           />
         </div>
 

@@ -135,6 +135,50 @@ export const createBlog = async (
   }
 };
 
+export const voteBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { blogId, vote } = req.body;
+  const user = (req as any).user;
+
+  if (!blogId || !vote) {
+    return next(new AppError(401, 'error', "Missing blogId or vote"));
+  }
+
+  const blog = await Blog.findById(blogId);
+  if (!blog) {
+    return next(new Error("No blog found with that id"));
+  }
+  if (blog.userId.toString() === user._id.toString()) {
+    return next(new AppError(403, 'error', "Bạn không thể vote cho bài viết của chính mình"));
+  }
+  if (vote !== "up" && vote !== "down") {
+    return next(new Error("Vote không hợp lệ"));
+  }
+
+  if (blog.voteUpUser.includes(user._id) || blog.voteDownUser.includes(user._id)) {
+    return next(new AppError(403, 'error', "Bạn đã vote cho bài viết này rồi"));
+  }
+
+  if (vote === "up") {
+    blog.voteUpUser.push(user._id);
+    blog.totalPoint += 1;
+  }
+
+  if (vote === "down") {
+    blog.voteDownUser.push(user._id);
+    blog.totalPoint -= 1;
+  }
+
+  await blog.save();
+  res.status(200).json({
+    status: "success",
+    data: blog,
+  });
+}
+
 export const getOneBlog = async (
   req: Request,
   res: Response,

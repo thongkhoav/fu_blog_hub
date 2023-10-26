@@ -12,7 +12,8 @@ const RedisController = require("./../controllers/redisController");
 router.get("/", blogController.getAllPublicBlogs);
 router.get("/user/:userId", blogController.getProfilePublicBlogs);
 
-router.get("/user/private/:userId/",
+router.get(
+  "/user/private/:userId/",
   authController.protect,
   authController.restrictTo("student", "mentor"),
   blogController.getAllPrivateBlogs
@@ -51,6 +52,13 @@ router.get(
     "banned"
   ),
   blogController.getOneBlog
+);
+
+router.post(
+  "/vote",
+  authController.protect,
+  authController.restrictTo("student", "mentor"),
+  blogController.voteBlog
 );
 
 router.get(
