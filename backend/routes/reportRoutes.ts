@@ -2,11 +2,10 @@ import { getNewAccessToken } from "../controllers/userController";
 
 const express = require("express");
 const router = express.Router();
-const blogController = require("../controllers/reportController");
+const reportController = require("../controllers/reportController");
 const authController = require("./../controllers/authController");
 
-router
-  .route("/blogs")
-  .get(blogController.getReportedBlogs)
-  .post(blogController.reportBlog);
+router.route("/").post(reportController.reportOne);
+router.get("/blog/:state", reportController.getReportedBlogs);
+router.get("/blog/detail/:idReport", reportController.getBlogReportDetail);
 module.exports = router;

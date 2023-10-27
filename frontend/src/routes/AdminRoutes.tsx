@@ -8,10 +8,17 @@ import ReportUser from "~/pages/admin/reports/report-user/ReportUser";
 import ReportBlog from "~/pages/admin/reports/report-blog/ReportBlog";
 import ReportComment from "~/pages/admin/reports/report-comment/ReportComment";
 import { Role } from "~/utils/models/user.model";
+import ReportLayout from "~/pages/admin/reports/report-blog/ReportLayout";
 const ManageBlog = lazy(() => import("~/pages/admin/manage-blog/ManageBlog"));
 const ManageUser = lazy(() => import("~/pages/admin/manage-user/ManageUser"));
 const ManageCategory = lazy(() => import("~/pages/admin/manage-category/ManageCategory"));
 const ManageTag = lazy(() => import("~/pages/admin/manage-tag/ManageTag"));
+
+export enum ReportPath {
+  RESOLVED = "resolved",
+  UNRESOLVED = "unresolved"
+}
+
 export default function AdminRoutes() {
   return (
     <Routes>
@@ -75,10 +82,13 @@ export default function AdminRoutes() {
           path={ADMIN_PATH.REPORT_BLOG}
           element={
             <Suspense fallback={<Loading />}>
-              <ReportBlog />
+              <ReportLayout />
             </Suspense>
           }
-        />
+        >
+          <Route path={ReportPath.RESOLVED} element={<ReportBlog />} />
+          <Route path={ReportPath.UNRESOLVED} element={<ReportBlog />} />
+        </Route>
         <Route
           path={ADMIN_PATH.REPORT_COMMENT}
           element={

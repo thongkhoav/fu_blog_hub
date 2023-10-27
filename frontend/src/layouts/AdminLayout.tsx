@@ -41,7 +41,11 @@ const items: SideBarItemProps[] = [
     parentMenu: true,
     children: [
       { icon: <UserOutlined />, label: "Users", link: adminPath(ADMIN_PATH.REPORT_USER) },
-      { icon: <BsNewspaper />, label: "Blogs", link: adminPath(ADMIN_PATH.REPORT_BLOG) },
+      {
+        icon: <BsNewspaper />,
+        label: "Blogs",
+        link: adminPath(ADMIN_PATH.REPORT_BLOG, "resolved")
+      },
       {
         icon: <AiOutlineComment />,
         label: "Comments",

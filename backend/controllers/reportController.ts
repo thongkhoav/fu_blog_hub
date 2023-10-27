@@ -4,22 +4,22 @@ import AppError from "../utils/appError";
 const Report = require("../models/reportModel");
 const Blog = require("../models/blogModel");
 
-export const reportBlog = async (
+export const reportOne = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // const user = (req as any).user;
+    const user = (req as any).user;
 
-    if (!req.body.content || !req.body.objectId || !req.body.reportBy) {
+    if (!req.body.content || !req.body.objectId) {
       return next(new Error("Please provide all required fields"));
     }
     const report = await Report.create({
       type: "blog",
       content: req.body.content,
       objectId: req.body.objectId,
-      reportBy: req.body.reportBy,
+      reportBy: user._id,
     });
 
     res.status(200).json({
@@ -37,45 +37,52 @@ export const getReportedBlogs = async (
   next: NextFunction
 ) => {
   try {
-    // const user = (req as any).user;
-
-    if (!req.body.content || !req.body.objectId || !req.body.reportBy) {
-      return next(new Error("Please provide all required fields"));
-    }
-    const report = await Blog.aggregate([
-      {
-        $match: {
-          _id: {
-            $in: await Report.find({ type: "blog", resolved: false }).distinct(
-              "objectId"
-            ),
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: "reports",
-          localField: "_id",
-          foreignField: "objectId",
-          as: "reports",
-        },
-      },
-      {
-        $addFields: {
-          numberOfReports: { $size: "$reports" },
-        },
-      },
-      {
-        $match: {
-          "reports.resolved": false,
-        },
-      },
-    ]);
-    // const report = await Blog.find(
+    const resolved = req.params.state === "resolved" ? true : false;
+    const reports = await Report.find({ type: "blog", resolved })
+      .sort({ createdAt: "desc" })
+      .populate("reportBy", "_id fullName email avatar");
 
     res.status(200).json({
       status: "success",
-      data: report,
+      data: reports,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getBlogReportDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const report = await Report.findOne({
+      type: "blog",
+      _id: req.params.idReport,
+    }).populate("reportBy", "_id fullName email avatar");
+
+    const blog = await Blog.findById(report.objectId)
+      .select("-contentRaw")
+      .populate({
+        path: "userId",
+        select: ["fullName", "avatar", "_id"],
+      })
+      .populate({
+        path: "blogCateId",
+        select: ["_id", "name"],
+      })
+      .populate({
+        path: "blogTagIds",
+        select: ["_id", "name"],
+      });
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        report,
+        blog,
+      },
     });
   } catch (error) {
     next(error);

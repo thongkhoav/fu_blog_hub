@@ -47,9 +47,9 @@ function AuthProvider({ children }: any) {
 
   useEffect(() => {
     if (userGlobal != null) {
-      if (userGlobal?.role === Role.ADM) {
-        navigate("/admin");
-      }
+      // if (userGlobal?.role === Role.ADM) {
+      //   navigate("/admin");
+      // }
     }
   }, [userGlobal]);
 

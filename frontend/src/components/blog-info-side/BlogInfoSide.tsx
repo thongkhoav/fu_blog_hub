@@ -13,6 +13,8 @@ import { useAuth } from "~/utils/helpers";
 import { toast } from "react-toastify";
 import toastOption from "~/utils/constants/toastOption";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
+import TextArea from "antd/es/input/TextArea";
+import { reportBlogApiPath } from "~/apis/blog.api";
 
 // cố định khi scroll
 function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
@@ -21,6 +23,7 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
   const { bookmarkList, setBookmarkList } = useStoreContext();
   const { userGlobal } = useAuth();
   const axiosPrivate = useAxiosPrivate();
+  const [reportContent, setReportContent] = useState("");
 
   const toggleBookmark = async (blogId: string, toRemove: boolean) => {
     if (!userGlobal) return;
@@ -54,8 +57,31 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
     }
   ];
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleReportBlog = async () => {
+    if (!userGlobal) {
+      toast.error("Bạn cần đăng nhập để report", toastOption);
+      return;
+    }
+
+    if (!reportContent) return toast.error("Vui lòng nhập lý do báo cáo bài viết", toastOption);
+
+    try {
+      axiosPrivate
+        .post(reportBlogApiPath, {
+          content: reportContent,
+          objectId: blogDetail._id,
+          type: "blog"
+        })
+        .then(res => {
+          setIsModalOpen(false);
+          toast.success("Report bài viết thành công", toastOption);
+        })
+        .catch(err => {
+          toast.error(err.response.data.message, toastOption);
+        });
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
   };
 
   const handleCancel = () => {
@@ -64,8 +90,19 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
 
   return (
     <div className=" flex-1 m-5 mr-0">
-      <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Report blog</p>
+      <Modal
+        title="Báo cáo bài viết"
+        open={isModalOpen}
+        onOk={handleReportBlog}
+        onCancel={handleCancel}
+        okButtonProps={{ disabled: !reportContent, className: "bg-blue-500" }}
+      >
+        <TextArea
+          rows={4}
+          placeholder="Lý do báo cáo"
+          maxLength={200}
+          onChange={e => setReportContent(e.target.value)}
+        />
       </Modal>
       <div className="flex px-4 gap-4 relative">
         <Tooltip title="Bookmark">
