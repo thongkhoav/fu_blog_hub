@@ -47,6 +47,7 @@ export interface BlogDetail {
   description: string;
   createdAt: Date;
   thumbnail: string;
+  totalPoint: number;
   numView: number;
   contentRaw: string | TrustedHTML;
   tags: { _id: string; name: string }[];
@@ -57,4 +58,4 @@ export interface BlogDetail {
   };
 }
 
-export interface Comment {}
+export interface Comment { }

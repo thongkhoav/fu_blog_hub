@@ -31,8 +31,6 @@ function BlogDetailPage() {
         toast.error(error.message, toastOption);
       }
     })();
-    try {
-    } catch (error) {}
   }, [idBlog]);
   return (
     <div className="flex gap-5 px-8 mt-4 w-full">
