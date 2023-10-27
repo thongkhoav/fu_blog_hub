@@ -20,11 +20,10 @@ const formItemLayout = {
 };
 
 export default function Information() {
-  const { userGlobal } = useAuth();
+  const { userGlobal, setUserGlobal } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const [form] = Form.useForm();
   const [cates, setCates] = useState([]);
-  const { setUserGlobal } = useAuth();
   const user = getUserData();
 
   const initialValues = {
@@ -154,9 +153,9 @@ export default function Information() {
         <Form.Item style={{ textAlign: "center" }}>
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 w-[20%] rounded "
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 w-1/2 rounded "
           >
-            Update
+            Cập nhật
           </button>
         </Form.Item>
       </Form>

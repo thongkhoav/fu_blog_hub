@@ -7,6 +7,7 @@ import { useAuth } from "~/utils/helpers";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import Comment from "~/components/Comment/Comment";
 import axios from "~/config/axios";
+import ForYouBlogs from "./for-you-blog/ForYouBlogs";
 
 const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 
@@ -86,8 +87,9 @@ export default function Home() {
         {/* Dành cho bạn gồm những chủ đề bạn yêu thích */}
         <h1>Dành cho bạn</h1>
         <div className="flex gap-5">
-          <div className="flex-[2] bg-slate-300 h-80">
+          <div className="flex-[2]">
             {/* danh sách blog theo chủ để đã chọn lúc mới đăng nhập hoặc có thể setting */}
+            <ForYouBlogs />
           </div>
           <OptionSideHome />
         </div>

@@ -95,7 +95,7 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
                 </span>
               </div>
               <h1 className="text-sm mb-2 line-clamp-2">{blog.title}</h1>
-              <p className="text-sm line-clamp-2">{blogDetail.description}</p>
+              <p className="text-xs line-clamp-2">{blogDetail.description}</p>
             </div>
           </div>
         ))
@@ -104,36 +104,35 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
       <hr className="w-1px bg-slate-300 my-1" />
 
       {/* cùng chủ đề thì bỏ  chủ đề trên cùng */}
-      <h1 className="text-2xl uppercase font-bold">Chủ đề: {blogDetail.blogCateId.name}</h1>
+      <h1 className="text-base uppercase font-bold">Chủ đề: {blogDetail.blogCateId.name}</h1>
       {cateBlogs.length === 0 ? (
         <p>Không có bài viết cũng chủ đề</p>
       ) : (
         cateBlogs.map(blog => (
-          <div
-            key={blog._id}
-            className="border rounded-md p-1 h-30 w-full flex flex-row gap-2 box-border"
-          >
-            <Link to={`${PATH.BLOG}/${blog._id}`} className="flex-1">
+          <div key={blog._id} className="border rounded-md p-1 h-30 w-full grid grid-cols-4 gap-2">
+            <Link to={`${PATH.BLOG}/${blog._id}`} className="">
               <img
-                src={blog.thumbnail || DEFAULT_IMG}
+                src={blog.thumbnail}
                 alt="thumbnail"
-                className="w-full h-full object-cover rounded-sm"
+                className="w-full h-full object-cover rounded-md"
               />
             </Link>
-            <div className="flex-[3] flex flex-col justify-between relative gap-1">
-              <span className="text-xl cursor-pointer absolute right-0 top-1">
-                {userGlobal && bookmarkList.includes(blog._id) ? (
-                  <Tooltip title="Remove bookmark">
-                    <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
-                  </Tooltip>
-                ) : (
-                  <Tooltip title="Bookmark">
-                    <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
-                  </Tooltip>
-                )}
-              </span>
-              <h1 className="text-sm line-clamp-2">{blog.title}</h1>
-              <p className="text-sm line-clamp-2">{blogDetail.description}</p>
+            <div className="flex flex-col justify-between relative gap-1 col-span-3">
+              <div className="flex justify-between gap-1">
+                <h1 className="text-sm line-clamp-2 break-words">{blog.title}</h1>
+                <span className="text-xl cursor-pointer">
+                  {userGlobal && bookmarkList.includes(blog._id) ? (
+                    <Tooltip title="Remove bookmark">
+                      <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Bookmark">
+                      <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
+                    </Tooltip>
+                  )}
+                </span>
+              </div>
+              <p className="text-xs line-clamp-2">{blogDetail.description}</p>
               <div>
                 {/* user */}
                 <div className="flex justify-between">

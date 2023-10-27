@@ -7,9 +7,19 @@ const express = require("express");
 const router = express.Router();
 const blogController = require("../controllers/blogController");
 const authController = require("./../controllers/authController");
-const RedisController = require("./../controllers/redisController");
+// const RedisController = require("./../controllers/redisController");
 
+// blog list get all public blogs
 router.get("/", blogController.getAllPublicBlogs);
+
+// dành cho bạn ở home
+router.get(
+  "/for-you",
+  authController.protect,
+  blogController.getCustomUserBlogs
+);
+
+// profile user
 router.get("/user/:userId", blogController.getProfilePublicBlogs);
 
 router.get(
@@ -24,7 +34,7 @@ router.get(
   blogController.checkBlogStatus("public"),
 
   // Nếu anh em nào chưa cài redis thì comment dòng này đi nhé
-  RedisController.increaseViewWithCache,
+  // RedisController.increaseViewWithCache,
   blogController.getOnePublicBlog
 );
 
@@ -34,7 +44,7 @@ router.get("/:blogId/category/:cateId", blogController.getSameCateBlogs);
 router.delete(
   "/:id",
   authController.protect,
-  authController.restrictTo("student", "mentor"),
+  authController.restrictTo("student", "mentor", "admin"),
   blogController.softDeleteBlog
 );
 
@@ -97,8 +107,6 @@ router.get(
   ),
   blogController.getOneBlog
 );
-
-import { Request, Response } from "express";
 
 router.patch(
   "/:id",

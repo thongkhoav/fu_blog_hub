@@ -41,7 +41,7 @@ function BlogDetailPage() {
         <img src={blogDetail?.thumbnail} alt="" className="h-[320px] w-full object-cover mb-6" />
         <div className="flex justify-between items-center">
           <h2 className="capitalize text-[#404040] opacity-80 mb-2">
-            <span>Thể loại: {blogDetail?.blogCateId.name}</span>
+            <span className="uppercase">{blogDetail?.blogCateId.name}</span>
           </h2>
           <span className="text-gray-500 mb-4">
             {blogDetail?.createdAt && formatDate(blogDetail.createdAt)}

@@ -94,20 +94,6 @@ export default function Profile() {
             <span onClick={followUser}>Theo dõi</span>
           )}
         </button>
-        <div className="grid grid-cols-3 mt-[10px]">
-          <div className="col-span-1 text-center  ">
-            <p className="font-medium">{user?.numFollower || 0}</p>
-            <p className="text-sm">followers</p>
-          </div>
-          <div className="col-span-1 text-center ">
-            <p className="font-medium">{user?.numFollowing || 0}</p>
-            <p className="text-sm">following</p>
-          </div>
-          <div className="col-span-1 text-center">
-            <p className="font-medium">{user?.totalPoint || 0}</p>
-            <p className="text-sm">điểm</p>
-          </div>
-        </div>
         <p className="text-center text-xs my-3 font-light">
           {user?.userTitle || "Chưa có chức danh"}
         </p>

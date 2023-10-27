@@ -1,36 +1,14 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 
-interface IResolve extends Document {
-  resolvedAt: Date;
-  resolvedBy: Schema.Types.ObjectId;
-  resolveContent?: string;
-}
-
-let resolveSchema: Schema<IResolve>;
-
-resolveSchema = new mongoose.Schema({
-  resolvedAt: {
-    type: Date,
-    default: null,
-  },
-  resolvedBy: {
-    type: Schema.Types.ObjectId,
-    default: null,
-    ref: "User",
-  },
-  resolveContent: {
-    type: String,
-    default: null,
-  },
-});
-
 interface IReport extends Document {
   reportBy: Schema.Types.ObjectId;
   objectId: Schema.Types.ObjectId; // userId, blogId, commentId
   type: "user" | "comment" | "blog";
   content: string;
-  resolve: IResolve;
   resolved: boolean;
+  resolvedAt: Date;
+  resolvedBy: Schema.Types.ObjectId;
+  resolveContent?: string;
 }
 
 let reportSchema: Schema<IReport>;
@@ -64,7 +42,18 @@ reportSchema = new mongoose.Schema(
         },
       },
     },
-    resolve: resolveSchema,
+    resolvedAt: {
+      type: Date,
+    },
+    resolvedBy: {
+      type: Schema.Types.ObjectId,
+      default: null,
+      ref: "User",
+    },
+    resolveContent: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

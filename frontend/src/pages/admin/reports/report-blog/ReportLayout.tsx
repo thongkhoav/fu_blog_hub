@@ -17,6 +17,7 @@ function ReportLayout() {
   ];
   return (
     <div>
+      <h1 className="text-center my-4">Danh sách báo cáo bài viết</h1>
       <div className="flex">
         {tabItems.map(item => (
           <NavLink

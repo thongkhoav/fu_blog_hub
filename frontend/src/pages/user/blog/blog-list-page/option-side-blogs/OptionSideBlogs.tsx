@@ -82,9 +82,9 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
             <span
               key={tag._id}
               onClick={() => toggleTagFilter(tag._id)}
-              className={`cursor-pointer border border-${
-                filterTag.includes(tag._id) ? "cyan-600" : "transparent"
-              } border-solid border-2 text-sm text-inherit px-4 py-2 mb-3 mr-3 rounded-sm bg-[#f2f2f2] `}
+              className={`cursor-pointer border-2 border-solid text-sm text-inherit px-4 py-2 mb-3 mr-3 rounded-sm bg-[#f2f2f2] ${
+                filterTag.includes(tag._id) ? "border-cyan-600" : "border-transparent"
+              }`}
             >
               {tag.name}
             </span>

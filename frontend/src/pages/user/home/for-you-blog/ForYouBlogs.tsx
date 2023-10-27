@@ -1,29 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { PATH } from "src/utils/constants/paths";
-import { BiBookmark } from "react-icons/bi";
-import { AiOutlineEye } from "react-icons/ai";
-import { BlogItem } from "~/utils/models/blog.model";
-import { FcLikePlaceholder } from "react-icons/fc";
-import { getAllPublicBlogs } from "~/apis/blog.api";
-import { toast } from "react-toastify";
-import useAxiosPrivate from "~/config/useAxiosPrivate";
-import { BsBookmarkFill } from "react-icons/bs";
-import toastOption from "~/utils/constants/toastOption";
-import { useStoreContext } from "~/contexts/StoreProvider";
-import { useAuth } from "~/utils/helpers";
-import { DEFAULT_IMG, limitBlogs } from "~/utils/constants";
-import { FilterList } from "../BlogListPage";
 import { Pagination } from "antd";
+import React, { useEffect, useState } from "react";
+import { AiOutlineEye } from "react-icons/ai";
+import { BiBookmark } from "react-icons/bi";
+import { BsBookmarkFill } from "react-icons/bs";
+import { FcLikePlaceholder } from "react-icons/fc";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getAllPublicBlogs } from "~/apis/blog.api";
+import axios from "~/config/axios";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { useStoreContext } from "~/contexts/StoreProvider";
+import { DEFAULT_IMG, HOST, PATH } from "~/utils/constants";
+import toastOption from "~/utils/constants/toastOption";
+import { useAuth } from "~/utils/helpers";
+import { BlogItem } from "~/utils/models/blog.model";
 
-interface BlogListProps {
-  filters: FilterList;
-  setFilters: React.Dispatch<React.SetStateAction<FilterList>>;
-}
+const limitBlogs = 8;
 
-const BlogList = ({ filters, setFilters }: BlogListProps) => {
+function ForYouBlogs() {
   const [fullBlogList, setFullBlogList] = useState<BlogItem[]>([]);
-  const [filteredBlogs, setFilteredBlogs] = useState<BlogItem[]>([]);
   const [showedBlogs, setShowedBlogs] = useState<BlogItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const axiosPrivate = useAxiosPrivate();
@@ -33,43 +28,27 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
   const paginateChange = (page: number) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     setCurrentPage(page);
-    setShowedBlogs(filteredBlogs.slice((page - 1) * limitBlogs, page * limitBlogs));
+    setShowedBlogs(fullBlogList.slice((page - 1) * limitBlogs, page * limitBlogs));
   };
 
   useEffect(() => {
     (async function () {
       try {
-        const { data } = await getAllPublicBlogs();
-        setFullBlogList(data.data);
-
-        if (filters.category.length === 0 && filters.tag.length === 0) {
-          setFilteredBlogs(data.data);
-          setShowedBlogs(data.data.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
+        let blogs;
+        if (userGlobal) {
+          const { data } = await axiosPrivate.get(HOST + "/api/v1/blogs/for-you");
+          blogs = data.data;
+        } else {
+          const { data } = await getAllPublicBlogs();
+          blogs = data.data;
         }
+        setFullBlogList(blogs);
+        setShowedBlogs(blogs.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
       } catch (error: any) {
         toast.error(error.message);
       }
     })();
-  }, []);
-
-  useEffect(() => {
-    if (filters.category.length === 0 && filters.tag.length === 0) {
-      setFilteredBlogs(fullBlogList);
-      setShowedBlogs(filteredBlogs.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
-    } else {
-      const filtered = fullBlogList.filter(blog => {
-        const isCategoryMatch =
-          filters.category.length === 0 || filters.category.includes(blog.blogCateId._id);
-        const isTagMatch =
-          filters.tag.length === 0 || blog.blogTagIds.some(tag => filters.tag.includes(tag._id));
-        return isCategoryMatch && isTagMatch;
-      });
-      setFilteredBlogs(filtered);
-      console.log(filtered.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
-
-      setShowedBlogs(filtered.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
-    }
-  }, [filters, fullBlogList]);
+  }, [userGlobal]);
 
   const toggleBookmark = async (blogId: string, toRemove: boolean) => {
     try {
@@ -90,7 +69,7 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
   return (
     <div className="mb-4 flex flex-col">
       {showedBlogs?.map(blog => (
-        <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
+        <div key={blog._id} className="flex gap-5 mb-7 py-2 px-4 flex-[1] border rounded-md ">
           <Link
             to={`${PATH.BLOG}/${blog._id}`}
             className="w-1/3 rounded-md overflow-hidden max-h-fit"
@@ -113,7 +92,7 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
                     {blog.numComment}
                   </span>
                 </section>
-                {userGlobal && (
+                {userGlobal ? (
                   <span className="text-xl cursor-pointer">
                     {bookmarkList.includes(blog._id) ? (
                       <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
@@ -121,6 +100,10 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
                       <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
                     )}
                   </span>
+                ) : (
+                  <Link to={PATH.LOGIN} className="text-xl cursor-pointer">
+                    <BiBookmark />
+                  </Link>
                 )}
               </div>
               <Link
@@ -150,18 +133,6 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
                   {blog.numView}
                 </span>
               </div>
-              {/* tag list */}
-              <div className="flex overflow-x-hidden">
-                {blog.blogTagIds?.map(tag => (
-                  <span
-                    key={tag._id}
-                    onClick={() => setFilters({ ...filters, tag: [tag._id] })}
-                    className="cursor-pointer text-sm text-inherit px-2 py-1 mr-2 rounded-sm bg-[#f2f2f2]"
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
         </div>
@@ -170,12 +141,12 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
         defaultCurrent={1}
         current={currentPage}
         defaultPageSize={limitBlogs}
-        total={filteredBlogs.length}
+        total={fullBlogList.length}
         className="self-center"
         onChange={paginateChange}
       />
     </div>
   );
-};
+}
 
-export default BlogList;
+export default ForYouBlogs;

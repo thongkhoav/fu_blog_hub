@@ -31,6 +31,40 @@ export const reportOne = async (
   }
 };
 
+export const resolveReport = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = (req as any).user;
+    const { content } = req.body;
+
+    if (!content) {
+      return next(new AppError(400, "fail", "nhập nội dung giải quyết"));
+    }
+    const report = await Report.findByIdAndUpdate(
+      req.params.id,
+      {
+        resolved: true,
+        resolveContent: content,
+        resolvedAt: Date.now(),
+        resolvedBy: user._id,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(200).json({
+      status: "success",
+      data: report,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getReportedBlogs = async (
   req: Request,
   res: Response,

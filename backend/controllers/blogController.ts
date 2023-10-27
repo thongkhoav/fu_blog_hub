@@ -4,7 +4,9 @@ import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
 import { log } from "console";
 const Blog = require("../models/blogModel");
+const Report = require("../models/reportModel");
 const Tag = require("../models/tagModel");
+const Notification = require("../models/notificationModel");
 const BlogSeries = require("../models/blogSeriesModel");
 const he = require("he"); // Import thư viện he
 
@@ -144,7 +146,7 @@ export const voteBlog = async (
   const user = (req as any).user;
 
   if (!blogId || !vote) {
-    return next(new AppError(401, 'error', "Missing blogId or vote"));
+    return next(new AppError(401, "error", "Missing blogId or vote"));
   }
 
   const blog = await Blog.findById(blogId);
@@ -152,14 +154,23 @@ export const voteBlog = async (
     return next(new Error("No blog found with that id"));
   }
   if (blog.userId.toString() === user._id.toString()) {
-    return next(new AppError(403, 'error', "Bạn không thể vote cho bài viết của chính mình"));
+    return next(
+      new AppError(
+        403,
+        "error",
+        "Bạn không thể vote cho bài viết của chính mình"
+      )
+    );
   }
   if (vote !== "up" && vote !== "down") {
     return next(new Error("Vote không hợp lệ"));
   }
 
-  if (blog.voteUpUser.includes(user._id) || blog.voteDownUser.includes(user._id)) {
-    return next(new AppError(403, 'error', "Bạn đã vote cho bài viết này rồi"));
+  if (
+    blog.voteUpUser.includes(user._id) ||
+    blog.voteDownUser.includes(user._id)
+  ) {
+    return next(new AppError(403, "error", "Bạn đã vote cho bài viết này rồi"));
   }
 
   if (vote === "up") {
@@ -177,7 +188,7 @@ export const voteBlog = async (
     status: "success",
     data: blog,
   });
-}
+};
 
 export const getOneBlog = async (
   req: Request,
@@ -213,11 +224,41 @@ export const softDeleteBlog = async (
   res: Response,
   next: NextFunction
 ) => {
+  // sử dụng khi user xoá hoặc admin xử lí report
   const blog = await Blog.findById(req.params.id);
   blog.status = BlogState.REMOVED;
+
+  const { resolveContent, objectId } = req.body;
+
+  // tìm tất cả các report về blog này và resolve nó, content là deleted
+  const reports = await Report.find({
+    objectId: req.params.id,
+    resolved: false,
+    type: "blog",
+    resolveContent: "",
+  });
+
+  for (const report of reports) {
+    report.resolved = true;
+    report.resolveContent = "Bài viết bị xoá";
+    report.resolvedAt = new Date();
+    report.resolvedBy = (req as any).user._id;
+
+    await report.save();
+  }
+
+  // nếu admin xoá thì push noti qua user
+  if ((req as any).user.role === "admin") {
+    await Notification.create({
+      userId: blog.userId,
+      content: `Bài viết ${blog.title} của bạn đã bị xoá do vi phạm`,
+    });
+  }
+
   await blog.save();
   res.status(200).json({
     status: "success",
+    message: "Blog đã được xoá",
     data: blog,
   });
 };
@@ -347,6 +388,68 @@ export const getAllPublicBlogs = async (
       results: blogPopulate.length,
       data: blogPopulate,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCustomUserBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const user = (req as any).user;
+  try {
+    if (!user.favoriteCates || user.favoriteCates.length === 0) {
+      const blogPopulate = await Blog.find({
+        status: BlogState.PUBLIC,
+      })
+        .select("-contentRaw")
+        .sort({ createdAt: "desc" })
+        .populate({
+          path: "userId",
+          select: ["fullName", "avatar", "_id"],
+        })
+        .populate({
+          path: "blogCateId",
+          select: "name",
+        })
+        .populate({
+          path: "blogTagIds",
+          select: ["_id", "name"],
+        });
+
+      res.status(200).json({
+        status: "success",
+        results: blogPopulate.length,
+        data: blogPopulate,
+      });
+    } else {
+      const blogPopulate = await Blog.find({
+        status: BlogState.PUBLIC,
+        blogCateId: { $in: user.favoriteCates },
+      })
+        .select("-contentRaw")
+        .sort({ createdAt: "desc" })
+        .populate({
+          path: "userId",
+          select: ["fullName", "avatar", "_id"],
+        })
+        .populate({
+          path: "blogCateId",
+          select: "name",
+        })
+        .populate({
+          path: "blogTagIds",
+          select: ["_id", "name"],
+        });
+
+      res.status(200).json({
+        status: "success",
+        results: blogPopulate.length,
+        data: blogPopulate,
+      });
+    }
   } catch (error) {
     next(error);
   }

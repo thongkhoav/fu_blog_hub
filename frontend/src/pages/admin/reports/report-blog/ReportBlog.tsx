@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Drawer, Input, Layout, Space, Table, Typography } from "antd";
+import { Button, Drawer, Layout, Space, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { toast } from "react-toastify";
 import toastOption from "~/utils/constants/toastOption";
@@ -8,6 +8,7 @@ import { reportBlogApiPath } from "~/apis/blog.api";
 import { useLocation, useParams } from "react-router-dom";
 import { FE_HOST, HOST } from "~/utils/constants";
 import { BlogDetail } from "~/utils/models/blog.model";
+import TextArea from "antd/es/input/TextArea";
 
 export interface ReportBlogItem {
   _id: string;
@@ -33,6 +34,7 @@ export interface ReportDetail {
 
 const ReportBlog = () => {
   const [reports, setReports] = useState<ReportBlogItem[]>([]);
+  const [resolveContent, setResolveContent] = useState("");
   const axiosPrivate = useAxiosPrivate();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -50,16 +52,31 @@ const ReportBlog = () => {
     setOpen(false);
   };
 
-  const removeBlog = async (blogId: string) => {
-    console.log(blogId);
+  const removeBlog = async () => {
+    // xoá thì mất hết report chưa xử lí của blog
+    const idBlog = reportDetail?.blog._id;
+    try {
+      await axiosPrivate.put(`${HOST}/api/v1/reports/${reportDetail?.report._id}`, {
+        content: resolveContent
+      });
+      const { data } = await axiosPrivate.delete(`${HOST}/api/v1/blogs/${idBlog}`);
+      toast.success(data.message);
+      setReports(prev => prev.filter(report => report.objectId !== idBlog));
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
+  };
 
-    // try {
-    //   await axiosPrivate.delete("/api/v1/blogs/" + blogId);
-    //   toast.success("Xoá bài viết ", toastOption);
-    //   onClose();
-    // } catch (error: any) {
-    //   toast.error(error.message, toastOption);
-    // }
+  const processReport = async () => {
+    // chỉ mất report được xử lí
+    const idReport = reportDetail?.report._id;
+    try {
+      const { data } = await axiosPrivate.put(`${HOST}/api/v1/reports/${idReport}`);
+      toast.success(data.message);
+      setReports(prev => prev.filter(report => report._id !== reportDetail?.report._id));
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
 
   useEffect(() => {
@@ -106,7 +123,7 @@ const ReportBlog = () => {
       title: "Action",
       dataIndex: "",
       key: "x",
-      render: (_, record) => <Button onClick={() => showDrawer(record)}>Detail</Button>
+      render: (_, record) => <Button onClick={() => showDrawer(record)}>Xử lý</Button>
     }
   ];
 
@@ -119,12 +136,11 @@ const ReportBlog = () => {
         open={open}
         width={400}
         footer={
-          <div
-            style={{
-              textAlign: "right"
-            }}
-          >
-            <Button danger onClick={() => removeBlog(reportDetail?.blog._id as string)}>
+          <div className="flex justify-between">
+            <button className="rounded-md text-white bg-green-500 px-4" onClick={processReport}>
+              Chỉ xử lý
+            </button>
+            <Button danger onClick={removeBlog}>
               Xoá bài viết
             </Button>
           </div>
@@ -133,13 +149,20 @@ const ReportBlog = () => {
         <div className="flex flex-col gap-2">
           <h1 className="text-lg ">Chủ đề: {reportDetail?.blog.blogCateId.name}</h1>
           <h1 className="text-lg">Tiêu đề: {reportDetail?.blog.title}</h1>
-          <p>
-            <span className="font-bold">Lý do báo cáo:</span> {reportDetail?.report.content}
-          </p>
 
           <a href={FE_HOST + "/blogs/" + reportDetail?.blog._id} target="_blank" rel="noreferrer">
             Click để xem chi tiết
           </a>
+          <hr className="my-2" />
+          <p>
+            <span className="font-bold">Lý do báo cáo:</span> {reportDetail?.report.content}
+          </p>
+          <TextArea
+            rows={4}
+            placeholder="Nội dung xử lý"
+            maxLength={300}
+            onChange={e => setResolveContent(e.target.value)}
+          />
         </div>
       </Drawer>
       <Table columns={columns} dataSource={reports} />

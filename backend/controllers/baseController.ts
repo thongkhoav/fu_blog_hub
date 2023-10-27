@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import AppError from "../utils/appError";
 import mongoose from "mongoose";
 const Blog = require("../models/blogModel");
+const User = require("../models/userModel");
 
 const APIFeatures = require("../utils/apiFeatures");
 
@@ -27,7 +28,6 @@ export const deleteOne =
 
 export const updateOne =
   (Model: any) => async (req: Request, res: Response, next: NextFunction) => {
-
     try {
       const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
@@ -38,6 +38,10 @@ export const updateOne =
         return next(
           new AppError(404, "fail", "No document found with that id")
         );
+      }
+
+      if (Model === User) {
+        delete doc.password;
       }
 
       res.status(200).json({
@@ -70,7 +74,7 @@ export const getOne =
 
       if (!mongoose.Types.ObjectId.isValid(id)) {
         // If the provided id is not a valid ObjectID, return a 400 Bad Request response
-        return next(new AppError(400, 'fail', 'Invalid ID'));
+        return next(new AppError(400, "fail", "Invalid ID"));
       }
 
       const doc = await Model.findById(id);
@@ -109,16 +113,18 @@ export const getAll =
     }
   };
 
-export const getWithFilter = (Model: any, query: any) => async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const doc = await Model.find(query);
+export const getWithFilter =
+  (Model: any, query: any) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const doc = await Model.find(query);
 
-    res.status(200).json({
-      status: "success",
-      results: doc.length,
-      data: doc,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+      res.status(200).json({
+        status: "success",
+        results: doc.length,
+        data: doc,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
