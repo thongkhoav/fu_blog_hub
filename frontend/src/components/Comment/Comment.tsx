@@ -91,7 +91,7 @@ export default function Comment({ idBlog }: { idBlog: string }) {
           parentId: -1,
           srcAvartar: data.userId.avatar,
           nameAvartar: data.userId.fullName,
-          timeComment: data.createdAt,
+          timeComment: moment(data.createdAt).format("DD-MM-YYYY"),
           content: data.content,
           replyStatus: false,
           editStatus: false,
@@ -147,7 +147,7 @@ export default function Comment({ idBlog }: { idBlog: string }) {
           >
             {/* Existing component code */}
           </RenderListContext.Provider>
-          <Avartar RenderParentList={RenderList} blogId={idBlog} />
+          <Avartar RenderParentList={RenderList} blogId={idBlog} setList={setRenderList} />
         </div>
       </section>
     </div>

@@ -127,6 +127,7 @@ export const updateComment = async (
     res.status(200).json({
       status: 'success',
       data: updateData,
+      children: childComment,
     });
 
   } 
@@ -144,10 +145,16 @@ export const editComment = async (
 ) => {
   try {
     const commentId = req.params.commentId;
-    const { contentProps, userId } = req.body;
+    const { contentProps, parentId } = req.body;
 
+    console.log(commentId, contentProps, parentId)
     // Find the parent comment
-    const commentUpdate = await Comment.findByIdAndUpdate(commentId, userId,{ content: contentProps });
+    const commentUpdate = await Comment.findByIdAndUpdate(
+      commentId,
+      { content: contentProps }, // Update the content field
+      { new: true } // To get the updated document as the result
+    );
+    const parentComment = await Comment.findById(commentId);
 
     if (!commentUpdate) {
       return res.status(404).json({ message: 'comment not found' });
