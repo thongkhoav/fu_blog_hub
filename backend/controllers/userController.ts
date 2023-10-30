@@ -81,6 +81,13 @@ export const unFollowUser = async (
       userId: (req as any).user._id,
       followUserId: req.params.followUserId,
     });
+    await User.findByIdAndUpdate(req.params.followUserId, {
+      $inc: { numFollower: -1 },
+    });
+
+    await User.findByIdAndUpdate((req as any).user._id, {
+      $inc: { numFollowing: -1 },
+    });
 
     res.status(200).json({
       status: "success",
@@ -98,9 +105,31 @@ export const followUser = async (
   next: NextFunction
 ) => {
   try {
+    const checkFollow = await FollowModel.findOne({
+      userId: (req as any).user._id,
+      followUserId: req.params.followUserId,
+    });
+
+    if (checkFollow) {
+      return next(new AppError(400, "fail", "Bạn đã follow user này rồi"));
+    }
+
+    const checkUser = await User.findById(req.params.followUserId);
+    if (!checkUser) {
+      return next(new AppError(400, "fail", "Không tìm thấy user này"));
+    }
+
     const user = await FollowModel.create({
       userId: (req as any).user._id,
       followUserId: req.params.followUserId,
+    });
+
+    await User.findByIdAndUpdate(req.params.followUserId, {
+      $inc: { numFollower: +1 },
+    });
+
+    await User.findByIdAndUpdate((req as any).user._id, {
+      $inc: { numFollowing: +1 },
     });
 
     res.status(200).json({

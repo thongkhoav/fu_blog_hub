@@ -33,8 +33,7 @@ const tabItems = [
   },
   {
     label: "Bookmark",
-    path: PATH.PROFILE + "/me/bookmark",
-    icon: <BsPersonFillLock />
+    path: PATH.PROFILE + "/me/bookmark"
   },
   {
     label: "Information",
@@ -62,7 +61,7 @@ export default function PersonalProfile() {
   const { pathname } = useLocation();
   const { userGlobal } = useAuth();
 
-  useEffect(() => {}, [pathname]);
+  useEffect(() => {}, [pathname, userGlobal]);
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -80,15 +79,15 @@ export default function PersonalProfile() {
         <p className="text-sm text-center mt-2">{userGlobal.fullName}</p>
         <div className="flex justify-around mt-2">
           <div className="col-span-1 text-center  ">
-            <p className="font-medium text-xs">83</p>
+            <p className="font-medium text-xs">{userGlobal?.numFollower}</p>
             <p className="text-xs">followers</p>
           </div>
           <div className="col-span-1 text-center ">
-            <p className="font-medium text-xs">83</p>
+            <p className="font-medium text-xs">{userGlobal?.numFollowing}</p>
             <p className="text-xs">following</p>
           </div>
         </div>
-        <p className="text-center text-xs my-3 font-light">Bio của các bạn viết ở đây</p>
+        <p className="text-center text-xs my-3 font-light">{userGlobal.userTitle}</p>
         <div className="w-full items-center gap-2 justify-center flex">
           {userTab.map(item => (
             <NavLink

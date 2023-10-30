@@ -22,12 +22,12 @@ interface BlogListProps {
 }
 
 const BlogList = ({ filters, setFilters }: BlogListProps) => {
-  const [fullBlogList, setFullBlogList] = useState<BlogItem[]>([]);
-  const [filteredBlogs, setFilteredBlogs] = useState<BlogItem[]>([]);
   const [showedBlogs, setShowedBlogs] = useState<BlogItem[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const axiosPrivate = useAxiosPrivate();
   const { bookmarkList, setBookmarkList } = useStoreContext();
+  const [fullBlogList, setFullBlogList] = useState<BlogItem[]>([]);
+  const [filteredBlogs, setFilteredBlogs] = useState<BlogItem[]>([]);
   const { userGlobal } = useAuth();
 
   const paginateChange = (page: number) => {
@@ -65,7 +65,6 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
         return isCategoryMatch && isTagMatch;
       });
       setFilteredBlogs(filtered);
-      console.log(filtered.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
 
       setShowedBlogs(filtered.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
     }

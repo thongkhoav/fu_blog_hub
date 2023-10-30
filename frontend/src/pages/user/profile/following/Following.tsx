@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import { useStore } from "react-redux";
 import { useStoreContext } from "~/contexts/StoreProvider";
+import { useAuth } from "~/utils/helpers";
 
 export interface Follow {
   _id: string;
@@ -27,6 +28,7 @@ const Following = () => {
   const [followings, setFollowings] = useState<Follow[]>([]);
   const axiosPrivate = useAxiosPrivate();
   const { setFollowingList } = useStoreContext();
+  const { setUserGlobal } = useAuth();
 
   useEffect(() => {
     (async function () {
@@ -44,6 +46,7 @@ const Following = () => {
       const { data } = await axiosPrivate.delete(`${HOST}/api/v1/users/${userId}/unfollow`);
       setFollowings((prev: any) => prev.filter((user: any) => user.followUserId._id !== userId));
       setFollowingList(prev => prev.filter(id => id !== userId));
+      setUserGlobal((prev: any) => ({ ...prev, numFollowing: prev.numFollowing - 1 }));
       toast.success(data.message, toastOption);
     } catch (error: any) {
       toast.error(error.message, toastOption);

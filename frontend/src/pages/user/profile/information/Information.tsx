@@ -50,6 +50,7 @@ export default function Information() {
           phone: infoUser.phone,
           facebook: infoUser.facebook,
           instagram: infoUser.instagram,
+          userTitle: infoUser.userTitle,
           favoriteCates: infoUser.favoriteCates
         });
         setUserGlobal((prev: any) => ({
@@ -57,6 +58,7 @@ export default function Information() {
           fullName: infoUser.fullName,
           phone: infoUser.phone,
           facebook: infoUser.facebook,
+          userTitle: infoUser.userTitle,
           instagram: infoUser.instagram,
           favoriteCates: infoUser.favoriteCates
         }));
@@ -128,12 +130,12 @@ export default function Information() {
           <Input placeholder="Input your Facebook URL" maxLength={100} />
         </Form.Item>
 
-        <Form.Item name="userTitle" label="Bio">
-          <Input placeholder="Bio của bạn" maxLength={100} />
-        </Form.Item>
-
         <Form.Item name="instagram" label="Instagram">
           <Input placeholder="Input your Instagram URL" maxLength={100} />
+        </Form.Item>
+
+        <Form.Item name="userTitle" label="Bio">
+          <Input placeholder="Bio của bạn" maxLength={100} />
         </Form.Item>
 
         <Form.Item name="favoriteCates" label="Favorite category">

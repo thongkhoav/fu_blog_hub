@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import BlogList from "./blog-list/BlogList";
 import OptionSideBlogs from "./option-side-blogs/OptionSideBlogs";
+import { getAllPublicBlogs } from "~/apis/blog.api";
+import { toast } from "react-toastify";
+import { BlogItem } from "~/utils/models/blog.model";
 
 export interface FilterList {
   category: string[];
@@ -11,6 +14,7 @@ export interface FilterList {
 const BlogListPage = () => {
   const { state } = useLocation();
   const [filters, setFilters] = useState<FilterList>({ category: [], tag: [], ...state });
+
   return (
     <div className="flex mt-5 gap-4">
       <div className="flex-1">

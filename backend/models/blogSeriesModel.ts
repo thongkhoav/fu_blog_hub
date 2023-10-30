@@ -1,11 +1,10 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
-const URLSlug = require("mongoose-slug-generator");
-mongoose.plugin(URLSlug);
+// const URLSlug = require("mongoose-slug-generator");
+// mongoose.plugin(URLSlug);
 
 export interface IBlogSeries extends Document {
   title: string;
   description: string;
-  slug: string;
   userId: Schema.Types.ObjectId;
   numBlog: number;
 }
@@ -19,10 +18,7 @@ blogSeriesSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-  },
-  slug: {
-    type: String,
-    slug: "name",
+    required: true,
   },
   userId: {
     type: Schema.Types.ObjectId,
@@ -31,6 +27,7 @@ blogSeriesSchema = new mongoose.Schema({
   },
   numBlog: {
     type: Number,
+    required: true,
     default: 0,
   },
 });

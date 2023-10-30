@@ -19,10 +19,6 @@ banSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
-    banAt: {
-      type: Date,
-      default: null,
-    },
   },
   {
     timestamps: true,
@@ -38,7 +34,6 @@ interface IUser extends Document {
   role: "admin" | "mentor" | "student";
   majorId?: Schema.Types.ObjectId; // mentor will have major(category)
   active: boolean; // account only login at 1 time
-  isVerifiedEmail: boolean;
   createdAt: Date;
   updatedAt: Date;
   avatar?: string;
@@ -86,10 +81,6 @@ userSchema = new mongoose.Schema(
         },
       ],
       default: [],
-    },
-    isVerifiedEmail: {
-      type: Boolean,
-      default: false,
     },
     numFollower: {
       type: Number,

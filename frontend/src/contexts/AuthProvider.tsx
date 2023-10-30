@@ -39,13 +39,14 @@ function AuthProvider({ children }: any) {
           setUserGlobal(res.data);
           setUserData(res.data);
         })
-        .catch(err => { });
+        .catch(err => {});
     } catch (error) {
       console.log(error);
     }
   }, []);
 
   useEffect(() => {
+    setUserData(userGlobal);
     if (userGlobal != null) {
       // if (userGlobal?.role === Role.ADM) {
       //   navigate("/admin");

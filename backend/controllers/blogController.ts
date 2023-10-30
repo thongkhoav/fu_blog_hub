@@ -74,6 +74,10 @@ export const createBlog = async (
 
     const tagIds: Array<String> = [];
 
+    if (!tags) {
+      next(new AppError(403, "fail", "Tag không được trống"));
+    }
+
     for (const tag of tags) {
       // Kiểm tra xem tag có quá dài hay không
       if (tag.length > 20) {
@@ -369,6 +373,7 @@ export const getAllPublicBlogs = async (
 ) => {
   try {
     const blogPopulate = await Blog.find({ status: BlogState.PUBLIC })
+      .sort({ updatedAt: "desc" })
       .select("-contentRaw")
       .populate({
         path: "userId",

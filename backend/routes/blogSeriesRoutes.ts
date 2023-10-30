@@ -3,13 +3,24 @@ const router = express.Router();
 const blogSeriesController = require("../controllers/blogSeriesController");
 const authController = require("../controllers/authController");
 
-router.delete(
-  "/:id",
-  authController.protect,
-  authController.restrictTo("student", "mentor"),
-  blogSeriesController.checkSeriesOwnership,
-  blogSeriesController.deleteSeries
-);
+router
+  .route("/:id")
+  .get(blogSeriesController.getBlogsOfSeries)
+  .put(
+    authController.protect,
+    authController.restrictTo("student", "mentor"),
+    blogSeriesController.checkSeriesOwnership,
+    blogSeriesController.updateSeries
+  )
+  .delete(
+    authController.protect,
+    authController.restrictTo("student", "mentor"),
+    blogSeriesController.checkSeriesOwnership,
+    blogSeriesController.deleteSeries
+  );
+
+router.route("/:id/blogs").get(blogSeriesController.getBlogsOfSeries);
+
 router.post(
   "/",
   authController.protect,

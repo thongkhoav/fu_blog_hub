@@ -27,6 +27,7 @@ export interface BlogNavItem {
 export interface BlogItem {
   _id: string;
   title: string;
+  blogSeriesId: string;
   thumbnail: string;
   userId: BlogItemAuthor;
   blogCateId: { _id: string; name: string };

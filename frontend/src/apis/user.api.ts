@@ -16,8 +16,8 @@ export interface LoginUser {
   phone?: string;
   numBlog?: number;
   numComment?: number;
-  numFollower?: number;
-  numFollowing?: number;
+  numFollower: number;
+  numFollowing: number;
   userTitle?: string;
   facebook?: string;
   instagram?: string;

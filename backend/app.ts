@@ -54,13 +54,13 @@ app.use(
 app.use(cookieParser());
 
 // Limit request from the same API
-const limiter = rateLimit({
-  max: 150,
-  windowMs: 60 * 60 * 1000,
-  message: "Too Many Request from this IP, please try again in an hour",
-});
+// const limiter = rateLimit({
+//   max: 150,
+//   windowMs: 60 * 60 * 1000,
+//   message: "Too Many Request from this IP, please try again in an hour",
+// });
 
-app.use("/api", limiter);
+// app.use("/api", limiter);
 
 // Body parser, reading data from body into req.body
 app.use(

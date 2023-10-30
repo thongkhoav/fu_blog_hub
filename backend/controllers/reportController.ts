@@ -16,7 +16,7 @@ export const reportOne = async (
       return next(new Error("Please provide all required fields"));
     }
     const report = await Report.create({
-      type: "blog",
+      type: req.body.type,
       content: req.body.content,
       objectId: req.body.objectId,
       reportBy: user._id,

@@ -5,12 +5,14 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 import toastOption from "~/utils/constants/toastOption";
 import AddSeriesModal from "./add-series-modal/AddSeriesModal";
 import { useAuth } from "~/utils/helpers";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useLocation, useParams } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import axios from "~/config/axios";
 import { AiOutlineSetting } from "react-icons/ai";
+import { AxiosResponse } from "axios";
+import { Link } from "react-router-dom";
 
-interface Series {
+export interface Series {
   _id: string;
   title: string;
   description: string;
@@ -22,8 +24,10 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
   const axiosPrivate = useAxiosPrivate();
   const { userGlobal } = useAuth();
   const { idUser } = useParams();
+  const { pathname } = useLocation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [seriesList, setSeriesList] = useState<Series[]>([]);
+  const [updateSeries, setUpdateSeries] = useState<Series>();
 
   const deleteSeries = async (id: string) => {
     try {
@@ -40,6 +44,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
   };
 
   const handleCancel = () => {
+    setUpdateSeries(undefined);
     setIsModalOpen(false);
   };
 
@@ -53,21 +58,32 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
           key: seri._id
         }));
         setSeriesList(formatedSeriesList);
-        console.log(formatedSeriesList);
       } catch (error: any) {
         toast.error(error.message, toastOption);
       }
     };
     getSeries();
-  }, [axiosPrivate]);
+  }, [idUser, userGlobal._id]);
 
   const handleAddSeries = async (values: any) => {
     try {
-      const res = await axiosPrivate.post("/api/v1/series", {
-        ...values,
-        userId: userGlobal._id
-      });
-      setSeriesList(prev => [{ ...res.data.blogSeries, key: res.data.blogSeries._id }, ...prev]);
+      let res: AxiosResponse;
+      if (updateSeries?._id) {
+        res = await axiosPrivate.put("/api/v1/series/" + updateSeries._id, {
+          ...values,
+          userId: userGlobal._id
+        });
+        setSeriesList(prev =>
+          prev.map(seri => (seri._id === res.data.blogSeries._id ? res.data.blogSeries : seri))
+        );
+        setUpdateSeries(undefined);
+      } else {
+        res = await axiosPrivate.post("/api/v1/series", {
+          ...values,
+          userId: userGlobal._id
+        });
+        setSeriesList(prev => [{ ...res.data.blogSeries, key: res.data.blogSeries._id }, ...prev]);
+      }
       setIsModalOpen(false);
       toast.success(res.data.message, toastOption);
     } catch (error: any) {
@@ -80,12 +96,13 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
       {isPersonalProfile && (
         <>
           <Modal
-            title="Add series Modal"
+            title="Thêm series"
             open={isModalOpen}
             onCancel={handleCancel}
             footer={(_, { OkBtn, CancelBtn }) => <CancelBtn />}
+            width={800}
           >
-            <AddSeriesModal handleAddSeries={handleAddSeries} />
+            <AddSeriesModal handleAddSeries={handleAddSeries} series={updateSeries} />
           </Modal>
           <Space align="center" size="middle" className="my-4">
             <Button onClick={showModal}>Thêm series</Button>
@@ -99,7 +116,13 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
               <Popover
                 content={
                   <div className="flex flex-col">
-                    <Button className="text-blue-500 border-none h-fit rounded-none">
+                    <Button
+                      className="text-blue-500 border-none h-fit rounded-none"
+                      onClick={() => {
+                        showModal();
+                        setUpdateSeries(series);
+                      }}
+                    >
                       Chỉnh sửa
                     </Button>
                     <Popconfirm
@@ -133,9 +156,12 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
 
             <div className="flex justify-between items-center mt-2">
               <span className="text-base ">{series.numBlog} bài viết</span>
-              <button className=" bg-blue-200 items-center justify-center rounded-sm py-1 px-3">
+              <Link
+                to={pathname + "/" + series._id}
+                className=" bg-blue-200 items-center justify-center rounded-sm py-1 px-3"
+              >
                 Chi tiết
-              </button>
+              </Link>
             </div>
           </Card>
         ))}

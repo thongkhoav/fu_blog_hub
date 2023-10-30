@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { NavLink, Outlet } from "react-router-dom";
 import { toast } from "react-toastify";
+import { LoginUser } from "~/apis/user.api";
 import axios from "~/config/axios";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { useStoreContext } from "~/contexts/StoreProvider";
 import { HOST, PATH, userPath } from "~/utils/constants";
 import toastOption from "~/utils/constants/toastOption";
+import { useAuth } from "~/utils/helpers";
 import { UserProfile } from "~/utils/models/user.model";
 
 const genTabItems = (userId: string) => {
@@ -28,6 +30,7 @@ export default function Profile() {
   const [user, setUser] = useState<UserProfile>();
   const [tabItems, setTabItems] = useState<{ label: string; path: string }[]>([]);
   const { followingList, setFollowingList } = useStoreContext();
+  const { setUserGlobal } = useAuth();
   const axiosPrivate = useAxiosPrivate();
 
   useEffect(() => {
@@ -40,12 +43,13 @@ export default function Profile() {
         toast.error(error.message, toastOption);
       }
     })();
-  }, [idUser]);
+  }, [idUser, followingList]);
 
   const followUser = async () => {
     try {
       const { data } = await axiosPrivate.post(`${HOST}/api/v1/users/${idUser}/follow`);
       setFollowingList(prev => [...prev, idUser!]);
+      setUserGlobal((prev: LoginUser) => ({ ...prev, numFollower: prev.numFollower + 1 }));
       toast.success(data.message, toastOption);
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -56,8 +60,11 @@ export default function Profile() {
     try {
       const { data } = await axiosPrivate.delete(`${HOST}/api/v1/users/${idUser}/unfollow`);
       setFollowingList(prev => prev.filter(id => id !== idUser));
+      setUserGlobal((prev: any) => ({ ...prev, numFollowing: prev.numFollowing - 1 }));
       toast.success(data.message, toastOption);
     } catch (error: any) {
+      console.log(error);
+
       toast.error(error.message, toastOption);
     }
   };

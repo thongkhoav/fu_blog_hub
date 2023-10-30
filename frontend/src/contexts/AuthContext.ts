@@ -22,7 +22,9 @@ export const AuthContext = createContext<IAuthContext>({
     updatedAt: new Date(),
     favoriteCates: [],
     accessToken: "",
-    refreshToken: ""
+    refreshToken: "",
+    numFollower: 0,
+    numFollowing: 0
   },
   setUserGlobal: () => {},
   onLogin: () => {},

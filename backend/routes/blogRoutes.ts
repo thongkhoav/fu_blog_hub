@@ -19,7 +19,7 @@ router.get(
   blogController.getCustomUserBlogs
 );
 
-// profile user
+// blogs showed in profile user
 router.get("/user/:userId", blogController.getProfilePublicBlogs);
 
 router.get(
@@ -57,7 +57,7 @@ router.get(
   blogController.checkBlogStatus(
     "public",
     "draft",
-    "private",
+    "rejected",
     "waiting",
     "banned"
   ),

@@ -45,6 +45,8 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
   };
 
   const hanleFilter = async () => {
+    console.log(filterCategory, filterTag);
+
     setFilters({ category: filterCategory, tag: filterTag });
   };
 
@@ -56,7 +58,6 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
 
   return (
     <div className="flex flex-col m-5 mr-0 sticky top-20">
-      {/* category contains blog category - chip list */}
       <div>
         <h1 className="text-lg uppercase font-medium mb-2">Chủ đề</h1>
         <div className="flex flex-wrap">
@@ -92,7 +93,7 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
         </div>
       </div>
       <button
-        className="bg-cyan-600 mt-4 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded w-[80%] self-center"
+        className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded w-[80%] self-center"
         onClick={hanleFilter}
       >
         Lọc bài viết
