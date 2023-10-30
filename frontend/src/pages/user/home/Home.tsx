@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import LatestBlogs from "./latest-blogs/LatesBlogs";
 import OptionSideHome from "./option-side-home/OptionSideHome";
 import ForYouBlogs from "./for-you-blog/ForYouBlogs";
+import { useAuth } from "~/utils/helpers";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
 
 const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 

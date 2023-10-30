@@ -1,12 +1,15 @@
-import React, { useState, createContext } from "react";
-
+import React, { useState, createContext, useEffect } from "react";
 import Avartar, { AvartarProps } from "./Avartar/Avartar";
+import { useAuth } from "~/utils/helpers";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import moment from "moment";
+import { redirect } from "react-router-dom";
 
 export const RenderListContext = createContext<RenderListContextProps>({
   renderList: [],
-  setRenderList: () => {},
+  setRenderList: () => { },
   ComId: 0,
-  SetComId: () => {}
+  SetComId: () => { }
 });
 
 export interface RenderListContextProps {
@@ -16,85 +19,100 @@ export interface RenderListContextProps {
   SetComId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function getDate() {
-  const today = new Date();
-  const month = today.getMonth() + 1;
-  const year = today.getFullYear();
-  const date = today.getDate();
-  return `${month}, ${date}, ${year}`;
-}
 
-export default function Comment() {
+export default function Comment({ idBlog }: { idBlog: string }) {
+  const axiosPrivate = useAxiosPrivate();
+  const { userGlobal } = useAuth();
   const [Content, setContent] = useState("");
-  const [ComId, SetComId] = useState(3);
-  const [RenderList, setRenderList] = useState<any[]>([
-    {
-      id: 0,
-      parentId: -1,
-      srcAvartar:
-        "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
-      nameAvartar: "Test1",
-      timeComment: getDate(),
-      comment: "Content",
-      replyStatus: false,
-      childrent: [
-        {
-          id: 1,
-          parentId: 0,
-          srcAvartar:
-            "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
-          nameAvartar: "testname",
-          timeComment: getDate(),
-          comment: "comment test linh hoang"
-        }
-      ]
-    },
-    {
-      id: 2,
-      parentId: -1,
-      srcAvartar:
-        "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
-      nameAvartar: "Test2",
-      timeComment: getDate(),
-      comment: "Content",
-      replyStatus: false,
-      childrent: [
-        {
-          id: 3,
-          parentId: 2,
-          srcAvartar:
-            "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
-          nameAvartar: "testname",
-          timeComment: getDate(),
-          comment: "comment test linh hoang"
-        }
-      ]
+  const [ComId, SetComId] = useState(4);
+  const [RenderList, setRenderList] = useState<any[]>([]);
+
+
+  useEffect(() => {
+    const getComments = async () => {
+      try {
+        const res = await axiosPrivate.get(`/api/v1/comment/${idBlog}`);
+        const commentLists = res.data.data?.map((com: AvartarProps) => ({
+          key: com._id,
+          id: com._id,
+          parentId: -1,
+          srcAvartar: com.userId.avatar,
+          nameAvartar: com.userId.fullName,
+          timeComment: moment(com.createdAt).format("DD-MM-YYYY"),
+          content: com.content,
+          replyStatus: false,
+          editStatus: false,
+          status: com.status,
+          isParent: com.isParent,
+          children: com.children?.map((children: AvartarProps) => ({
+            key:children._id,
+            id: children._id,
+            parentId: com._id,
+            srcAvartar: children.userId.avatar,
+            nameAvartar: children.userId.fullName,
+            timeComment: moment(children.createdAt).format("DD-MM-YYYY"),
+            content: children.content,
+            replyStatus: false,
+            editStatus: false,
+            status: children.status,
+            children: [],
+            isParent: children.isParent,
+          })),
+        }))
+        setRenderList(commentLists)
+      } catch (error: any) {
+        console.log(error);
+      }
     }
-  ]);
+    getComments();
+  }, []);
+
+
 
   const handleChange = (event: any) => {
     setContent(event.target.value);
   };
 
-  const handlePost = (e: any) => {
-    SetComId(ComId + 1);
-    const AvatarValue: AvartarProps = {
-      id: ComId,
-      parentId: -1,
-      srcAvartar:
-        "https://people.com/thmb/anC_C5AnAfUnuEYsr9oevgbnc4M=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():focal(749x0:751x2)/harvey-dog-lopsided-smile-031523-4-e9a52b74aa1744598d8d6dd63e3506a5.jpg",
-      nameAvartar: "Test Name",
-      timeComment: getDate(),
-      comment: Content,
-      replyStatus: false,
-      childrent: []
-    };
+  const handleAddNewComment = async () => {
+    try {
+      if(!userGlobal){
+        return redirect("/login");
+      }
+      const res = await axiosPrivate.post("/api/v1/comment", {
+      userId: userGlobal._id as string,
+      chidren: [],
+      blogId: idBlog,
+      content: Content,
+      });
+      const data = res.data.data
+     
+      const avatarValue = {
+          id: data._id,
+          parentId: -1,
+          srcAvartar: data.userId.avatar,
+          nameAvartar: data.userId.fullName,
+          timeComment: moment(data.createdAt).format("DD-MM-YYYY"),
+          content: data.content,
+          replyStatus: false,
+          editStatus: false,
+          status: true,
+          chidlren:[],
+          isParent: data.isParent,
+      }
+      // add new comment to render list
+      setRenderList([avatarValue, ...RenderList])
+      setContent("")
+   
+    } catch (error: any) {
+      console.log(error);
 
-    setRenderList([AvatarValue, ...RenderList]);
+    }
   };
 
+ 
+
   return (
-    <div className="flex ml-2 pt-5 pb-16 justify-between text-gray-400 border-t border-gray-200">
+    <div className="flex ml-2 pt-5 justify-between text-gray-400 border-t border-gray-200">
       <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
         <div className="max-w-2xl mx-auto px-4">
           {/* //title */}
@@ -107,7 +125,7 @@ export default function Comment() {
           {/* //form comment */}
 
           {/* <form className="mb-6"> */}
-          <div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+          <div className="py-2 px-6 mb-6 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
             <label className="sr-only">Your comment</label>
             <textarea
               id="comment"
@@ -119,7 +137,7 @@ export default function Comment() {
           </div>
           <button
             className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
-            onClick={handlePost}
+            onClick={handleAddNewComment}
           >
             Post comment
           </button>
@@ -129,7 +147,7 @@ export default function Comment() {
           >
             {/* Existing component code */}
           </RenderListContext.Provider>
-          <Avartar RenderParentList={RenderList} />
+          <Avartar RenderParentList={RenderList} blogId={idBlog} setList={setRenderList} />
         </div>
       </section>
     </div>
