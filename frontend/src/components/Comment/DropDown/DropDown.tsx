@@ -13,7 +13,8 @@ const items: MenuProps["items"] = [
   {
     label: "Remove",
     key: "2"
-  }
+  },
+
 ];
 
 function DropDown({comment, parentData, updateRenderList, setEdit, Edit}: {comment: any, parentData: any, updateRenderList: any, setEdit: any, Edit: any}){

@@ -7,6 +7,7 @@ import { useAuth } from "~/utils/helpers";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import DropDown from "../DropDown/DropDown";
 import moment from "moment";
+import { render } from "react-dom";
 export interface AvartarProps {
   _id: string;
   parentId: number;
@@ -23,7 +24,7 @@ export interface AvartarProps {
   isParent: boolean;
 }
 
-export function Avartar({ RenderParentList, blogId }: any) {
+export function Avartar({ RenderParentList, blogId, setList }: any) {
   const axiosPrivate = useAxiosPrivate();
   const { userGlobal } = useAuth();
   const [Edit, setEdit] = useState(false);
@@ -51,9 +52,10 @@ export function Avartar({ RenderParentList, blogId }: any) {
     try {
       const updateComment = await axiosPrivate.put(`/api/v1/comment/edit/${comment.id}`, {
         contentProps: EditValue as string,
+        parentId: userGlobal._id as string
       });
       const data = updateComment.data.data
-
+      console.log(data)
       let list = parentData.map((com: any) => {
         com.key = com.id
         if (com.id == data._id) {
@@ -61,24 +63,25 @@ export function Avartar({ RenderParentList, blogId }: any) {
           com.editStatus = false;
           setEdit(false)
           return com;
-        // }else if(com.children.length > 0){
-        //   let childComment = com.children.map((child: any) =>{
-        //     if(child.id == data._id){
-        //       child.content = data.content;
-        //       child.editStatus = !child.editStatus;
-        //       setEdit(false);
-        //       return child;
-        //     }else{
-        //       return child;
-        //     }
-        //   })
-        //   return childComment;
+        }else if(com.children.length > 0){
+          let childComment = com.children.map((child: any) =>{
+            if(child.id == data._id){
+              child.content = data.content;
+              child.editStatus = !child.editStatus;
+              setEdit(false);
+              return child;
+            }else{
+              return child;
+            }
+          })
+          com.children = childComment;
+          return com;
         }else {
           return com;
         }
       })
-      setRenderList(list);
-      window.location.reload();
+      setEdit(false)
+      setList(list);
       //  parentData.map((comment: AvartarProps) => {
       //   if (comment._id == parent._id) {
       //     return (comment.content = EditValue, comment.editStatus = false, setEdit(false));
@@ -112,7 +115,8 @@ export function Avartar({ RenderParentList, blogId }: any) {
         content: ReplyContent,
       });
       const data = updateParentComment.data.data
-      console.log(data)
+      const child = updateParentComment.data.children
+   
 
       let avatarValue = {
         key: data._id,
@@ -139,19 +143,42 @@ export function Avartar({ RenderParentList, blogId }: any) {
           status: true,
           children: [],
           isParent: false,
-        })),
+        })
+        ),
       }
+      const newChildComment = {
+          id: child._id,
+          parentId: data._id,
+          srcAvartar: data.userId.avatar,
+          nameAvartar: data.userId.fullName,
+          timeComment: moment(data.createdAt).format("DD-MM-YYYY"),
+          content: data.content,
+          replyStatus: false,
+          editStatus: false,
+          status: true,
+          children: [],
+          isParent: false,
+      }
+      setReply(false)
 
       let list = parentData.map((com: any) => {
 
         if (com.id == avatarValue.id) {
+          setReply(false)
+          console.log("ra ne")
           return avatarValue;
         } else {
           return com;
         }
       })
-      setRenderList(list);
+    
+      setList(list);
 
+  
+      // Clear the reply content field
+      setReplyContent("");
+
+      // console.log(parentData)
 
     } catch (error) {
       console.log(error)
@@ -160,7 +187,6 @@ export function Avartar({ RenderParentList, blogId }: any) {
 
 
   const handlerButtonReply = (commentId: any) => {
-    console.log(commentId)
     const list = parentData.map((com: any) => {
       if (com.id == commentId) {
         com.replyStatus = true;
@@ -234,7 +260,6 @@ export function Avartar({ RenderParentList, blogId }: any) {
                 </div>
                 {Reply && parent.replyStatus && (
                       <div>
-                        <form>
                           <textarea
                           className="px-0 w-full text-sm text-gray-400 border-1 rounded-lg focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-800 dark:bg-gray-600"
                           onChange={handlerReplyChange}
@@ -245,8 +270,6 @@ export function Avartar({ RenderParentList, blogId }: any) {
                           >
                             Reply
                           </button>
-                        </form>
-
                       </div>
                     )}
               </article>
