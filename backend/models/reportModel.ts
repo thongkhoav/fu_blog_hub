@@ -31,6 +31,7 @@ reportSchema = new mongoose.Schema(
     },
     resolved: {
       type: Boolean,
+      required: true,
       default: false,
     },
     content: {
