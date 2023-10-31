@@ -9,61 +9,6 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 
 const thumbnail = require("~/assets/images/home_thumbnail.jpg");
 
-const blogsData: BlogItem[] = [
-  {
-    _id: "1",
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. 1",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium minus aperiam inventore sunt excepturi doloremque quis rerum ducimus eligendi tenetur.",
-    blogCateId: {
-      name: "Kinh tế",
-      _id: "sadadada1"
-    },
-    blogSeriesId: "jiherg̃êâ",
-    slug: "yrthg",
-    thumbnail:
-      "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
-    numComment: 323,
-    numView: 231,
-    blogTagIds: [
-      { _id: "asdasd", name: "tag1" },
-      { _id: "2313", name: "tag2" }
-    ],
-    createdAt: "sdasad",
-    userId: {
-      avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
-      _id: "1a",
-      fullName: "Nguyễn Văn A"
-    }
-  },
-  {
-    _id: "12135",
-    title: "Lorem ipsum dolor sit amet consectetur adipisicing elit. 1",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium minus aperiam inventore sunt excepturi doloremque quis rerum ducimus eligendi tenetur.",
-    blogCateId: {
-      name: "Kinh tế",
-      _id: "sadadada1"
-    },
-    blogSeriesId: "561489",
-    slug: "yrthg",
-    thumbnail:
-      "https://media.istockphoto.com/id/518954548/photo/open-moleskin-book-with-fountain-pen-on-wood.jpg?s=612x612&w=0&k=20&c=vFTPdHQlk5OJYuh2ShF8TE33NqdVUqdkYosLrxIm87k=",
-    numComment: 323,
-    numView: 231,
-    blogTagIds: [
-      { _id: "asdasd", name: "tag1" },
-      { _id: "2313", name: "tag2" }
-    ],
-    createdAt: "sdasad",
-    userId: {
-      avatar: "https://cdn-icons-png.flaticon.com/512/1995/1995562.png",
-      _id: "1a",
-      fullName: "Nguyễn Văn A"
-    }
-  }
-];
-
 export default function Home() {
   //lỗi
 
@@ -80,7 +25,7 @@ export default function Home() {
       {/* Nổi bật 4 cái - 3 slide*/}
       <div className="max-w-[1192px] mx-auto">
         <h1>Nổi bật</h1>
-        <HighlightBlogs blogsData={blogsData} />
+        <HighlightBlogs />
         {/* Latest */}
         <h1>Tải lên gần đây</h1>
         <LatestBlogs />

@@ -46,7 +46,7 @@ function AuthProvider({ children }: any) {
   }, []);
 
   useEffect(() => {
-    setUserData(userGlobal);
+    // setUserData(userGlobal === null ? {} : userGlobal);
     if (userGlobal != null) {
       // if (userGlobal?.role === Role.ADM) {
       //   navigate("/admin");

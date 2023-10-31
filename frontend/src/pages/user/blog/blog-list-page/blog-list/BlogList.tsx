@@ -109,7 +109,7 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
                   <hr className="w-[1px] h-[70%] bg-slate-300" />
                   <span className="flex gap-1 items-center">
                     <FcLikePlaceholder />
-                    {blog.numComment}
+                    {blog.totalPoint}
                   </span>
                 </section>
                 {userGlobal && (

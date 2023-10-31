@@ -570,7 +570,7 @@ export const formatMentorUpdateStatus = async (
     return next(new Error("No waiting blog found with that id"));
   }
 
-  if (blog.blogCateId !== (req as any).user.majorId) {
+  if (!(req as any).user.majorId.includes(blog.blogCateId)) {
     return next(
       new Error("Review mentor must be in the same major with the blog")
     );
@@ -747,7 +747,7 @@ export const getApproveBlogs = async (
       path: "blogTagIds",
       select: ["_id", "name"],
     })
-    .where({ blogCateId: majorId })
+    .where({ blogCateId: { $in: majorId } })
     .where("status")
     .in(statusBlogs);
   res.status(200).json({
@@ -762,7 +762,6 @@ export const filterBloglist = async (
   next: NextFunction
 ) => {
   const { category, tag } = req.body;
-  console.log("tag", tag);
   var whereObj: any = {
     status: "public",
   };
@@ -790,7 +789,7 @@ export const getLastesBlog = async (
 ) => {
   const blogs = await Blog.find({ status: "public" })
     .sort({ createdAt: "desc" })
-    .limit(12)
+    .limit(9)
     .populate({
       path: "userId",
       select: ["fullName", "avatar", "_id"],
@@ -798,6 +797,32 @@ export const getLastesBlog = async (
     .populate({
       path: "blogCateId",
       select: "name",
+    });
+  res.status(200).json({
+    status: "success",
+    data: blogs,
+  });
+};
+
+export const getHighlightBlogs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const blogs = await Blog.find({ status: "public" })
+    .sort({ createdAt: "desc", totalPoint: "desc", numView: "desc" })
+    .limit(4)
+    .populate({
+      path: "userId",
+      select: ["fullName", "avatar", "_id"],
+    })
+    .populate({
+      path: "blogCateId",
+      select: "name",
+    })
+    .populate({
+      path: "blogTagIds",
+      select: ["_id", "name"],
     });
   res.status(200).json({
     status: "success",

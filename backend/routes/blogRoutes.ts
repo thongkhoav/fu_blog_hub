@@ -9,6 +9,10 @@ const blogController = require("../controllers/blogController");
 const authController = require("./../controllers/authController");
 // const RedisController = require("./../controllers/redisController");
 
+// homepage get
+router.post(`/getLastesBlog`, blogController.getLastesBlog);
+router.get("/highlight", blogController.getHighlightBlogs);
+
 // blog list get all public blogs
 router.get("/", blogController.getAllPublicBlogs);
 
@@ -130,8 +134,6 @@ router.post(
   authController.protect,
   blogController.filterBloglist
 );
-
-router.post(`/getLastesBlog`, blogController.getLastesBlog);
 
 /**
  * @swagger

@@ -133,6 +133,7 @@ export const getBlogsOfSeries = async (
   next: NextFunction
 ) => {
   try {
+    const series = await BlogSeries.findById(req.params.id);
     const data = await Blog.find({ blogSeriesId: req.params.id })
       .select("-contentRaw")
       .populate({
@@ -151,7 +152,10 @@ export const getBlogsOfSeries = async (
     res.status(200).json({
       status: "success",
       results: data.length,
-      data,
+      data: {
+        series,
+        blogs: data,
+      },
     });
   } catch (error) {
     next(error);

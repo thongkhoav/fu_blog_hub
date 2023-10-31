@@ -113,51 +113,52 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   };
 
   const handleSubmit = (status?: string) => {
-
-    const values = {
+    const values1 = {
       ...form.getFieldsValue(),
       thumbnail: imageUrl,
       contentRaw: data,
-      status: status || "waiting"
+      status: status === "draft" ? "draft" : "waiting"
     };
-    form.validateFields().then(values => {
 
-      if (mode === "Create") {
-        axiosPrivate
-          .post(createBlogApiPath, values)
-          .then(res => {
-            setIsModalOpen(false);
-            toast.success("Thêm bài viết thành công", toastOption);
-          })
-          .catch(err => {
-            toast.error(err.response.data.message, toastOption);
-          });
-      }
-
-      if (mode === "Edit") {
-
-        try {
+    form
+      .validateFields()
+      .then(values => {
+        if (mode === "Create") {
           axiosPrivate
-            .patch(`${updateBlogApiPath}/${idBlog}`, values)
+            .post(createBlogApiPath, values1)
             .then(res => {
               setIsModalOpen(false);
-              toast.success("Cập nhật bài viết thành công", toastOption);
+              toast.success("Thêm bài viết thành công", toastOption);
             })
             .catch(err => {
               toast.error(err.response.data.message, toastOption);
             });
-
-          form.validateFields().then(values => {
-            showModal(false);
-          });
-        } catch (error: any) {
-          toast.error(error.message, toastOption);
         }
-      }
 
-      showModal(false);
-    }).catch(err => {
-    })
+        if (mode === "Edit") {
+          console.log(values1);
+          try {
+            axiosPrivate
+              .patch(`${updateBlogApiPath}/${idBlog}`, values1)
+              .then(res => {
+                setIsModalOpen(false);
+                toast.success("Cập nhật bài viết thành công", toastOption);
+              })
+              .catch(err => {
+                toast.error(err.response.data.message, toastOption);
+              });
+
+            form.validateFields().then(values => {
+              showModal(false);
+            });
+          } catch (error: any) {
+            toast.error(error.message, toastOption);
+          }
+        }
+
+        showModal(false);
+      })
+      .catch(err => {});
   };
 
   useEffect(() => {
@@ -274,13 +275,15 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               name="title"
               rules={[{ required: true, message: "Vui lòng nhập tiêu đề bài viết" }]}
             >
-              <Input maxLength={200}
+              <Input
+                maxLength={200}
                 style={{
                   width: "100%",
                   padding: "0px 6px",
                   borderRadius: "5px",
                   fontSize: "14px"
-                }} />
+                }}
+              />
             </Form.Item>
 
             <Form.Item

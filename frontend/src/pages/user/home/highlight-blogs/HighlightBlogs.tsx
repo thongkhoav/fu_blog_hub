@@ -5,16 +5,46 @@ import { FcLikePlaceholder } from "react-icons/fc";
 import { BlogItem } from "~/utils/models/blog.model";
 import { Link } from "react-router-dom";
 import { PATH } from "~/utils/constants";
+import axios from "~/config/axios";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { useStoreContext } from "~/contexts/StoreProvider";
+import { useAuth } from "~/utils/helpers";
+import toastOption from "~/utils/constants/toastOption";
+import { toast } from "react-toastify";
+import { BsBookmarkFill } from "react-icons/bs";
 
-export default function HighlightBlogs({ blogsData }: { blogsData: BlogItem[] }) {
-  const [hlBlogs, sethlBlogs] = useState<BlogItem[]>(blogsData);
-  useEffect(() => {}, []);
+export default function HighlightBlogs() {
+  const [hlBlogs, sethlBlogs] = useState<BlogItem[]>([]);
+  const axiosPrivate = useAxiosPrivate();
+  const { bookmarkList, setBookmarkList } = useStoreContext();
+  const { userGlobal } = useAuth();
+  useEffect(() => {
+    axios.get(`/api/v1/blogs/highlight`).then(res => {
+      sethlBlogs(res.data.data);
+    });
+  }, []);
+
+  const toggleBookmark = async (blogId: string, toRemove: boolean) => {
+    try {
+      if (toRemove) {
+        await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
+        setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
+        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+      } else {
+        await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
+        setBookmarkList((prev: any) => [...prev, blogId]);
+        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+      }
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
+  };
   return (
     <div
       className="w-full grid grid-cols-2 [&>*:nth-child(odd)]:pr-4
     [&>*:nth-child(even)]:pl-4 mb-4"
     >
-      {[...hlBlogs, ...hlBlogs].map(blog => (
+      {hlBlogs?.map(blog => (
         <div key={blog._id + "asdsd"} className="h-48 flex gap-5 mb-5 flex-[1] box-border">
           <Link to={`${PATH.BLOG}/${blog._id}`} className="w-1/3 rounded-sm max-h-fit">
             <img src={blog.thumbnail} alt="thumbnail" className="object-cover h-full w-full" />
@@ -32,7 +62,19 @@ export default function HighlightBlogs({ blogsData }: { blogsData: BlogItem[] })
                   </span>
                 </section>
                 <span className="text-xl cursor-pointer">
-                  <BiBookmark />
+                  {userGlobal ? (
+                    <span className="text-xl cursor-pointer">
+                      {bookmarkList.includes(blog._id) ? (
+                        <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
+                      ) : (
+                        <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
+                      )}
+                    </span>
+                  ) : (
+                    <Link to={PATH.LOGIN} className="text-xl cursor-pointer">
+                      <BiBookmark />
+                    </Link>
+                  )}
                 </span>
               </div>
               <h1 className=" text-base font-bold">{blog.title}</h1>

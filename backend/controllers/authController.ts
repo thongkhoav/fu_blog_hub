@@ -76,10 +76,10 @@ exports.addMentorAccount = async (
   next: NextFunction
 ) => {
   try {
-    const marjor = await Category.findById(req.body.majorId);
-    if (!marjor) {
-      return next(new AppError(404, "fail", "No major found with that id"));
-    }
+    // const marjor = await Category.findById(req.body.majorId);
+    // if (!marjor) {
+    //   return next(new AppError(404, "fail", "No major found with that id"));
+    // }
 
     const user = await User.create({
       email: req.body.email,

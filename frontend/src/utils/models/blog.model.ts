@@ -29,6 +29,7 @@ export interface BlogItem {
   title: string;
   blogSeriesId: string;
   thumbnail: string;
+  totalPoint: number;
   userId: BlogItemAuthor;
   blogCateId: { _id: string; name: string };
   description: string;
@@ -37,6 +38,7 @@ export interface BlogItem {
   numComment: number;
   slug: string;
   createdAt: string;
+  status: string;
 }
 
 export interface BlogDetail {
@@ -58,4 +60,4 @@ export interface BlogDetail {
   };
 }
 
-export interface Comment { }
+export interface Comment {}

@@ -82,7 +82,6 @@ export default function HomeRoutes() {
         >
           <Route index element={<Posts isEdit={true} />} />
           <Route path="information" element={<Information />} />
-          <Route index element={<Posts />} />
           <Route path={BlogState.DRAFT} element={<Posts />} />
           <Route path={BlogState.WAITING} element={<Posts />} />
           <Route path={BlogState.REJECTED} element={<Posts />} />

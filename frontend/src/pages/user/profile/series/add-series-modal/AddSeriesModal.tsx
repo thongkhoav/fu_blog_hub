@@ -51,17 +51,19 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries, series
   // contains available blogs and blogs of series
   const [blogsToChoose, setBlogsToChoose] = useState<BlogItem[]>([]);
   // show series blogs if series is editing
-  const [seriesBlogs, setSeriesBlogs] = useState<BlogItem[]>([]);
+  const [seriesBlogs, setSeriesBlogs] = useState<string[]>([]);
   const [form] = Form.useForm();
   useEffect(() => {
     (async function () {
       const { data } = await axios.get(`${HOST}/api/v1/blogs/user/${userGlobal?._id}`);
-      if (series?._id) {
+      if (series && series?._id) {
         const blogs = data.data.filter(
           (blog: BlogItem) => !blog.blogSeriesId || blog.blogSeriesId === series._id
         );
         setSeriesBlogs(
-          blogs.map((blog: BlogItem) => (blog.blogSeriesId === series._id ? blog._id : null))
+          blogs
+            .filter((blog: BlogItem) => blog.blogSeriesId === series._id)
+            .map((blog: BlogItem) => blog._id.toString())
         );
         setBlogsToChoose(blogs);
       } else {
@@ -70,7 +72,17 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries, series
       }
     })();
     form.resetFields();
-  }, [form, userGlobal?._id]);
+  }, [form, series, userGlobal?._id]);
+
+  useEffect(() => {
+    if (series) {
+      form.setFieldsValue({
+        title: series.title,
+        description: series.description,
+        blogIds: seriesBlogs
+      });
+    }
+  }, [form, series, seriesBlogs]);
 
   return (
     <Form
@@ -104,9 +116,13 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries, series
         <Input maxLength={200} />
       </Form.Item>
       <Form.Item name="blogIds" label="Bài viết thêm">
-        <Select mode="multiple" placeholder="Chọn bài viết thêm vào" defaultValue={seriesBlogs}>
+        <Select mode="multiple" placeholder="Chọn bài viết thêm vào">
           {blogsToChoose.map(blog => (
-            <Option key={blog._id} value={blog._id}>
+            <Option
+              key={blog._id}
+              value={blog._id}
+              selected={seriesBlogs.includes(blog._id) ? true : false}
+            >
               {blog.title.length > 80 ? blog.title.slice(0, 80) + "..." : blog.title}
             </Option>
           ))}

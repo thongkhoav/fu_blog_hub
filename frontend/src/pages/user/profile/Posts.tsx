@@ -7,7 +7,7 @@ import { AiOutlineSetting } from "react-icons/ai";
 import { NavLink, useLocation, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "~/config/axios";
-import { HOST } from "~/utils/constants";
+import { HOST, PATH } from "~/utils/constants";
 import { useAuth } from "~/utils/helpers";
 import { BlogItem } from "~/utils/models/blog.model";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
@@ -20,6 +20,14 @@ import TimeAgo from "javascript-time-ago";
 import vi from "javascript-time-ago/locale/vi";
 TimeAgo.addDefaultLocale(vi);
 
+const BlogState = {
+  PUBLIC: "public",
+  REMOVED: "removed",
+  WAITING: "waiting",
+  DRAFT: "draft",
+  REJECTED: "rejected"
+};
+
 const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
   const { idUser } = useParams();
   const { userGlobal } = useAuth();
@@ -27,14 +35,6 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
   const axiosPrivate = useAxiosPrivate();
   const location = useLocation();
   const [status, setStatus] = useState<string | null>(null);
-
-  const BlogState = {
-    PUBLIC: "public",
-    REMOVED: "removed",
-    WAITING: "waiting",
-    DRAFT: "draft",
-    REJECTED: "rejected"
-  };
 
   // Nếu params là 1 trong các giá trị của BlogState thì set status = params
   useEffect(() => {
@@ -83,7 +83,7 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
         grid={{ gutter: 12, column: 4 }}
         dataSource={blogList}
         renderItem={(blog: BlogItem) => (
-          <List.Item>{BlogCard(blog, handleDeleteBlog, status != null)}</List.Item>
+          <List.Item>{BlogCard(blog, handleDeleteBlog, isEdit)}</List.Item>
         )}
       />
     </div>
@@ -138,8 +138,16 @@ const BlogCard = (blog: BlogItem, onDelete: any, isEdit: boolean) => {
           <i className="fa-soNavLinkd fa-elNavLinkpsis-vertical"></i>
         </div>
       </div>
-
-      <p className="font-semibold mt-1 line-clamp-2">{blog.title}</p>
+      {BlogState.PUBLIC === blog.status ? (
+        <Link
+          to={`${PATH.BLOG}/${blog._id}`}
+          className="w-1/3 rounded-md overflow-hidden max-h-fit"
+        >
+          <p className="font-semibold mt-1 line-clamp-2">{blog.title}</p>
+        </Link>
+      ) : (
+        <p className="font-semibold mt-1 line-clamp-2">{blog.title}</p>
+      )}
       <p className="line-clamp-2">{blog.description}</p>
       <div className="flex items-center justify-between mt-1">
         <p className="opacity-50 text-[13px]">{timeAgo.format(new Date(blog.createdAt))}</p>

@@ -15,9 +15,15 @@ import toastOption from "~/utils/constants/toastOption";
 import { useAuth } from "~/utils/helpers";
 import { BlogItem } from "~/utils/models/blog.model";
 import { BookmarkBlogItem } from "~/utils/models/bookmark.model";
+import { Series } from "../Series";
+
+interface SeriesDetail {
+  series: Series;
+  blogs: BlogItem[];
+}
 
 function SeriesDetail() {
-  const [seriesBlogs, setSeriesBlogs] = useState<BlogItem[]>([]);
+  const [seriesDetail, setSeriesDetail] = useState<SeriesDetail>();
   const axiosPrivate = useAxiosPrivate();
   const { idSeries } = useParams();
   const navigate = useNavigate();
@@ -28,7 +34,7 @@ function SeriesDetail() {
       try {
         if (!idSeries) return;
         const { data } = await getSeriesBlogs(idSeries);
-        setSeriesBlogs(data.data);
+        setSeriesDetail(data.data);
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -54,8 +60,8 @@ function SeriesDetail() {
   return (
     <div className="w-4/5 min-w-[600px]">
       <div className="relative">
-        <h2 className="text-center">Full stack</h2>
-        <p className="text-center mb-5 text-slate-500">từ a đến á</p>
+        <h2 className="text-center">{seriesDetail?.series.title}</h2>
+        <p className="text-center mb-5 text-slate-500">{seriesDetail?.series.description}</p>
         <Tooltip placement="right" title="Trở về danh sách series">
           <span
             className="absolute left-7 top-5 text-3xl cursor-pointer"
@@ -66,8 +72,8 @@ function SeriesDetail() {
         </Tooltip>
       </div>
       <div className="mb-4 flex flex-col">
-        {seriesBlogs?.map(blog => (
-          <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
+        {seriesDetail?.blogs.map(blog => (
+          <div key={blog._id} className="h-40 flex gap-5 mb-7 flex-[1] box-border shadow-md p-4">
             <Link
               to={`${PATH.BLOG}/${blog._id}`}
               className="w-1/3 rounded-md overflow-hidden max-h-fit"

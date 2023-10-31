@@ -55,10 +55,13 @@ interface AddMentorModalProps {
 const AddMentorModal: React.FC<AddMentorModalProps> = ({ handleAdd }) => {
   const [form] = Form.useForm();
   const [cates, setCates] = useState([]);
+
   useEffect(() => {
     const getCategoriesOption = async () => {
       try {
         const res = await axios.get("/api/v1/categories");
+        console.log(res.data.data);
+
         setCates(res.data.data);
       } catch (error: any) {
         toast.error(error.message, toastOption);
@@ -73,7 +76,6 @@ const AddMentorModal: React.FC<AddMentorModalProps> = ({ handleAdd }) => {
       form={form}
       name="register"
       onFinish={handleAdd}
-      initialValues={{ residence: ["zhejiang", "hangzhou", "xihu"], prefix: "86" }}
       style={{ maxWidth: 600 }}
       scrollToFirstError
     >
@@ -139,7 +141,7 @@ const AddMentorModal: React.FC<AddMentorModalProps> = ({ handleAdd }) => {
         label="Major"
         rules={[{ required: true, message: "Please select major!" }]}
       >
-        <Select placeholder="Select your major">
+        <Select mode="multiple" placeholder="Select your major">
           {cates.map((cate: any) => (
             <Option value={cate._id}>{cate.name}</Option>
           ))}

@@ -32,7 +32,7 @@ interface IUser extends Document {
   phone?: string;
   isBanned: boolean;
   role: "admin" | "mentor" | "student";
-  majorId?: Schema.Types.ObjectId; // mentor will have major(category)
+  majorId?: Array<Schema.Types.ObjectId>; // mentor will have major(category)
   active: boolean; // account only login at 1 time
   createdAt: Date;
   updatedAt: Date;
@@ -66,8 +66,13 @@ userSchema = new mongoose.Schema(
         "https://www.englishclub.com/images/esl-wallpaper/1920x1200/ESL-Wallpaper-1920x1200-2.jpg",
     },
     majorId: {
-      type: Schema.Types.ObjectId,
-      ref: "Categories",
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "Categories",
+        },
+      ],
+      default: [],
     },
     isBanned: {
       type: Boolean,
