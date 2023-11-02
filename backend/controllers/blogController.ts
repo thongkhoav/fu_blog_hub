@@ -2,6 +2,8 @@ import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
 import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
+import { resolve } from "path";
+import { rejects } from "assert";
 const Blog = require("../models/blogModel");
 const Report = require("../models/reportModel");
 const Tag = require("../models/tagModel");
@@ -535,6 +537,42 @@ export const getProfilePublicBlogs = async (
 };
 
 export const updateBlog = base.updateOne(Blog);
+
+export const updateStatusBlog =async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction)=>{
+    try {
+      const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+      }).populate('userId');
+
+      if (!blog) {
+        return next(
+          new AppError(404, "fail", "No document found with that id")
+        );
+      }
+
+      if(blog.userId.role !== 'mentor'){
+        let newNoti:any = {
+          userId: blog.userId._id,
+          content: blog.status === 'public' ? `Bài viết ${blog.title} của bạn đã được mentor phê duyệt` : `Bài viết ${blog.title} của bạn đã bị mentor từ chối`,
+        }
+        if(req.body.status === 'public'){
+          newNoti['url'] = '/blogs/' + blog._id
+        }
+        await Notification.create(newNoti);
+      }
+    
+      res.status(200).json({
+        status: "success",
+        data: blog,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 
 export const checkBlogOwnership = async (
   req: Request,
