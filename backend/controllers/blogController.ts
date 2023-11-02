@@ -2,8 +2,6 @@ import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
 import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
-import { resolve } from "path";
-import { rejects } from "assert";
 const Blog = require("../models/blogModel");
 const Report = require("../models/reportModel");
 const Tag = require("../models/tagModel");
