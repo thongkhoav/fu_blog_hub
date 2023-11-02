@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { Link } from "react-router-dom";
 import TimeAgo from "javascript-time-ago";
 import vi from "javascript-time-ago/locale/vi";
 TimeAgo.addDefaultLocale(vi);
+
 interface NotificationProps {
   readed: boolean;
   content: string;
   createdAt: string;
+  url: string;
 }
 
 const Notification = () => {
@@ -49,14 +52,16 @@ const NotificationItem = (props: any) => {
         props.notificationItem.readed ? "bg-green-300" : "bg-red-300"
       }`}
     >
-      <div className="flex items-center justify-between mb-2">
-        <div className="font-semibold text-lg">Thông báo</div>
-        <div className="text-gray-600 text-sm">
-          <span className="mr-1">{timeAgo.format(new Date(props.notificationItem.createdAt))}</span>
-          <span className={`font-semibold `}></span>
-        </div>
-      </div>
-      <div className="text-gray-800">{props.notificationItem.content}</div>
+     <Link to={props.notificationItem.url} >
+       <div className="flex items-center justify-between mb-2">
+         <div className="font-semibold text-lg">Thông báo</div>
+         <div className="text-gray-600 text-sm">
+           <span className="mr-1">{timeAgo.format(new Date(props.notificationItem.createdAt))}</span>
+           <span className={`font-semibold `}></span>
+         </div>
+       </div>
+       <div className="text-gray-800">{props.notificationItem.content}</div>
+     </Link>
     </div>
   );
 };
