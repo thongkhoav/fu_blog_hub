@@ -4,13 +4,13 @@ import type { ColumnsType } from "antd/es/table";
 import { toast } from "react-toastify";
 import toastOption from "~/utils/constants/toastOption";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
-import { reportBlogApiPath } from "~/apis/blog.api";
 import { useLocation, useParams } from "react-router-dom";
 import { FE_HOST, HOST } from "~/utils/constants";
 import { BlogDetail } from "~/utils/models/blog.model";
 import TextArea from "antd/es/input/TextArea";
+import { reportApiPath } from "~/apis/blog.api";
 
-export interface ReportBlogItem {
+export interface ReportItem {
   _id: string;
   content: string;
   objectId: string;
@@ -19,28 +19,25 @@ export interface ReportBlogItem {
     fullName: string;
     avatar: string;
   };
-  resolve: {
-    resolvedAt: Date;
-    // resolvedBy: Schema.Types.ObjectId;
-    resolveContent?: string;
-  };
+  resolvedAt: Date;
+  resolveContent?: string;
   key: string;
 }
 
 export interface ReportDetail {
   blog: BlogDetail;
-  report: ReportBlogItem;
+  report: ReportItem;
 }
 
 const ReportBlog = () => {
-  const [reports, setReports] = useState<ReportBlogItem[]>([]);
+  const [reports, setReports] = useState<ReportItem[]>([]);
   const [resolveContent, setResolveContent] = useState("");
   const axiosPrivate = useAxiosPrivate();
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const [reportDetail, setReportDetail] = useState<ReportDetail>();
 
-  const showDrawer = async (record: ReportBlogItem) => {
+  const showDrawer = async (record: ReportItem) => {
     try {
       const { data } = await axiosPrivate.get("/api/v1/reports/blog/detail/" + record._id);
       setReportDetail(data.data);
@@ -84,10 +81,10 @@ const ReportBlog = () => {
     const getReports = async () => {
       try {
         const res = await axiosPrivate.get(
-          reportBlogApiPath + "/blog/" + pathnameArr[pathnameArr.length - 1]
+          reportApiPath + "/blog/" + pathnameArr[pathnameArr.length - 1]
         );
 
-        const formatedReports = res.data.data?.map((report: ReportBlogItem) => ({
+        const formatedReports = res.data.data?.map((report: ReportItem) => ({
           ...report,
           key: report._id
         }));
@@ -99,7 +96,7 @@ const ReportBlog = () => {
     getReports();
   }, [pathname]);
 
-  const columns: ColumnsType<ReportBlogItem> = [
+  const columns: ColumnsType<ReportItem> = [
     {
       title: "Người báo cáo",
       render: (_, record) => (

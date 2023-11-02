@@ -32,6 +32,14 @@ export interface UserProfile {
   };
 }
 
+// export interface UserItem {
+//   _id: string;
+//   fullName: string;
+//   email: string;
+//   avatar: string;
+//   creadedAt: string;
+// }
+
 export enum Role {
   ADM = "admin",
   MTR = "mentor",

@@ -3,10 +3,13 @@ import * as base from "./baseController";
 import AppError from "../utils/appError";
 import { promisify } from "util";
 const User = require("../models/userModel");
+const Report = require("../models/reportModel");
 const Bookmark = require("../models/bookmarkModel");
+const Notification = require("../models/notificationModel");
 const FollowModel = require("../models/followUserModel");
 const { createNewAccessToken } = require("../services/createToken");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 export const deleteMe = async (
   req: Request,
@@ -190,7 +193,44 @@ export const getUserFollowers = async (
   }
 };
 
+exports.changePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { password, bannedReason } = req.body;
+
+    if (!password) {
+      return next(new AppError(400, "fail", "Vui lòng nhập mật khẩu mới"));
+    }
+    const hash = await bcrypt.hash(password, 12);
+
+    const user = await User.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        role: "mentor",
+      },
+      {
+        password: hash,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(201).json({
+      status: "success",
+      message: "Đổi mật khẩu thành công",
+      user,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getUser = base.getOne(User);
+
 export const getBasicProfile = async (
   req: Request,
   res: Response,
@@ -214,7 +254,67 @@ export const getBasicProfile = async (
 
 // Don't update password on this
 export const updateUser = base.updateOne(User);
-export const deleteUser = base.deleteOne(User);
+
+// admin delete
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { banUntil, bannedReason } = req.body;
+
+  if (!bannedReason || bannedReason === "") {
+    return next(new AppError(400, "fail", "Vui lòng nhập lý do ban"));
+  }
+
+  try {
+    // find only user with role is not admin
+    const user = await User.findOne({
+      _id: req.params.id,
+      role: { $ne: "admin" },
+    });
+
+    user.isBanned = true;
+    user.ban = {
+      banUntil: new Date(banUntil),
+      bannedReason,
+    };
+
+    // tìm tất cả các report về blog này và resolve nó, content là deleted
+    const reports = await Report.find({
+      objectId: req.params.id,
+      resolved: false,
+      type: "user",
+      resolveContent: "",
+    });
+
+    for (const report of reports) {
+      report.resolved = true;
+      report.resolveContent = "Người dùng đã bị ban";
+      report.resolvedAt = new Date();
+      report.resolvedBy = (req as any).user._id;
+
+      await report.save();
+    }
+
+    // nếu admin xoá thì push noti qua user
+    if ((req as any).user.role === "admin") {
+      await Notification.create({
+        userId: user._id,
+        content: `Người dùng bị ban do ${bannedReason}`,
+      });
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      status: "success",
+      data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // Get new access token
 export const getNewAccessToken = async (

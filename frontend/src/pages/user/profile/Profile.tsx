@@ -1,7 +1,11 @@
+import { Modal, Tooltip } from "antd";
+import TextArea from "antd/es/input/TextArea";
 import { useEffect, useState } from "react";
+import { MdOutlineReportProblem } from "react-icons/md";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { NavLink, Outlet } from "react-router-dom";
 import { toast } from "react-toastify";
+import { reportApiPath } from "~/apis/blog.api";
 import { LoginUser } from "~/apis/user.api";
 import axios from "~/config/axios";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
@@ -32,6 +36,36 @@ export default function Profile() {
   const { followingList, setFollowingList } = useStoreContext();
   const { setUserGlobal } = useAuth();
   const axiosPrivate = useAxiosPrivate();
+  const { userGlobal } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [reportContent, setReportContent] = useState("");
+
+  const handleReportBlog = async () => {
+    if (!userGlobal) {
+      toast.error("Bạn cần đăng nhập để report", toastOption);
+      return;
+    }
+
+    if (!reportContent) return toast.error("Vui lòng nhập lý do báo cáo bài viết", toastOption);
+
+    try {
+      axiosPrivate
+        .post(reportApiPath, {
+          content: reportContent,
+          objectId: idUser,
+          type: "user"
+        })
+        .then(res => {
+          setIsModalOpen(false);
+          toast.success("Report tài khoản thành công", toastOption);
+        })
+        .catch(err => {
+          toast.error(err.response.data.message, toastOption);
+        });
+    } catch (error: any) {
+      toast.error(error.message, toastOption);
+    }
+  };
 
   useEffect(() => {
     setTabItems(genTabItems(idUser!));
@@ -69,15 +103,42 @@ export default function Profile() {
     }
   };
 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="mt-12 gap-5 grid grid-cols-12 w-full justify-between">
       <div className="col-span-2 min-w-[200px]">
-        <div className="w-full flex items-center justify-center">
+        <Modal
+          title="Báo cáo tài khoản"
+          open={isModalOpen}
+          onOk={handleReportBlog}
+          onCancel={handleCancel}
+          okButtonProps={{ disabled: !reportContent, className: "bg-blue-500" }}
+        >
+          <TextArea
+            rows={4}
+            placeholder="Lý do báo cáo"
+            maxLength={200}
+            onChange={e => setReportContent(e.target.value)}
+          />
+        </Modal>
+        <div className="w-full flex items-center justify-center relative">
           <img
             className="w-[100px] h-[100px] rounded-full border border-slate-600"
             src={user?.avatar}
             alt=""
           />
+          <Tooltip title="Report user">
+            <MdOutlineReportProblem
+              className="text-xl cursor-pointer absolute bottom-2 right-2"
+              onClick={showModal}
+            />
+          </Tooltip>
         </div>
         <p className="text-sm text-center mt-2">{user?.fullName}</p>
 

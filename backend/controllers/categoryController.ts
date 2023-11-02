@@ -3,6 +3,7 @@ import * as base from "./baseController";
 import { ICategory } from "../models/categoryModel";
 import AppError from "../utils/appError";
 const Category = require("../models/categoryModel");
+const Blog = require("../models/blogModel");
 
 export const createCategory = async (
   req: Request,
@@ -35,6 +36,11 @@ export const deleteCategory = async (
   next: NextFunction
 ) => {
   try {
+    const blogUseds = await Blog.find({ blogCateId: req.params.id });
+    if (blogUseds.length > 0) {
+      return next(new AppError(400, "fail", "Category is used by some blogs"));
+    }
+
     const doc = await Category.findByIdAndUpdate(
       req.params.id,
       {

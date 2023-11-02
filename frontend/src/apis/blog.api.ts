@@ -33,5 +33,5 @@ export const getSameCateBlogs = async (blogId: string, cateId: string) =>
 export const createBlogApiPath = `${HOST}/api/v1/blogs`;
 export const updateBlogApiPath = `${HOST}/api/v1/blogs`;
 export const getSeftBlogDetailApiPath = `${HOST}/api/v1/blogs/self`;
-export const reportBlogApiPath = `${HOST}/api/v1/reports`;
+export const reportApiPath = `${HOST}/api/v1/reports`;
 export const reportBlogDetailApiPath = `${HOST}/api/v1/reports`;

@@ -41,12 +41,9 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
     } else {
       setFilterTag([...filterTag, tagId]);
     }
-    console.log(filterTag);
   };
 
   const hanleFilter = async () => {
-    console.log(filterCategory, filterTag);
-
     setFilters({ category: filterCategory, tag: filterTag });
   };
 

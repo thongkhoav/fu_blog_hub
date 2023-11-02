@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import toastOption from "~/utils/constants/toastOption";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import TextArea from "antd/es/input/TextArea";
-import { reportBlogApiPath } from "~/apis/blog.api";
+import { reportApiPath } from "~/apis/blog.api";
 
 // cố định khi scroll
 function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
@@ -67,7 +67,7 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
 
     try {
       axiosPrivate
-        .post(reportBlogApiPath, {
+        .post(reportApiPath, {
           content: reportContent,
           objectId: blogDetail._id,
           type: "blog"

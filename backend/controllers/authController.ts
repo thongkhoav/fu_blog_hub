@@ -17,7 +17,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     // 1) check if email and password exist
     if (!email || !password) {
       return next(
-        new AppError(404, "fail", "Please provide email or password")
+        new AppError(404, "fail", "Nhập email và mật khẩu để đăng nhập")
       );
     }
 
@@ -27,7 +27,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     }).select("+password");
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(new AppError(401, "fail", "Email or Password is wrong"));
+      return next(new AppError(401, "fail", "Email hoặc mật khẩu không đúng"));
     }
 
     // 3) All correct, send jwt to client

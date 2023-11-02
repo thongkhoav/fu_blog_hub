@@ -3,6 +3,7 @@ import * as base from "./baseController";
 import AppError from "../utils/appError";
 const Report = require("../models/reportModel");
 const Blog = require("../models/blogModel");
+const User = require("../models/userModel");
 
 export const reportOne = async (
   req: Request,
@@ -85,6 +86,26 @@ export const getReportedBlogs = async (
   }
 };
 
+export const getReportedUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const resolved = req.params.state === "resolved" ? true : false;
+    const reports = await Report.find({ type: "user", resolved })
+      .sort({ createdAt: "desc" })
+      .populate("reportBy", "_id fullName email avatar");
+
+    res.status(200).json({
+      status: "success",
+      data: reports,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getBlogReportDetail = async (
   req: Request,
   res: Response,
@@ -116,6 +137,31 @@ export const getBlogReportDetail = async (
       data: {
         report,
         blog,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getUserReportDetail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const report = await Report.findOne({
+      type: "user",
+      _id: req.params.idUser,
+    }).populate("reportBy", "_id fullName email avatar");
+
+    const user = await User.findById(report.objectId);
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        report,
+        user,
       },
     });
   } catch (error) {

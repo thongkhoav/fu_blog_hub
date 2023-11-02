@@ -27,7 +27,6 @@ export default function LatestBlogs() {
   };
 
   const activeSlides = (idx: number) => {
-    console.log(activeSlide);
     if (idx === activeSlide || idx === activeSlide + 1 || idx === activeSlide + 2) return true;
     return false;
   };

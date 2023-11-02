@@ -66,3 +66,5 @@ export const loginGoogleApi = async (): Promise<UserLoginRes> => {
   });
   return res;
 };
+
+export const deleteUserApiPath = (id: string) => `${HOST}/api/v1/users/${id}`;

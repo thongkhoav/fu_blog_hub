@@ -4,7 +4,6 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 const authController = require("./../controllers/authController");
-
 /**
  * @swagger
  * /api/v1/users/refresh-token:
@@ -182,7 +181,17 @@ router.post(
  *                   description: Thông báo lỗi.
  */
 router.delete("/deleteMe", authController.protect, userController.deleteMe);
+
 router.put("/updateMe/:id", authController.protect, userController.updateUser);
+
+router.put("/changePassword/:id", userController.changePassword);
+
+// router.put(
+//   "/changePassword/:id",
+//   authController.protect,
+//   userController.changePassword
+// );
+
 router.route("/bookmark").get(userController.getUserBookmark);
 
 router.route("/followings").get(userController.getUserFollowings);
@@ -202,6 +211,6 @@ router
   .route("/:id")
   .get(userController.getUser)
   .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+  .put(userController.deleteUser);
 
 module.exports = router;

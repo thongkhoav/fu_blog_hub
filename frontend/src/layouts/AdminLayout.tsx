@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  TagsOutlined,
-  BookOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined
-} from "@ant-design/icons";
+import { TagsOutlined, BookOutlined, UserOutlined } from "@ant-design/icons";
 import { GoReport } from "react-icons/go";
 import { BsNewspaper } from "react-icons/bs";
 import { Avatar, Button, Layout, Menu, Space, Typography, theme } from "antd";
@@ -15,6 +9,7 @@ import { Link } from "react-router-dom";
 import { AiOutlineComment } from "react-icons/ai";
 import Meta from "antd/es/card/Meta";
 import { useAuth } from "~/utils/helpers";
+import { ReportPath } from "~/routes/AdminRoutes";
 
 const { Sider } = Layout;
 
@@ -27,28 +22,32 @@ interface SideBarItemProps {
 }
 
 const items: SideBarItemProps[] = [
-  { icon: <UserOutlined />, label: "Users", link: adminPath(ADMIN_PATH.MANAGE_USER) },
+  { icon: <UserOutlined />, label: "Người dùng", link: adminPath(ADMIN_PATH.MANAGE_USER) },
   { icon: <TagsOutlined />, label: "Tags", link: adminPath(ADMIN_PATH.MANAGE_TAG) },
   {
     icon: <BookOutlined />,
-    label: "Categories",
+    label: "Danh mục",
     link: adminPath(ADMIN_PATH.MANAGE_CATEGORY)
   },
-  { icon: <BsNewspaper />, label: "Blogs", link: adminPath(ADMIN_PATH.MANAGE_BLOG) },
+  { icon: <BsNewspaper />, label: "Bài viết", link: adminPath(ADMIN_PATH.MANAGE_BLOG) },
   {
     icon: <GoReport />,
-    label: "Reports",
+    label: "Báo cáo",
     parentMenu: true,
     children: [
-      { icon: <UserOutlined />, label: "Users", link: adminPath(ADMIN_PATH.REPORT_USER) },
+      {
+        icon: <UserOutlined />,
+        label: "Người dùng",
+        link: adminPath(ADMIN_PATH.REPORT_USER, "unresolved")
+      },
       {
         icon: <BsNewspaper />,
-        label: "Blogs",
-        link: adminPath(ADMIN_PATH.REPORT_BLOG, "resolved")
+        label: "Bài viết",
+        link: adminPath(ADMIN_PATH.REPORT_BLOG, "unresolved")
       },
       {
         icon: <AiOutlineComment />,
-        label: "Comments",
+        label: "Bình luận",
         link: adminPath(ADMIN_PATH.REPORT_COMMENT)
       }
     ]

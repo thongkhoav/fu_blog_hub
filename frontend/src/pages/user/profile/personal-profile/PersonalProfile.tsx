@@ -20,29 +20,33 @@ const tabItems = [
     path: PATH.PROFILE + "/me"
   },
   {
+    label: "Series",
+    path: PATH.PROFILE + "/me/series"
+  },
+  {
     label: "Bài nháp",
-    path: PATH.PROFILE + `/me/${BlogState.DRAFT}`
+    path: PATH.PROFILE + `/me/${BlogState.DRAFT}`,
+    icon: <BsPersonFillLock />
   },
   {
     label: "Bài đang chờ duyệt",
-    path: PATH.PROFILE + `/me/${BlogState.WAITING}`
+    path: PATH.PROFILE + `/me/${BlogState.WAITING}`,
+    icon: <BsPersonFillLock />
   },
   {
     label: "Bài bị từ chối",
-    path: PATH.PROFILE + `/me/${BlogState.REJECTED}`
+    path: PATH.PROFILE + `/me/${BlogState.REJECTED}`,
+    icon: <BsPersonFillLock />
   },
   {
     label: "Bookmark",
-    path: PATH.PROFILE + "/me/bookmark"
+    path: PATH.PROFILE + "/me/bookmark",
+    icon: <BsPersonFillLock />
   },
   {
     label: "Information",
     path: PATH.PROFILE + "/me/information",
     icon: <BsPersonFillLock />
-  },
-  {
-    label: "Series",
-    path: PATH.PROFILE + "/me/series"
   }
 ];
 
@@ -115,9 +119,24 @@ export default function PersonalProfile() {
                   : "text-gray-500"
               } px-2 py-1 hover:bg-gray-100 transition-colors duration-300`}
             >
-              {item.label}
+              {item.label} {item.icon && item.icon}
             </NavLink>
           ))}
+
+          {userGlobal.role === "mentor" && (
+            <NavLink
+              key={PATH.PROFILE + "/me/change-password"}
+              to={PATH.PROFILE + "/me/change-password"}
+              className={`flex items-center justify-center text-sm gap-1 ${
+                pathname === PATH.PROFILE + "/me/change-password"
+                  ? "text-blue-500  border-b-4 border-blue-500"
+                  : "text-gray-500"
+              } px-2 py-1 hover:bg-gray-100 transition-colors duration-300`}
+            >
+              Change password
+              <BsPersonFillLock />
+            </NavLink>
+          )}
         </div>
         <div className="w-full">
           <Outlet />

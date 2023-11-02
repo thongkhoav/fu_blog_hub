@@ -7,12 +7,15 @@ import useAxiosPrivate from "~/config/useAxiosPrivate";
 import axios from "~/config/axios";
 import "./manage-user.scss";
 import AddMentorModal from "./add-mentor-modal/AddMentorModal";
+import { AxiosResponse } from "axios";
 
-interface User {
+export interface User {
   _id: string;
   email: string;
   fullName: string;
   role: string;
+  phone: string;
+  majorId: string[];
   key: string;
   isBanned: boolean;
   ban?: {
@@ -26,6 +29,7 @@ const ManageUser = () => {
   const [users, setUsers] = useState<User[]>([]);
   const axiosPrivate = useAxiosPrivate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mentorDetail, setMentorDetail] = useState<User>();
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -46,9 +50,16 @@ const ManageUser = () => {
 
   const handleAdd = async (values: any) => {
     try {
-      const res = await axiosPrivate.post("/api/v1/users/mentor", values);
-      setUsers(prev => [{ ...res.data.user, key: res.data.user._id }, ...prev]);
+      let res!: AxiosResponse<any, any>;
+      if (mentorDetail?._id) {
+        res = await axiosPrivate.patch("/api/v1/users/" + mentorDetail._id, values);
+        setUsers(prev => [...prev.filter(user => user._id !== mentorDetail?._id), res.data.user]);
+      } else {
+        res = await axiosPrivate.post("/api/v1/users/mentor", values);
+        setUsers(prev => [{ ...res.data.user, key: res.data.user._id }, ...prev]);
+      }
       setIsModalOpen(false);
+      setMentorDetail(undefined);
       toast.success(res.data.message, toastOption);
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -57,6 +68,12 @@ const ManageUser = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setMentorDetail(undefined);
+  };
+
+  const openEditModal = (user: User) => {
+    setIsModalOpen(true);
+    setMentorDetail(user);
   };
 
   const compareTime = (date: Date | undefined) => {
@@ -100,16 +117,23 @@ const ManageUser = () => {
       dataIndex: "",
       key: "x",
       render: (_, record) => (
-        <Popconfirm
-          title="Xoá user"
-          description={`Bạn có chắc xoá ${record.role} ${record.fullName}?`}
-          onConfirm={() => banUser(compareTime(record?.ban?.banUntil))}
-          onCancel={() => {}}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button danger>{compareTime(record?.ban?.banUntil) ? "Unban" : "Ban"}</Button>
-        </Popconfirm>
+        <p>
+          <Popconfirm
+            title="Xoá user"
+            description={`Bạn có chắc xoá ${record.role} ${record.fullName}?`}
+            onConfirm={() => banUser(compareTime(record?.ban?.banUntil))}
+            onCancel={() => {}}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button danger>{compareTime(record?.ban?.banUntil) ? "Unban" : "Ban"}</Button>
+          </Popconfirm>
+          {record.role === "mentor" && (
+            <Button className="ml-2" onClick={() => openEditModal(record)}>
+              Edit
+            </Button>
+          )}
+        </p>
       )
     }
   ];
@@ -123,7 +147,11 @@ const ManageUser = () => {
           onCancel={handleCancel}
           footer={(_, { OkBtn, CancelBtn }) => <CancelBtn />}
         >
-          <AddMentorModal handleAdd={handleAdd} />
+          <AddMentorModal
+            handleAdd={handleAdd}
+            mentorDetail={mentorDetail}
+            setMentorDetail={setMentorDetail}
+          />
         </Modal>
         <Typography.Title
           level={2}

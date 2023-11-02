@@ -3,7 +3,6 @@ import * as base from "./baseController";
 import { IComment } from "../models/commentModel";
 const Comment = require("../models/commentModel");
 
-
 export const createComment = async (
   req: Request,
   res: Response,
@@ -16,11 +15,12 @@ export const createComment = async (
       blogId: req.body.blogId,
       content: req.body.content,
       status: true,
-    })
-    
-    const comment: IComment = await Comment.findOne({_id: com._id}).populate("userId", "_id fullName avatar")
+    });
 
-    console.log(comment)
+    const comment: IComment = await Comment.findOne({ _id: com._id }).populate(
+      "userId",
+      "_id fullName avatar"
+    );
 
     res.status(200).json({
       status: "success",
@@ -39,7 +39,10 @@ export const getAllComment = async (
 ) => {
   try {
     let blogIdProp = req.params.blogId;
-    const com: IComment = await Comment.find({ blogId: blogIdProp, isParent: true})
+    const com: IComment = await Comment.find({
+      blogId: blogIdProp,
+      isParent: true,
+    })
       .populate("userId", "_id fullName avatar")
       .populate({
         path: "children",
@@ -48,9 +51,7 @@ export const getAllComment = async (
           path: "userId",
           select: "_id avatar fullName",
         },
-      })
-      ;
-
+      });
     res.status(200).json({
       status: "success",
       data: com,
@@ -62,15 +63,18 @@ export const getAllComment = async (
   }
 };
 export const getOneComment = base.getOne(Comment);
-export const deleteComment =  async (
+export const deleteComment = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
     let commentId = req.params.commentId;
-    const com = await Comment.findByIdAndUpdate(commentId, { status: false }, { new: true });
-    console.log(com + "backend")
+    const com = await Comment.findByIdAndUpdate(
+      commentId,
+      { status: false },
+      { new: true }
+    );
     res.status(200).json({
       status: "success",
       data: com,
@@ -92,9 +96,8 @@ export const updateComment = async (
 
     // Find the parent comment
     const parentComment = await Comment.findById(commentId);
-    console.log(parentComment)
     if (!parentComment) {
-      return res.status(404).json({ message: 'Parent comment not found' });
+      return res.status(404).json({ message: "Parent comment not found" });
     }
 
     // Create a new child comment
@@ -102,38 +105,35 @@ export const updateComment = async (
       userId: userId, // Set user ID as appropriate
       blogId: parentComment.blogId,
       content: content,
-      isParent: false, 
+      isParent: false,
     });
 
     await childComment.save();
-    console.log(childComment)
 
     // Add the child comment to the parent's children array
     parentComment.children.push(childComment._id);
-    
+
     await parentComment.save();
 
-    const updateData: IComment = await Comment.findOne({_id: commentId})
+    const updateData: IComment = await Comment.findOne({ _id: commentId })
       .populate("userId", "_id fullName avatar")
       .populate({
         path: "children",
         select: "userId content createdAt",
         populate: {
           path: "userId",
-          select: "_id avatar fullName"
-        }       
-      })
+          select: "_id avatar fullName",
+        },
+      });
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: updateData,
       children: childComment,
     });
-
-  } 
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    
+
     next(error);
   }
 };
@@ -147,7 +147,6 @@ export const editComment = async (
     const commentId = req.params.commentId;
     const { contentProps, parentId } = req.body;
 
-    console.log(commentId, contentProps, parentId)
     // Find the parent comment
     const commentUpdate = await Comment.findByIdAndUpdate(
       commentId,
@@ -157,22 +156,19 @@ export const editComment = async (
     const parentComment = await Comment.findById(commentId);
 
     if (!commentUpdate) {
-      return res.status(404).json({ message: 'comment not found' });
+      return res.status(404).json({ message: "comment not found" });
     }
-    
+
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: commentUpdate,
     });
-
-  } 
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    
+
     next(error);
   }
 };
-
 
 export const checkUser = async (
   req: Request,
@@ -181,25 +177,22 @@ export const checkUser = async (
 ) => {
   try {
     const commentId = req.params.commentId;
-    const {userId } = req.body;
+    const { userId } = req.body;
 
     // Find the parent comment
     const comment = await Comment.findOne({ _id: commentId, userId: userId });
 
-
     if (!comment) {
-      return res.status(200).json({ message: 'permission restrict'});
+      return res.status(200).json({ message: "permission restrict" });
     }
-    
+
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: true,
     });
-
-  } 
-  catch (error) {
+  } catch (error) {
     console.log(error);
-    
+
     next(error);
   }
 };
