@@ -22,6 +22,7 @@ notificationSchema = new mongoose.Schema(
     },
     url: {
       type: String,
+        default: "/",
       // required: true,
     },
     content: {

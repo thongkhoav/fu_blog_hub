@@ -13,6 +13,7 @@ const cookieSession = require("cookie-session");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
 
+
 const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
@@ -23,6 +24,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const blogSeriesRoutes = require("./routes/blogSeriesRoutes");
 const reportRoutes = require("./routes/reportRoutes");
 const commentRoutes = require("./routes/commentRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const { globalErrHandler } = require("./controllers/errorController");
 const BlogTag = require("./models/tagModel");
@@ -91,6 +93,7 @@ app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/reports", reportRoutes);
 app.use("/api/upload", uploadRouter);
 app.use("/api/v1/comment", commentRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 app.use(globalErrHandler);
 
 const swaggerOptions = {

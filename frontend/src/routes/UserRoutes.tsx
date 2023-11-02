@@ -14,6 +14,7 @@ import Bookmark from "~/pages/user/profile/bookmark/Bookmark";
 import Information from "~/pages/user/profile/information/Information";
 import SeriesDetail from "~/pages/user/profile/series/series-detail/SeriesDetail";
 import ChangePassword from "~/pages/user/profile/change-password/ChangePassword";
+import Notification from "~/pages/user/notification/Notification";
 const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetailPage = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetailPage"));
@@ -125,6 +126,16 @@ export default function HomeRoutes() {
             </Suspense>
           )}
         />
+
+        <Route
+          path={PATH.NOTIFICATION}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <Notification />
+            </Suspense>
+          )}
+        />
+
         <Route
           path={PATH.EDIT_BLOG + "/:idBlog"}
           Component={() => (
