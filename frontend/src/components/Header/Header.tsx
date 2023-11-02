@@ -1,20 +1,35 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import "./header.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants/paths";
 import { useAuth } from "~/utils/helpers/auth";
 import { BiSearch } from "react-icons/bi";
+import { AiFillBell } from "react-icons/ai";
 import { Avatar, Dropdown, MenuProps } from "antd";
 import { FiLogOut } from "react-icons/fi";
 import { Role } from "~/utils/models/user.model";
+import useAxiosPrivate from "~/config/useAxiosPrivate";
 
 const Header = () => {
   const { userGlobal, onLogout } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => {}, []);
-  const handleWriteBlog = () => {
-    console.log(userGlobal);
+  const [notificationCount  , setNotificationCount] = useState<number>(0);
+  const axiosPrivate = useAxiosPrivate();
 
+  const getNotificationCount = async () => {
+    try {
+      const { data } = await axiosPrivate.get("/api/v1/notifications/count");
+      setNotificationCount(data.data);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  }
+
+  useEffect(() => {
+    getNotificationCount();
+  },[])
+
+  const handleWriteBlog = () => {
     if (userGlobal == null) {
       navigate(userPath(PATH.LOGIN));
     } else {
@@ -50,9 +65,16 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex gap-4 items-center">
-        <div className="p-2 hover:bg-gray-100 hover:cursor-pointer rounded-sm">
-          <BiSearch className="text-2xl " />
-        </div>
+        <Link to='/notification'>
+          <div className="relative">
+            <AiFillBell className="text-2xl text-gray-600" />
+            {notificationCount > 0 && (
+              <div className="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
+                {notificationCount}
+              </div>
+            )}
+          </div>
+        </Link>
         {userGlobal?.role === Role.MTR && (
           <Link
             to={userPath(PATH.WAITING_BLOGS)}

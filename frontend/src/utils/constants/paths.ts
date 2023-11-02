@@ -5,7 +5,8 @@ export const PATH = {
   WRITE_BLOG: "/write-blog",
   EDIT_BLOG: "/edit-blog",
   LOGIN: "/login",
-  PROFILE: "/profile"
+  PROFILE: "/profile",
+  NOTIFICATION: "/notification",
 };
 
 export enum ADMIN_PATH {

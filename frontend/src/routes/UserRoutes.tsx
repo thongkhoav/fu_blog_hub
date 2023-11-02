@@ -13,6 +13,7 @@ import Followers from "~/pages/user/profile/followers/Followers";
 import Bookmark from "~/pages/user/profile/bookmark/Bookmark";
 import Information from "~/pages/user/profile/information/Information";
 import SeriesDetail from "~/pages/user/profile/series/series-detail/SeriesDetail";
+import Notification from "~/pages/user/notification/Notification";
 const Home = lazy(() => import("~/pages/user/home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetailPage = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetailPage"));
@@ -115,6 +116,7 @@ export default function HomeRoutes() {
           </ProtectedRoute>
         }
       >
+
         <Route
           path={PATH.WRITE_BLOG}
           Component={() => (
@@ -123,6 +125,16 @@ export default function HomeRoutes() {
             </Suspense>
           )}
         />
+
+        <Route
+          path={PATH.NOTIFICATION}
+          Component={() => (
+            <Suspense fallback={<Loading />}>
+              <Notification />
+            </Suspense>
+          )}
+        />
+
         <Route
           path={PATH.EDIT_BLOG + "/:idBlog"}
           Component={() => (
