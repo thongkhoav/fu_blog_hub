@@ -52,16 +52,18 @@ const NotificationItem = (props: any) => {
         props.notificationItem.readed ? "bg-green-300" : "bg-red-300"
       }`}
     >
-     <Link to={props.notificationItem.url} >
-       <div className="flex items-center justify-between mb-2">
-         <div className="font-semibold text-lg">Thông báo</div>
-         <div className="text-gray-600 text-sm">
-           <span className="mr-1">{timeAgo.format(new Date(props.notificationItem.createdAt))}</span>
-           <span className={`font-semibold `}></span>
-         </div>
-       </div>
-       <div className="text-gray-800">{props.notificationItem.content}</div>
-     </Link>
+      <Link to={props.notificationItem.url.includes("/blogs/") && props.notificationItem.url}>
+        <div className="flex items-center justify-between mb-2">
+          <div className="font-semibold text-lg">Thông báo</div>
+          <div className="text-gray-600 text-sm">
+            <span className="mr-1">
+              {timeAgo.format(new Date(props.notificationItem.createdAt))}
+            </span>
+            <span className={`font-semibold `}></span>
+          </div>
+        </div>
+        <div className="text-gray-800">{props.notificationItem.content}</div>
+      </Link>
     </div>
   );
 };
