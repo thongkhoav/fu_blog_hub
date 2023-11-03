@@ -86,7 +86,7 @@ router.put(
   "/mentor/waiting-blogs/:id",
   authController.protect,
   authController.restrictTo("mentor"),
-  blogController.updateBlog
+  blogController.updateStatusBlog
 );
 
 router.get(

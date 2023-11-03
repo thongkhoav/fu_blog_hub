@@ -536,6 +536,42 @@ export const getProfilePublicBlogs = async (
 
 export const updateBlog = base.updateOne(Blog);
 
+export const updateStatusBlog =async ( 
+  req: Request,
+  res: Response,
+  next: NextFunction)=>{
+    try {
+      const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+      })
+
+      if (!blog) {
+        return next(
+          new AppError(404, "fail", "No document found with that id")
+        );
+      }
+
+      if(blog.userId.toString() !== (req as any).user._id.toString()){
+        let newNoti:any = {
+          userId: blog.userId,
+          content: blog.status === 'public' ? `Bài viết ${blog.title} của bạn đã được mentor phê duyệt` : `Bài viết ${blog.title} của bạn đã bị mentor từ chối`,
+        }
+        if(req.body.status === 'public'){
+          newNoti['url'] = '/blogs/' + blog._id
+        }
+        await Notification.create(newNoti);
+      }
+    
+      res.status(200).json({
+        status: "success",
+        data: blog,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
 export const checkBlogOwnership = async (
   req: Request,
   res: Response,
