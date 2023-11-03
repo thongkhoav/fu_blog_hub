@@ -544,7 +544,7 @@ export const updateStatusBlog =async (
       const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true,
-      }).populate('userId');
+      })
 
       if (!blog) {
         return next(
@@ -552,9 +552,9 @@ export const updateStatusBlog =async (
         );
       }
 
-      if(blog.userId.role !== 'mentor'){
+      if(blog.userId.toString() !== (req as any).user._id.toString()){
         let newNoti:any = {
-          userId: blog.userId._id,
+          userId: blog.userId,
           content: blog.status === 'public' ? `Bài viết ${blog.title} của bạn đã được mentor phê duyệt` : `Bài viết ${blog.title} của bạn đã bị mentor từ chối`,
         }
         if(req.body.status === 'public'){
