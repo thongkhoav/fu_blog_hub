@@ -22,7 +22,7 @@ interface SeriesDetail {
   blogs: BlogItem[];
 }
 
-function SeriesDetail() {
+function SeriesDetailPage() {
   const [seriesDetail, setSeriesDetail] = useState<SeriesDetail>();
   const axiosPrivate = useAxiosPrivate();
   const { idSeries } = useParams();
@@ -72,74 +72,80 @@ function SeriesDetail() {
         </Tooltip>
       </div>
       <div className="mb-4 flex flex-col">
-        {seriesDetail?.blogs.map(blog => (
-          <div key={blog._id} className="h-40 flex gap-5 mb-7 flex-[1] box-border shadow-md p-4">
-            <Link
-              to={`${PATH.BLOG}/${blog._id}`}
-              className="w-1/3 rounded-md overflow-hidden max-h-fit"
-            >
-              <img
-                src={blog.thumbnail || DEFAULT_IMG}
-                alt="thumbnail"
-                className="object-cover h-full w-full"
-              />
-            </Link>
-            <div className="flex flex-col justify-between w-2/3">
-              <div>
-                <div className="flex justify-between">
-                  {/* category, point and bookmark */}
-                  <section className="flex items-center gap-2">
-                    <span className="text-sm uppercase">{blog.blogCateId.name}</span>
-                    <hr className="w-[1px] h-[70%] bg-slate-300" />
-                    <span className="flex gap-1 items-center">
-                      <FcLikePlaceholder />
-                      {blog.numComment}
-                    </span>
-                  </section>
-                  {userGlobal && (
-                    <span className="text-xl cursor-pointer">
-                      {bookmarkList.includes(blog._id) ? (
-                        <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
-                      ) : (
-                        <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
-                      )}
-                    </span>
-                  )}
-                </div>
-                <Link
-                  to={`${PATH.BLOG}/${blog._id}`}
-                  className=" text-base font-bold break-words line-clamp-2"
-                >
-                  {blog.title}
-                </Link>
-                <p className="text-sm line-clamp-3">{blog.description}</p>
-              </div>
-              <div>
-                {/* user and views */}
-                <div className="flex justify-between mb-2">
+        {seriesDetail?.blogs.length ? (
+          seriesDetail?.blogs.map(blog => (
+            <div key={blog._id} className="h-40 flex gap-5 mb-7 flex-[1] box-border shadow-md p-4">
+              <Link
+                to={`${PATH.BLOG}/${blog._id}`}
+                className="w-1/3 rounded-md overflow-hidden max-h-fit"
+              >
+                <img
+                  src={blog.thumbnail || DEFAULT_IMG}
+                  alt="thumbnail"
+                  className="object-cover h-full w-full"
+                />
+              </Link>
+              <div className="flex flex-col justify-between w-2/3">
+                <div>
+                  <div className="flex justify-between">
+                    {/* category, point and bookmark */}
+                    <section className="flex items-center gap-2">
+                      <span className="text-sm uppercase">{blog.blogCateId.name}</span>
+                      <hr className="w-[1px] h-[70%] bg-slate-300" />
+                      <span className="flex gap-1 items-center">
+                        <FcLikePlaceholder />
+                        {blog.numComment}
+                      </span>
+                    </section>
+                    {userGlobal && (
+                      <span className="text-xl cursor-pointer">
+                        {bookmarkList.includes(blog._id) ? (
+                          <BsBookmarkFill onClick={() => toggleBookmark(blog._id, true)} />
+                        ) : (
+                          <BiBookmark onClick={() => toggleBookmark(blog._id, false)} />
+                        )}
+                      </span>
+                    )}
+                  </div>
                   <Link
-                    to={`/profile/${userGlobal?._id === blog.userId._id ? "me" : blog.userId._id}`}
-                    className="flex items-center gap-3"
+                    to={`${PATH.BLOG}/${blog._id}`}
+                    className=" text-base font-bold break-words line-clamp-2"
                   >
-                    <img
-                      src={blog.userId.avatar}
-                      alt="avatar author"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <span className="text-sm font-bold">{blog.userId.fullName}</span>
+                    {blog.title}
                   </Link>
-                  <span className="flex items-center text-xs">
-                    <AiOutlineEye className="text-xl mr-1" />
-                    {blog.numView}
-                  </span>
+                  <p className="text-sm line-clamp-3">{blog.description}</p>
+                </div>
+                <div>
+                  {/* user and views */}
+                  <div className="flex justify-between mb-2">
+                    <Link
+                      to={`/profile/${
+                        userGlobal?._id === blog.userId._id ? "me" : blog.userId._id
+                      }`}
+                      className="flex items-center gap-3"
+                    >
+                      <img
+                        src={blog.userId.avatar}
+                        alt="avatar author"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <span className="text-sm font-bold">{blog.userId.fullName}</span>
+                    </Link>
+                    <span className="flex items-center text-xs">
+                      <AiOutlineEye className="text-xl mr-1" />
+                      {blog.numView}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-slate-500">"Chưa có bài viết nào trong series này"</p>
+        )}
       </div>
     </div>
   );
 }
 
-export default SeriesDetail;
+export default SeriesDetailPage;

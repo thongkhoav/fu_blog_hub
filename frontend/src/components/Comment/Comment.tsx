@@ -7,9 +7,9 @@ import { redirect } from "react-router-dom";
 
 export const RenderListContext = createContext<RenderListContextProps>({
   renderList: [],
-  setRenderList: () => { },
+  setRenderList: () => {},
   ComId: 0,
-  SetComId: () => { }
+  SetComId: () => {}
 });
 
 export interface RenderListContextProps {
@@ -19,14 +19,12 @@ export interface RenderListContextProps {
   SetComId: React.Dispatch<React.SetStateAction<number>>;
 }
 
-
 export default function Comment({ idBlog }: { idBlog: string }) {
   const axiosPrivate = useAxiosPrivate();
   const { userGlobal } = useAuth();
   const [Content, setContent] = useState("");
   const [ComId, SetComId] = useState(4);
   const [RenderList, setRenderList] = useState<any[]>([]);
-
 
   useEffect(() => {
     const getComments = async () => {
@@ -45,7 +43,7 @@ export default function Comment({ idBlog }: { idBlog: string }) {
           status: com.status,
           isParent: com.isParent,
           children: com.children?.map((children: AvartarProps) => ({
-            key:children._id,
+            key: children._id,
             id: children._id,
             parentId: com._id,
             srcAvartar: children.userId.avatar,
@@ -56,18 +54,16 @@ export default function Comment({ idBlog }: { idBlog: string }) {
             editStatus: false,
             status: children.status,
             children: [],
-            isParent: children.isParent,
-          })),
-        }))
-        setRenderList(commentLists)
+            isParent: children.isParent
+          }))
+        }));
+        setRenderList(commentLists);
       } catch (error: any) {
         console.log(error);
       }
-    }
+    };
     getComments();
   }, []);
-
-
 
   const handleChange = (event: any) => {
     setContent(event.target.value);
@@ -75,45 +71,41 @@ export default function Comment({ idBlog }: { idBlog: string }) {
 
   const handleAddNewComment = async () => {
     try {
-      if(!userGlobal){
+      if (!userGlobal) {
         return redirect("/login");
       }
       const res = await axiosPrivate.post("/api/v1/comment", {
-      userId: userGlobal._id as string,
-      chidren: [],
-      blogId: idBlog,
-      content: Content,
+        userId: userGlobal._id as string,
+        chidren: [],
+        blogId: idBlog,
+        content: Content
       });
-      const data = res.data.data
-     
+      const data = res.data.data;
+
       const avatarValue = {
-          id: data._id,
-          parentId: -1,
-          srcAvartar: data.userId.avatar,
-          nameAvartar: data.userId.fullName,
-          timeComment: moment(data.createdAt).format("DD-MM-YYYY"),
-          content: data.content,
-          replyStatus: false,
-          editStatus: false,
-          status: true,
-          chidlren:[],
-          isParent: data.isParent,
-      }
+        id: data._id,
+        parentId: -1,
+        srcAvartar: data.userId.avatar,
+        nameAvartar: data.userId.fullName,
+        timeComment: moment(data.createdAt).format("DD-MM-YYYY"),
+        content: data.content,
+        replyStatus: false,
+        editStatus: false,
+        status: true,
+        chidlren: [],
+        isParent: data.isParent
+      };
       // add new comment to render list
-      setRenderList([avatarValue, ...RenderList])
-      setContent("")
-   
+      setRenderList([avatarValue, ...RenderList]);
+      setContent("");
     } catch (error: any) {
       console.log(error);
-
     }
   };
 
- 
-
   return (
-    <div className="flex ml-2 pt-5 justify-between text-gray-400 border-t border-gray-200">
-      <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+    <div className="flex ml-2 justify-between  text-gray-400 border-t border-gray-200">
+      <section className="bg-white dark:bg-gray-900 my-5 antialiased">
         <div className="max-w-2xl mx-auto px-4">
           {/* //title */}
           <div className="flex justify-between items-center mb-6">

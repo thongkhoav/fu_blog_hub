@@ -24,13 +24,13 @@ export default function Home() {
       </div>
       {/* Nổi bật 4 cái - 3 slide*/}
       <div className="max-w-[1192px] mx-auto">
-        <h1>Nổi bật</h1>
+        <h1 className="font-medium">Nổi bật</h1>
         <HighlightBlogs />
         {/* Latest */}
-        <h1>Tải lên gần đây</h1>
+        <h1 className="font-medium">Tải lên gần đây</h1>
         <LatestBlogs />
         {/* Dành cho bạn gồm những chủ đề bạn yêu thích */}
-        <h1>Dành cho bạn</h1>
+        <h1 className="font-medium">Dành cho bạn</h1>
         <div className="flex gap-5">
           <div className="flex-[2]">
             {/* danh sách blog theo chủ để đã chọn lúc mới đăng nhập hoặc có thể setting */}

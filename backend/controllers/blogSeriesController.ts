@@ -42,7 +42,7 @@ export const createSeries = async (
       title: req.body.title,
       description: req.body.description,
       userId: user._id,
-      numBlog: req.body.blogIds.length,
+      numBlog: req.body?.blogIds?.length || 0,
     });
 
     const update = await Blog.updateMany(
@@ -134,7 +134,10 @@ export const getBlogsOfSeries = async (
 ) => {
   try {
     const series = await BlogSeries.findById(req.params.id);
-    const data = await Blog.find({ blogSeriesId: req.params.id })
+    const data = await Blog.find({
+      blogSeriesId: req.params.id,
+      status: "public",
+    })
       .select("-contentRaw")
       .populate({
         path: "userId",

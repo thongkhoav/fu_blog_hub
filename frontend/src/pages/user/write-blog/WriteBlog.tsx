@@ -169,6 +169,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
         const data = response.data.data;
 
         form.setFieldsValue({
+          title: data.title,
           description: data.description,
           blogCateId: data.blogCateId._id,
           blogSeriesId: data.blogSeriesId,

@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import "./header.scss";
 import { Link, useNavigate } from "react-router-dom";
 import { PATH, userPath } from "~/utils/constants/paths";
 import { useAuth } from "~/utils/helpers/auth";
-import { BiSearch } from "react-icons/bi";
+import { BiPencil, BiSearch } from "react-icons/bi";
 import { AiFillBell } from "react-icons/ai";
-import { Avatar, Dropdown, MenuProps } from "antd";
+import { Avatar, Dropdown, MenuProps, Tooltip } from "antd";
 import { FiLogOut } from "react-icons/fi";
 import { Role } from "~/utils/models/user.model";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
+import { BsJournalCheck, BsListUl } from "react-icons/bs";
 
 const Header = () => {
   const { userGlobal, onLogout } = useAuth();
   const navigate = useNavigate();
-  const [notificationCount  , setNotificationCount] = useState<number>(0);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const axiosPrivate = useAxiosPrivate();
 
   const getNotificationCount = async () => {
@@ -23,11 +24,11 @@ const Header = () => {
     } catch (error: any) {
       console.log(error.message);
     }
-  }
+  };
 
   useEffect(() => {
     getNotificationCount();
-  },[])
+  }, []);
 
   const handleWriteBlog = () => {
     if (userGlobal == null) {
@@ -60,12 +61,17 @@ const Header = () => {
           />
         </Link>
         <div className="w-[0.5px] h-full bg-gray-200" />
-        <Link to={userPath(PATH.BLOG)} className="font-normal hover:bg-gray-100 py-2 px-4 rounded">
-          Danh sách
-        </Link>
+        <Tooltip title="Danh sách bài viết" placement="bottom">
+          <Link
+            to={userPath(PATH.BLOG)}
+            className="text-2xl bg-gray-100 hover:bg-gray-200 p-2 rounded-full"
+          >
+            <BsListUl />
+          </Link>
+        </Tooltip>
       </div>
       <div className="flex gap-4 items-center">
-        <Link to='/notification'>
+        <Link to="/notification">
           <div className="relative">
             <AiFillBell className="text-2xl text-gray-600" />
             {notificationCount > 0 && (
@@ -76,24 +82,33 @@ const Header = () => {
           </div>
         </Link>
         {userGlobal?.role === Role.MTR && (
-          <Link
-            to={userPath(PATH.WAITING_BLOGS)}
-            className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Duyệt bài
-          </Link>
+          <Tooltip title="Duyệt bài" placement="bottom">
+            <Link
+              to={userPath(PATH.WAITING_BLOGS)}
+              className="bg-gray-100 hover:bg-gray-200 text-lg font-bold p-3 rounded-full flex flex-col items-center cursor-pointer "
+            >
+              <BsJournalCheck />
+            </Link>
+          </Tooltip>
         )}
-        <button
-          className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded"
-          onClick={handleWriteBlog}
-        >
-          Viết bài
-        </button>
+        <Tooltip title="Viết bài" placement="bottom">
+          <div
+            className="bg-gray-100 hover:bg-gray-200 p-3 rounded-full flex flex-col items-center cursor-pointer"
+            onClick={handleWriteBlog}
+          >
+            <BiPencil className="text-lg mx-auto" />
+          </div>
+        </Tooltip>
         {userGlobal ? (
-          <div>
-            <Dropdown menu={{ items }}>
-              <Avatar src={userGlobal.avatar} />
-            </Dropdown>
+          <div className="flex gap-5 items-center">
+            <Tooltip title="Profile" placement="bottom">
+              <Link to={userPath(PATH.PROFILE, "me")}>
+                <Avatar src={userGlobal.avatar} className="border-slate-600" size={"default"} />
+              </Link>
+            </Tooltip>
+            <Tooltip title="Logout" placement="bottom">
+              <FiLogOut onClick={onLogout} className="cursor-pointer" />
+            </Tooltip>
           </div>
         ) : (
           <Link

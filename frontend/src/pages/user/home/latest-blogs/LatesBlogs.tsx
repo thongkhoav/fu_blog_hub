@@ -4,9 +4,12 @@ import { AiOutlineEye } from "react-icons/ai";
 import { BlogItem } from "~/utils/models/blog.model";
 import { Link } from "react-router-dom";
 import axios from "~/config/axios";
+import { useAuth } from "~/utils/helpers";
+import { PATH } from "~/utils/constants";
 
 export default function LatestBlogs() {
   const [latestBlogs, setLatestBlogs] = useState<BlogItem[]>([]);
+  const { userGlobal } = useAuth();
   useEffect(() => {
     axios.post(`/api/v1/blogs/getLastesBlog`).then(res => {
       setLatestBlogs(res.data.data);
@@ -71,13 +74,21 @@ export default function LatestBlogs() {
                     <BiBookmark />
                   </span>
                 </div>
-                <h1 className="break-words text-xl font-bold mb-2 max-w-full">{blog.title}</h1>
+                <Link
+                  to={`${PATH.BLOG}/${blog._id}`}
+                  className="hover:text-blue-500 text-base font-bold break-words line-clamp-2"
+                >
+                  {blog.title}
+                </Link>
                 <p className="text-xs line-clamp-2 text-justify mb-2">{blog.description}</p>
               </div>
               <div>
                 {/* user and views */}
                 <div className="flex justify-between mb-1">
-                  <Link to="/profile/123" className="flex items-center gap-3">
+                  <Link
+                    to={`/profile/${userGlobal?._id === blog.userId._id ? "me" : blog.userId._id}`}
+                    className="flex items-center gap-3"
+                  >
                     <img
                       src={blog?.userId?.avatar}
                       alt="avatar author"

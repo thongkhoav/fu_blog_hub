@@ -89,11 +89,8 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
   return (
     <div className="mb-4 flex flex-col">
       {showedBlogs?.map(blog => (
-        <div key={blog._id} className="h-44 flex gap-5 mb-7 flex-[1] box-border">
-          <Link
-            to={`${PATH.BLOG}/${blog._id}`}
-            className="w-1/3 rounded-md overflow-hidden max-h-fit"
-          >
+        <div key={blog._id} className="max-h-44 flex gap-5 mb-7 flex-[1] box-border">
+          <Link to={`${PATH.BLOG}/${blog._id}`} className="w-1/3 rounded-md overflow-hidden ">
             <img
               src={blog.thumbnail || DEFAULT_IMG}
               alt="thumbnail"
@@ -128,7 +125,7 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
               >
                 {blog.title}
               </Link>
-              <p className="text-sm line-clamp-3">{blog.description}</p>
+              <p className="text-sm line-clamp-2">{blog.description}</p>
             </div>
             <div>
               {/* user and views */}

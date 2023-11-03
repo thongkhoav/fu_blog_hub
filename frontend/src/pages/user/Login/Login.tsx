@@ -36,10 +36,10 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div
-        className={`${styles.loginBlock} max-w-md w-full bg-white p-8 rounded-lg flex flex-col items-center`}
+        className={`${styles.loginBlock} max-w-md w-full bg-white p-6 rounded-lg flex flex-col items-center`}
       >
         <h1 className="text-2xl font-bold mb-8">Login</h1>
-        <form onSubmit={submit}>
+        <form onSubmit={submit} className="w-60">
           <div className="mb-4">
             <label className="block mb-2 font-semibold shad">Email</label>
             <input

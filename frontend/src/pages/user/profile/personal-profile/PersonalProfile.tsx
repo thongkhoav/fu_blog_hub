@@ -44,7 +44,7 @@ const tabItems = [
     icon: <BsPersonFillLock />
   },
   {
-    label: "Information",
+    label: "Tài khoản",
     path: PATH.PROFILE + "/me/information",
     icon: <BsPersonFillLock />
   }
@@ -133,7 +133,7 @@ export default function PersonalProfile() {
                   : "text-gray-500"
               } px-2 py-1 hover:bg-gray-100 transition-colors duration-300`}
             >
-              Change password
+              Đổi mật khẩu
               <BsPersonFillLock />
             </NavLink>
           )}

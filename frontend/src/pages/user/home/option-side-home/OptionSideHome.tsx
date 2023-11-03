@@ -17,16 +17,6 @@ function OptionSideHome({ isBlogDetail = false }) {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const reportItems: MenuProps["items"] = [
-    {
-      key: "1",
-      label: <span onClick={showModal}>Report blog</span>
-    },
-    {
-      key: "2",
-      label: <span>Report user</span>
-    }
-  ];
 
   useEffect(() => {
     (async () => {

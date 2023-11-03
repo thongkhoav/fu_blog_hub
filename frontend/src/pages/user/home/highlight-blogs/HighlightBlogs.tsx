@@ -58,7 +58,7 @@ export default function HighlightBlogs() {
                   <hr className="w-[1px] h-[70%] bg-slate-300" />
                   <span className="flex gap-1 items-center">
                     <FcLikePlaceholder />
-                    {blog.numComment}
+                    {blog.totalPoint}
                   </span>
                 </section>
                 <span className="text-xl cursor-pointer">
@@ -77,13 +77,21 @@ export default function HighlightBlogs() {
                   )}
                 </span>
               </div>
-              <h1 className=" text-base font-bold">{blog.title}</h1>
+              <Link
+                to={`${PATH.BLOG}/${blog._id}`}
+                className="hover:text-blue-500 text-base font-bold break-words line-clamp-2"
+              >
+                {blog.title}
+              </Link>
               <p className="text-xs line-clamp-3">{blog.description}</p>
             </div>
             <div>
               {/* user and views */}
               <div className="flex justify-between mb-2">
-                <Link to="/profile/123" className="flex items-center gap-3">
+                <Link
+                  to={`/profile/${userGlobal?._id === blog.userId._id ? "me" : blog.userId._id}`}
+                  className="flex items-center gap-3"
+                >
                   <img
                     src={blog.userId.avatar}
                     alt="avatar author"
@@ -100,8 +108,9 @@ export default function HighlightBlogs() {
               <div className="flex overflow-x-hidden">
                 {blog.blogTagIds.map(tag => (
                   <Link
-                    to={`/blogs?tag=${tag._id}`}
+                    to={`${PATH.BLOG}`}
                     key={tag._id}
+                    state={{ tag: [tag._id] }}
                     className="text-sm text-inherit px-2 py-1 mr-2 rounded-sm bg-[#f2f2f2]"
                   >
                     {tag.name}

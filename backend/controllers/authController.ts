@@ -30,6 +30,23 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
       return next(new AppError(401, "fail", "Email hoặc mật khẩu không đúng"));
     }
 
+    if (user?.isBanned && user.ban.banUntil > Date.now()) {
+      return next(
+        new AppError(
+          401,
+          "fail",
+          "Tài khoản của bạn đã bị khóa vì" + user.ban.bannedReason
+        )
+      );
+    }
+
+    user.isBanned = false;
+    user.ban = {
+      banUntil: null,
+      bannedReason: "",
+    };
+    await user.save();
+
     // 3) All correct, send jwt to client
     const token = createNewAccessToken(user);
     const refreshToken = createRefreshToken(user);
