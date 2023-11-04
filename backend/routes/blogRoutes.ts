@@ -10,27 +10,14 @@ const authController = require("./../controllers/authController");
 // const RedisController = require("./../controllers/redisController");
 
 // homepage get
-router.post(`/getLastesBlog`, blogController.getLastesBlog);
+router.post("/getLastesBlog", blogController.getLastesBlog);
 router.get("/highlight", blogController.getHighlightBlogs);
-
-// blog list get all public blogs
-router.get("/", blogController.getAllPublicBlogs);
 
 // dành cho bạn ở home
 router.get(
   "/for-you",
   authController.protect,
   blogController.getCustomUserBlogs
-);
-
-// blogs showed in profile user
-router.get("/user/:userId", blogController.getProfilePublicBlogs);
-
-router.get(
-  "/user/private/:userId/",
-  authController.protect,
-  authController.restrictTo("student", "mentor"),
-  blogController.getAllPrivateBlogs
 );
 
 router.get(
@@ -40,6 +27,19 @@ router.get(
   // Nếu anh em nào chưa cài redis thì comment dòng này đi nhé
   // RedisController.increaseViewWithCache,
   blogController.getOnePublicBlog
+);
+
+// blog list get all public blogs
+router.get("/", blogController.getAllPublicBlogs);
+
+// blogs showed in profile user
+router.get("/user/:userId", blogController.getProfilePublicBlogs);
+
+router.get(
+  "/user/private/:userId/",
+  authController.protect,
+  authController.restrictTo("student", "mentor"),
+  blogController.getAllPrivateBlogs
 );
 
 router.get("/:blogId/author/:userId", blogController.getSameAuthorBlogs);

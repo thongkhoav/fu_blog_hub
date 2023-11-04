@@ -42,7 +42,7 @@ export const resolveReport = async (
     const { content } = req.body;
 
     if (!content) {
-      return next(new AppError(400, "fail", "nhập nội dung giải quyết"));
+      return next(new AppError(400, "fail", "nhập nội dung xử lý"));
     }
     const report = await Report.findByIdAndUpdate(
       req.params.id,

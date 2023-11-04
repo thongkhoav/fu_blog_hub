@@ -94,7 +94,12 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
                   )}
                 </span>
               </div>
-              <h1 className="text-sm mb-2 line-clamp-2">{blog.title}</h1>
+              <Link
+                to={`${PATH.BLOG}/${blog._id}`}
+                className="break-words font-bold line-clamp-2 text-sm mb-2"
+              >
+                {blog.title}
+              </Link>
               <p className="text-xs line-clamp-2">{blogDetail.description}</p>
             </div>
           </div>
@@ -106,7 +111,7 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
       {/* cùng chủ đề thì bỏ  chủ đề trên cùng */}
       <h1 className="text-base uppercase font-bold">Chủ đề: {blogDetail.blogCateId.name}</h1>
       {cateBlogs.length === 0 ? (
-        <p>Không có bài viết cũng chủ đề</p>
+        <p>Không có bài viết cùng chủ đề</p>
       ) : (
         cateBlogs.map(blog => (
           <div key={blog._id} className="border rounded-md p-1 h-30 w-full grid grid-cols-4 gap-2">

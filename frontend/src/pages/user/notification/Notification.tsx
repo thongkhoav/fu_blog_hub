@@ -19,6 +19,8 @@ const Notification = () => {
   const getNotification = async () => {
     try {
       const { data } = await axiosPrivate.get("/api/v1/notifications");
+      console.log(data.data);
+
       setNotification(data.data);
     } catch (error: any) {
       console.log(error.message);
@@ -48,22 +50,21 @@ const NotificationItem = (props: any) => {
 
   return (
     <div
-      className={`bg-white border rounded p-4 shadow-mdm ${
-        props.notificationItem.readed ? "bg-green-300" : "bg-red-300"
+      className={`border rounded mb-2 p-4 shadow-mdm ${
+        props.notificationItem.readed ? "bg-white" : "bg-red-300"
       }`}
     >
-      <Link to={props.notificationItem.url.includes("/blogs/") && props.notificationItem.url}>
-        <div className="flex items-center justify-between mb-2">
-          <div className="font-semibold text-lg">Thông báo</div>
-          <div className="text-gray-600 text-sm">
-            <span className="mr-1">
-              {timeAgo.format(new Date(props.notificationItem.createdAt))}
-            </span>
-            <span className={`font-semibold `}></span>
-          </div>
+      <Link
+        to={props.notificationItem.url.includes("/blogs/") && props.notificationItem.url}
+        className="flex items-center justify-between mb-2"
+      >
+        <div className="font-semibold text-lg">Thông báo</div>
+        <div className="text-gray-600 text-sm">
+          <span className="mr-1">{timeAgo.format(new Date(props.notificationItem.createdAt))}</span>
+          <span className={`font-semibold `}></span>
         </div>
-        <div className="text-gray-800">{props.notificationItem.content}</div>
       </Link>
+      <div className="text-gray-800">{props.notificationItem.content}</div>
     </div>
   );
 };

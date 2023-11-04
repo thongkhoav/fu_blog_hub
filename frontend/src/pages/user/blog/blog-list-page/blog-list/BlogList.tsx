@@ -62,7 +62,7 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
           filters.category.length === 0 || filters.category.includes(blog.blogCateId._id);
         const isTagMatch =
           filters.tag.length === 0 || blog.blogTagIds.some(tag => filters.tag.includes(tag._id));
-        return isCategoryMatch && isTagMatch;
+        return isCategoryMatch || isTagMatch;
       });
       setFilteredBlogs(filtered);
 

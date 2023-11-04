@@ -9,6 +9,7 @@ import { FE_HOST, HOST } from "~/utils/constants";
 import { BlogDetail } from "~/utils/models/blog.model";
 import TextArea from "antd/es/input/TextArea";
 import { reportApiPath } from "~/apis/blog.api";
+import moment from "moment";
 
 export interface ReportItem {
   _id: string;
@@ -33,7 +34,8 @@ const ReportBlog = () => {
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [resolveContent, setResolveContent] = useState("");
   const axiosPrivate = useAxiosPrivate();
-  const [open, setOpen] = useState(false);
+  const [status, setStatus] = useState<string>();
+  const [openDrawer, setOpenDrawer] = useState(false);
   const { pathname } = useLocation();
   const [reportDetail, setReportDetail] = useState<ReportDetail>();
 
@@ -42,11 +44,11 @@ const ReportBlog = () => {
       const { data } = await axiosPrivate.get("/api/v1/reports/blog/detail/" + record._id);
       setReportDetail(data.data);
     } catch (error) {}
-    setOpen(true);
+    setOpenDrawer(true);
   };
 
   const onClose = () => {
-    setOpen(false);
+    setOpenDrawer(false);
   };
 
   const removeBlog = async () => {
@@ -58,6 +60,7 @@ const ReportBlog = () => {
       });
       const { data } = await axiosPrivate.delete(`${HOST}/api/v1/blogs/${idBlog}`);
       toast.success(data.message);
+      setOpenDrawer(false);
       setReports(prev => prev.filter(report => report.objectId !== idBlog));
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -67,9 +70,13 @@ const ReportBlog = () => {
   const processReport = async () => {
     // chỉ mất report được xử lí
     const idReport = reportDetail?.report._id;
+    if (!resolveContent) return toast.error("Vui lòng nhập nội dung xử lý", toastOption);
     try {
-      const { data } = await axiosPrivate.put(`${HOST}/api/v1/reports/${idReport}`);
-      toast.success(data.message);
+      const { data } = await axiosPrivate.put(`${HOST}/api/v1/reports/${idReport}`, {
+        content: resolveContent
+      });
+      toast.success("Đã xử lí report", toastOption);
+      setOpenDrawer(false);
       setReports(prev => prev.filter(report => report._id !== reportDetail?.report._id));
     } catch (error: any) {
       toast.error(error.response.data.message);
@@ -78,6 +85,8 @@ const ReportBlog = () => {
 
   useEffect(() => {
     const pathnameArr = pathname.split("/");
+    const status1 = pathnameArr[pathnameArr.length - 1];
+    setStatus(status1);
     const getReports = async () => {
       try {
         const res = await axiosPrivate.get(
@@ -120,7 +129,15 @@ const ReportBlog = () => {
       title: "Action",
       dataIndex: "",
       key: "x",
-      render: (_, record) => <Button onClick={() => showDrawer(record)}>Xử lý</Button>
+      render: (_, record) => (
+        <>
+          {status === "unresolved" ? (
+            <Button onClick={() => showDrawer(record)}>Xử lý</Button>
+          ) : (
+            <Button onClick={() => showDrawer(record)}>Chi tiết</Button>
+          )}
+        </>
+      )
     }
   ];
 
@@ -130,36 +147,54 @@ const ReportBlog = () => {
         title="Chi tiết báo cáo bài viết"
         placement="right"
         onClose={onClose}
-        open={open}
+        open={openDrawer}
         width={400}
         footer={
-          <div className="flex justify-between">
-            <button className="rounded-md text-white bg-green-500 px-4" onClick={processReport}>
-              Chỉ xử lý
-            </button>
-            <Button danger onClick={removeBlog}>
-              Xoá bài viết
-            </Button>
-          </div>
+          status === "unresolved" && (
+            <div className="flex justify-between">
+              <button className="rounded-md text-white bg-green-500 px-4" onClick={processReport}>
+                Chỉ xử lý
+              </button>
+              <Button danger onClick={removeBlog}>
+                Xoá bài viết
+              </Button>
+            </div>
+          )
         }
       >
         <div className="flex flex-col gap-2">
           <h1 className="text-lg ">Chủ đề: {reportDetail?.blog.blogCateId.name}</h1>
           <h1 className="text-lg">Tiêu đề: {reportDetail?.blog.title}</h1>
+          <p>Tác giả: {reportDetail?.blog.userId.fullName}</p>
 
           <a href={FE_HOST + "/blogs/" + reportDetail?.blog._id} target="_blank" rel="noreferrer">
             Click để xem chi tiết
           </a>
           <hr className="my-2" />
-          <p>
-            <span className="font-bold">Lý do báo cáo:</span> {reportDetail?.report.content}
-          </p>
-          <TextArea
-            rows={4}
-            placeholder="Nội dung xử lý"
-            maxLength={300}
-            onChange={e => setResolveContent(e.target.value)}
-          />
+          {status === "unresolved" ? (
+            <>
+              <p>
+                <span className="font-bold">Lý do báo cáo:</span> {reportDetail?.report.content}
+              </p>
+              <TextArea
+                rows={4}
+                placeholder="Nội dung xử lý"
+                maxLength={300}
+                onChange={e => setResolveContent(e.target.value)}
+              />
+            </>
+          ) : (
+            <>
+              <p>
+                <span className="font-bold">Nội dung xử lý:</span>{" "}
+                {reportDetail?.report.resolveContent}
+              </p>
+              <p>
+                <span className="font-bold">Xử lý lúc:</span>{" "}
+                {moment(reportDetail?.report.resolvedAt).utc().format("DD-MM-YYYY HH:mm")}
+              </p>
+            </>
+          )}
         </div>
       </Drawer>
       <Table columns={columns} dataSource={reports} />

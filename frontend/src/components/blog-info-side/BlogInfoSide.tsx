@@ -136,14 +136,14 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
             <span className="text-xs">{blogDetail.userId.fullName}</span>
           </Link>
           <div className="flex gap-3">
-            <Tooltip title="Go to comments">
+            <Tooltip placement="bottom" title="Go to comments">
               <BiCommentDetail className="text-xl cursor-pointer" />
             </Tooltip>
-            <Dropdown menu={{ items: reportItems }}>
-              <MdOutlineReportProblem className="text-xl cursor-pointer" />
-            </Dropdown>
+            <Tooltip placement="bottom" title="Report blog">
+              <MdOutlineReportProblem className="text-xl cursor-pointer" onClick={showModal} />
+            </Tooltip>
 
-            <Tooltip title="Bookmark">
+            <Tooltip placement="bottom" title="Bookmark">
               {userGlobal && (
                 <span className="text-xl cursor-pointer">
                   {bookmarkList.includes(blogDetail._id) ? (

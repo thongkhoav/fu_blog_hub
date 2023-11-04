@@ -33,7 +33,7 @@ import {
 } from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { useAuth } from "~/utils/helpers";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const { v4: uuidv4 } = require("uuid");
 
 const { TextArea } = Input;
@@ -76,6 +76,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
   const [imageUrl, setImageUrl] = useState<string>();
   const axiosPrivate = useAxiosPrivate();
   const { idBlog } = useParams();
+  const navigate = useNavigate();
   const addNewTag = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
     if (newTag === "") return;
@@ -128,6 +129,12 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             .post(createBlogApiPath, values1)
             .then(res => {
               setIsModalOpen(false);
+              if (status === "draft") {
+                navigate(`/blogs/me/draft`);
+                toast.success("Lưu bản nháp thành công", toastOption);
+                return;
+              }
+              navigate(`/blogs/me/waiting`);
               toast.success("Thêm bài viết thành công", toastOption);
             })
             .catch(err => {
@@ -142,6 +149,12 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               .patch(`${updateBlogApiPath}/${idBlog}`, values1)
               .then(res => {
                 setIsModalOpen(false);
+                if (res.data.data.status === "draft") {
+                  navigate(`/blogs/me/draft`);
+                  toast.success("Lưu bản nháp thành công", toastOption);
+                  return;
+                }
+                navigate(`/blogs/me/waiting`);
                 toast.success("Cập nhật bài viết thành công", toastOption);
               })
               .catch(err => {

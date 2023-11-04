@@ -97,6 +97,7 @@ exports.addMentorAccount = async (
     // if (!marjor) {
     //   return next(new AppError(404, "fail", "No major found with that id"));
     // }
+    console.log(req.body.majorId);
 
     const user = await User.create({
       email: req.body.email,
@@ -107,7 +108,7 @@ exports.addMentorAccount = async (
       majorId: req.body.majorId, // major is category
     });
 
-    user.password = undefined;
+    delete user.password;
 
     res.status(201).json({
       status: "success",
@@ -115,6 +116,8 @@ exports.addMentorAccount = async (
       user,
     });
   } catch (err) {
+    console.log(err);
+
     next(err);
   }
 };

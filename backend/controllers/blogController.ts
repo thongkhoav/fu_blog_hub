@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, raw } from "express";
 import * as base from "./baseController";
 import { IBlog } from "../models/blogModel";
 import AppError from "../utils/appError";
+import mongoose from "mongoose";
 const Blog = require("../models/blogModel");
 const Report = require("../models/reportModel");
 const Tag = require("../models/tagModel");
@@ -272,7 +273,13 @@ export const getOnePublicBlog = async (
   next: NextFunction
 ) => {
   try {
-    const blogPopulate = await Blog.findById(req.params.id)
+    if (!mongoose.Types.ObjectId.isValid(req.params.id))
+      return res.status(404).json({ msg: `No blog with id :${req.params.id}` });
+
+    const blogPopulate = await Blog.findOne({
+      _id: req.params.id,
+      status: "public",
+    })
       .populate({
         path: "userId",
         select: ["fullName", "avatar", "_id"],
@@ -290,7 +297,12 @@ export const getOnePublicBlog = async (
       status: "success",
       data: blogPopulate,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error);
+
+    if (error.name === "CastError") {
+      return next(new AppError(404, "fail", "Blog not found"));
+    }
     next(error);
   }
 };
@@ -536,41 +548,43 @@ export const getProfilePublicBlogs = async (
 
 export const updateBlog = base.updateOne(Blog);
 
-export const updateStatusBlog =async ( 
+export const updateStatusBlog = async (
   req: Request,
   res: Response,
-  next: NextFunction)=>{
-    try {
-      const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true,
-      })
+  next: NextFunction
+) => {
+  try {
+    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
-      if (!blog) {
-        return next(
-          new AppError(404, "fail", "No document found with that id")
-        );
-      }
-
-      if(blog.userId.toString() !== (req as any).user._id.toString()){
-        let newNoti:any = {
-          userId: blog.userId,
-          content: blog.status === 'public' ? `Bài viết ${blog.title} của bạn đã được mentor phê duyệt` : `Bài viết ${blog.title} của bạn đã bị mentor từ chối`,
-        }
-        if(req.body.status === 'public'){
-          newNoti['url'] = '/blogs/' + blog._id
-        }
-        await Notification.create(newNoti);
-      }
-    
-      res.status(200).json({
-        status: "success",
-        data: blog,
-      });
-    } catch (error) {
-      next(error);
+    if (!blog) {
+      return next(new AppError(404, "fail", "No document found with that id"));
     }
+
+    if (blog.userId.toString() !== (req as any).user._id.toString()) {
+      let newNoti: any = {
+        userId: blog.userId,
+        content:
+          blog.status === "public"
+            ? `Bài viết ${blog.title} của bạn đã được mentor phê duyệt`
+            : `Bài viết ${blog.title} của bạn đã bị mentor từ chối`,
+      };
+      if (req.body.status === "public") {
+        newNoti["url"] = "/blogs/" + blog._id;
+      }
+      await Notification.create(newNoti);
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: blog,
+    });
+  } catch (error) {
+    next(error);
   }
+};
 
 export const checkBlogOwnership = async (
   req: Request,
@@ -751,6 +765,11 @@ export const formatUpdateData = async (
 
 export const checkBlogStatus = (...status: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id))
+      return res
+        .status(404)
+        .json({ message: `No blog with id ${req.params.id}` });
+
     const blog = await Blog.findById(req.params.id);
     if (!status.includes(blog.status)) {
       return next(

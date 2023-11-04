@@ -87,16 +87,17 @@ function ReportUser() {
   };
 
   const processReport = async () => {
-    // chỉ mất report được xử lí
+    // chỉ mất report được xử l
     if (resolveContent === "") {
       toast.error("Vui lòng nhập nội dung xử lý");
       return;
     }
-
     const idReport = reportDetail?.report._id;
     if (!idReport) return;
     try {
-      const { data } = await axiosPrivate.put(`${HOST}/api/v1/reports/${idReport}`);
+      const { data } = await axiosPrivate.put(`${HOST}/api/v1/reports/${idReport}`, {
+        content: resolveContent
+      });
       toast.success(data.message);
       setReports(prev => prev.filter(report => report._id !== reportDetail?.report._id));
       setResolveContent("");
@@ -182,18 +183,12 @@ function ReportUser() {
           >
             Cancel
           </Button>,
-          <Button
-            key="customOk"
-            form="myForm"
-            htmlType="submit"
-            className="h-[40px]"
-            onClick={banUser}
-          >
+          <Button key="customOk" className="h-[40px]" onClick={banUser}>
             Ban user
           </Button>
         ]}
       >
-        <Form form={form} requiredMark id="myForm" layout="vertical">
+        <Form form={form} requiredMark layout="vertical">
           <Form.Item
             label="Lý do ban user"
             name="bannedReason"

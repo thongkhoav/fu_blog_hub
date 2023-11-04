@@ -13,7 +13,6 @@ const cookieSession = require("cookie-session");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
 
-
 const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
 const blogRoutes = require("./routes/blogRoutes");
@@ -67,9 +66,10 @@ app.use(cookieParser());
 // app.use("/api", limiter);
 
 // Body parser, reading data from body into req.body
+// contentRaw of blog can be large
 app.use(
   express.json({
-    limit: "15kb",
+    limit: "20kb",
   })
 );
 
