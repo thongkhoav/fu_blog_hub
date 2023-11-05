@@ -33,6 +33,7 @@ export const createBlog = async (
       status,
       blogCateId,
       tags,
+      hideComment,
     } = req.body;
     const user = (req as any).user;
     let blogSeries = null;
@@ -124,6 +125,7 @@ export const createBlog = async (
       status,
       blogCateId,
       blogTagIds: tagIds,
+      hideComment,
     });
 
     // Cập nhật số lượng trong blogseries

@@ -23,6 +23,7 @@ import toastOption from "~/utils/constants/toastOption";
 import { ColumnsType } from "antd/es/table";
 import { deleteUserApiPath } from "~/apis/user.api";
 import moment from "moment";
+import { FaArrowRight } from "react-icons/fa";
 
 export interface ReportDetail {
   user: UserProfile;
@@ -251,8 +252,13 @@ function ReportUser() {
           <p className="text-lg">Họ và tên: {reportDetail?.user.fullName}</p>
           <p className="text-lg">Vai trò: {reportDetail?.user.role}</p>
 
-          <a href={FE_HOST + "/profile/" + reportDetail?.user._id} target="_blank" rel="noreferrer">
-            Click để xem chi tiết profile
+          <a
+            href={FE_HOST + "/profile/" + reportDetail?.user._id}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center"
+          >
+            <FaArrowRight className="mr-2" /> Click để xem chi tiết profile
           </a>
           <hr className="my-2" />
           {status === "unresolved" ? (

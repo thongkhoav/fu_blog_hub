@@ -64,7 +64,7 @@ export const getAllTag = async (
   next: NextFunction
 ) => {
   try {
-    const doc = await Tag.find();
+    const doc = await Tag.find().sort({ numBlog: -1 });
 
     res.status(200).json({
       status: "success",

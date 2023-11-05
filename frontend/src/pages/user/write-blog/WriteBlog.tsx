@@ -22,7 +22,7 @@ import { PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { RcFile, UploadChangeParam } from "antd/es/upload";
 import { beforeUpload, getBase64 } from "~/utils/constants/uploadPlugin";
 import { Upload } from "antd";
-import { HOST } from "~/utils/constants";
+import { HOST, PATH } from "~/utils/constants";
 import {
   getBlogTagsApi,
   getBlogCategoriesApi,
@@ -118,7 +118,8 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
       ...form.getFieldsValue(),
       thumbnail: imageUrl,
       contentRaw: data,
-      status: status === "draft" ? "draft" : "waiting"
+      status: status === "draft" ? "draft" : "waiting",
+      hideComment: !form.getFieldValue("showComment")
     };
 
     form
@@ -130,11 +131,11 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             .then(res => {
               setIsModalOpen(false);
               if (status === "draft") {
-                navigate(`/blogs/me/draft`);
+                navigate(`${PATH.PROFILE}/me/draft`);
                 toast.success("Lưu bản nháp thành công", toastOption);
                 return;
               }
-              navigate(`/blogs/me/waiting`);
+              navigate(`${PATH.PROFILE}/me/waiting`);
               toast.success("Thêm bài viết thành công", toastOption);
             })
             .catch(err => {
@@ -150,11 +151,11 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               .then(res => {
                 setIsModalOpen(false);
                 if (res.data.data.status === "draft") {
-                  navigate(`/blogs/me/draft`);
+                  navigate(`${PATH.PROFILE}/me/draft`);
                   toast.success("Lưu bản nháp thành công", toastOption);
                   return;
                 }
-                navigate(`/blogs/me/waiting`);
+                navigate(`${PATH.PROFILE}/me/waiting`);
                 toast.success("Cập nhật bài viết thành công", toastOption);
               })
               .catch(err => {
@@ -187,7 +188,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
           blogCateId: data.blogCateId._id,
           blogSeriesId: data.blogSeriesId,
           tags: data.blogTagIds.map((tag: any) => tag.name),
-          showComment: !data.showComment
+          showComment: !data.hideComment
         });
         setData(data.contentRaw);
         setImageUrl(data.thumbnail);
@@ -305,7 +306,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               name="description"
               rules={[{ required: true, message: "Vui lòng nhập mô tả bài viết" }]}
             >
-              <TextArea rows={4} maxLength={200} />
+              <TextArea rows={4} maxLength={300} />
             </Form.Item>
 
             <Form.Item label="Blogseries" name="blogSeriesId">

@@ -51,6 +51,7 @@ export interface BlogDetail {
   thumbnail: string;
   totalPoint: number;
   numView: number;
+  hideComment: boolean;
   contentRaw: string | TrustedHTML;
   tags: { _id: string; name: string }[];
   userId: {

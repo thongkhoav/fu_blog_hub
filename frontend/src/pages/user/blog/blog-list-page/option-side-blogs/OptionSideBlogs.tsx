@@ -37,7 +37,9 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
 
   const toggleTagFilter = (tagId: string) => {
     if (filterTag.includes(tagId)) {
-      setFilterTag(filterTag.filter(tag => tag !== tagId));
+      console.log(filterTag);
+
+      setFilterTag(prev => prev.filter(tag => tag !== tagId));
     } else {
       setFilterTag([...filterTag, tagId]);
     }

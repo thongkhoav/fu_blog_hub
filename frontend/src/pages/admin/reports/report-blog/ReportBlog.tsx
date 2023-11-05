@@ -3,6 +3,7 @@ import { Button, Drawer, Layout, Space, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { toast } from "react-toastify";
 import toastOption from "~/utils/constants/toastOption";
+import { FaArrowRight } from "react-icons/fa";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { useLocation, useParams } from "react-router-dom";
 import { FE_HOST, HOST } from "~/utils/constants";
@@ -167,8 +168,13 @@ const ReportBlog = () => {
           <h1 className="text-lg">Tiêu đề: {reportDetail?.blog.title}</h1>
           <p>Tác giả: {reportDetail?.blog.userId.fullName}</p>
 
-          <a href={FE_HOST + "/blogs/" + reportDetail?.blog._id} target="_blank" rel="noreferrer">
-            Click để xem chi tiết
+          <a
+            href={FE_HOST + "/blogs/" + reportDetail?.blog._id}
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center"
+          >
+            <FaArrowRight className="mr-2" /> Click để xem chi tiết
           </a>
           <hr className="my-2" />
           {status === "unresolved" ? (

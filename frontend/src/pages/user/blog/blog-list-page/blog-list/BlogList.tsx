@@ -58,10 +58,22 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
       setShowedBlogs(filteredBlogs.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs));
     } else {
       const filtered = fullBlogList.filter(blog => {
-        const isCategoryMatch =
-          filters.category.length === 0 || filters.category.includes(blog.blogCateId._id);
-        const isTagMatch =
-          filters.tag.length === 0 || blog.blogTagIds.some(tag => filters.tag.includes(tag._id));
+        if (filters.category.length === 0) {
+          if (blog.blogTagIds.some(tag => filters.tag.includes(tag._id))) {
+            return true;
+          }
+          return false;
+        }
+
+        if (filters.tag.length === 0) {
+          if (filters.category.includes(blog.blogCateId._id)) {
+            return true;
+          }
+          return false;
+        }
+
+        const isCategoryMatch = filters.category.includes(blog.blogCateId._id);
+        const isTagMatch = blog.blogTagIds.some(tag => filters.tag.includes(tag._id));
         return isCategoryMatch || isTagMatch;
       });
       setFilteredBlogs(filtered);

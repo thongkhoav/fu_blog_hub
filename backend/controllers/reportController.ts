@@ -12,10 +12,27 @@ export const reportOne = async (
 ) => {
   try {
     const user = (req as any).user;
-
     if (!req.body.content || !req.body.objectId) {
       return next(new Error("Please provide all required fields"));
     }
+    if (req.body.type === "blog") {
+      const blog = await Blog.findById(req.body.objectId);
+      if (!blog) {
+        return next(new AppError(404, "fail", "Không tìm thấy bài viết"));
+      }
+
+      if (blog.userId.toString() === user._id.toString()) {
+        console.log("ffdgf");
+        return next(
+          new AppError(400, "fail", "Không thể báo cáo bài viết của chính mình")
+        );
+      }
+    } else if (req.body.type === "user") {
+      if (req.body.objectId === user._id.toString()) {
+        return next(new AppError(400, "fail", "Không thể báo cáo chính mình"));
+      }
+    }
+
     const report = await Report.create({
       type: req.body.type,
       content: req.body.content,

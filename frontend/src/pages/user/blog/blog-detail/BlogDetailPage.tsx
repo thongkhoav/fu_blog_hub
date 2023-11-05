@@ -51,7 +51,7 @@ function BlogDetailPage() {
             <Link
               to={`${PATH.BLOG}`}
               key={tag._id}
-              state={{ tag: tag._id }}
+              state={{ tag: [tag._id] }}
               className="text-sm text-inherit px-3 py-2 mr-3 rounded-sm underline hover:opacity-100 text-gray-800 opacity-80"
             >
               {tag.name}
@@ -61,13 +61,13 @@ function BlogDetailPage() {
         <h1 className="text-4xl max-w-full mb-2 text-justify">{blogDetail?.title}</h1>
 
         <hr />
-        <div className="mt-5">{blogDetail?.contentRaw && parse(`${blogDetail?.contentRaw}`)}</div>
+        <div className="my-4">{blogDetail?.contentRaw && parse(`${blogDetail?.contentRaw}`)}</div>
         {/* blog tương tự */}
-        <Comment idBlog={idBlog as string} />
+        {!blogDetail?.hideComment && <Comment idBlog={idBlog as string} />}
       </div>
       {blogDetail && <BlogsSide blogDetail={blogDetail} />}
     </div>
   );
 }
 
-export default BlogDetailPage; 
+export default BlogDetailPage;
