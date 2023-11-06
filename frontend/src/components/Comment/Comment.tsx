@@ -26,6 +26,7 @@ export default function Comment({ idBlog }: { idBlog: string }) {
   const [Content, setContent] = useState("");
   const [ComId, SetComId] = useState(4);
   const [RenderList, setRenderList] = useState<any[]>([]);
+  const [lastCommentTime, setLastCommentTime] = useState(0); // Initialize the last comment time
 
 
   useEffect(() => {
@@ -78,6 +79,14 @@ export default function Comment({ idBlog }: { idBlog: string }) {
       if(!userGlobal){
         return redirect("/login");
       }
+
+      // Check if a comment was posted in the last 5 seconds
+    if (Date.now() - lastCommentTime < 5000) {
+      // You can show an error message or take other actions as needed
+      console.log("You can only post a comment every 5 seconds.");
+      return;
+    }
+
       const res = await axiosPrivate.post("/api/v1/comment", {
       userId: userGlobal._id as string,
       chidren: [],
@@ -101,7 +110,14 @@ export default function Comment({ idBlog }: { idBlog: string }) {
       }
       // add new comment to render list
       setRenderList([avatarValue, ...RenderList])
+      setLastCommentTime(Date.now());
+
+
       setContent("")
+      const textarea = document.getElementById("comment") as HTMLTextAreaElement;
+    if (textarea) {
+      textarea.value = "";
+    }
    
     } catch (error: any) {
       console.log(error);

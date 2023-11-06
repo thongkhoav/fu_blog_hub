@@ -35,6 +35,7 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
   const { ComId, SetComId } = useContext(RenderListContext);
   const [ReplyContent, setReplyContent] = useState("");
   const parentData = RenderParentList;
+  const [lastCommentTime, setLastCommentTime] = useState(0);
   useEffect(() => { }, []);
 
 
@@ -109,6 +110,12 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
       if(!userGlobal){
         return;
       }
+
+      if (Date.now() - lastCommentTime < 5000) {
+        // You can show an error message or take other actions as needed
+        console.log("You can only reply a comment every 5 seconds.");
+        return;
+      }
       const updateParentComment = await axiosPrivate.put(`/api/v1/comment/${parenId}`, {
         userId: userGlobal._id as string,
         blogId: blogId,
@@ -173,10 +180,14 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
       })
     
       setList(list);
-
+      setLastCommentTime(Date.now());
   
       // Clear the reply content field
       setReplyContent("");
+      const textarea = document.getElementById("commentReply") as HTMLTextAreaElement;
+    if (textarea) {
+      textarea.value = "";
+    }
 
       // console.log(parentData)
 
@@ -231,7 +242,7 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
                 {(Edit && parent.editStatus) && (
                   <>
                     <textarea
-                      id="comment"
+                      id="commentReply"
                       className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
                       required
                       onChange={handleEditChange}
