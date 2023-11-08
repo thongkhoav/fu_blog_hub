@@ -19,8 +19,6 @@ export interface IBlog extends Document {
   slug: string;
   contentRaw: string;
   status: string;
-  numChar: number;
-  numWord: number;
   numView: number;
   numComment: number;
   totalPoint: number;
@@ -69,14 +67,6 @@ blogSchema = new mongoose.Schema(
       enum: Object.values(BlogState),
       required: true,
       default: BlogState.DRAFT,
-    },
-    numChar: {
-      type: Number,
-      default: 0,
-    },
-    numWord: {
-      type: Number,
-      default: 0,
     },
     numView: {
       type: Number,

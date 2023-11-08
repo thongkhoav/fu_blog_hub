@@ -40,6 +40,7 @@ function DropDown({
       userId: userGlobal._id as string
     });
     const data = res.data.data;
+    console.log(res);
 
     if (key == "1") {
       if (!data) {
@@ -48,6 +49,7 @@ function DropDown({
       const list = parentData.map((com: any) => {
         if (com.id == comment.id) {
           //check parent comment
+          console.log(com);
           com.editStatus = !com.editStatus;
           setEdit(!Edit);
           return com;

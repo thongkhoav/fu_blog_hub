@@ -35,6 +35,7 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
   const { ComId, SetComId } = useContext(RenderListContext);
   const [ReplyContent, setReplyContent] = useState("");
   const parentData = RenderParentList;
+  const [lastCommentTime, setLastCommentTime] = useState(0);
   useEffect(() => {}, []);
 
   const handleEditChange = (event: any) => {
@@ -52,6 +53,7 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
         parentId: userGlobal._id as string
       });
       const data = updateComment.data.data;
+      console.log(data);
       let list = parentData.map((com: any) => {
         com.key = com.id;
         if (com.id == data._id) {
@@ -100,6 +102,12 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
   const handlerNewReply = async (parenId: string) => {
     try {
       if (!userGlobal) {
+        return;
+      }
+
+      if (Date.now() - lastCommentTime < 5000) {
+        // You can show an error message or take other actions as needed
+        console.log("You can only reply a comment every 5 seconds.");
         return;
       }
       const updateParentComment = await axiosPrivate.put(`/api/v1/comment/${parenId}`, {
@@ -155,6 +163,7 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
       let list = parentData.map((com: any) => {
         if (com.id == avatarValue.id) {
           setReply(false);
+          console.log("ra ne");
           return avatarValue;
         } else {
           return com;
@@ -162,9 +171,14 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
       });
 
       setList(list);
+      setLastCommentTime(Date.now());
 
       // Clear the reply content field
       setReplyContent("");
+      const textarea = document.getElementById("commentReply") as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.value = "";
+      }
 
       // console.log(parentData)
     } catch (error) {
@@ -224,7 +238,7 @@ export function Avartar({ RenderParentList, blogId, setList }: any) {
                 {Edit && parent.editStatus && (
                   <>
                     <textarea
-                      id="comment"
+                      id="commentReply"
                       className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
                       required
                       onChange={handleEditChange}

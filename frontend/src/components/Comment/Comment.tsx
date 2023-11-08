@@ -25,6 +25,7 @@ export default function Comment({ idBlog }: { idBlog: string }) {
   const [Content, setContent] = useState("");
   const [ComId, SetComId] = useState(4);
   const [RenderList, setRenderList] = useState<any[]>([]);
+  const [lastCommentTime, setLastCommentTime] = useState(0); // Initialize the last comment time
 
   useEffect(() => {
     const getComments = async () => {
@@ -74,6 +75,14 @@ export default function Comment({ idBlog }: { idBlog: string }) {
       if (!userGlobal) {
         return redirect("/login");
       }
+
+      // Check if a comment was posted in the last 5 seconds
+      if (Date.now() - lastCommentTime < 5000) {
+        // You can show an error message or take other actions as needed
+        console.log("You can only post a comment every 5 seconds.");
+        return;
+      }
+
       const res = await axiosPrivate.post("/api/v1/comment", {
         userId: userGlobal._id as string,
         chidren: [],
@@ -97,15 +106,21 @@ export default function Comment({ idBlog }: { idBlog: string }) {
       };
       // add new comment to render list
       setRenderList([avatarValue, ...RenderList]);
+      setLastCommentTime(Date.now());
+
       setContent("");
+      const textarea = document.getElementById("comment") as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.value = "";
+      }
     } catch (error: any) {
       console.log(error);
     }
   };
 
   return (
-    <div className="flex ml-2 justify-between  text-gray-400 border-t border-gray-200">
-      <section className="bg-white dark:bg-gray-900 my-5 antialiased">
+    <div className="flex ml-2 pt-5 justify-between text-gray-400 border-t border-gray-200">
+      <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
         <div className="max-w-2xl mx-auto px-4">
           {/* //title */}
           <div className="flex justify-between items-center mb-6">

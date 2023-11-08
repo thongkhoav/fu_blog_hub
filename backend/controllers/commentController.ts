@@ -22,6 +22,8 @@ export const createComment = async (
       "_id fullName avatar"
     );
 
+    console.log(comment);
+
     res.status(200).json({
       status: "success",
       data: comment,
@@ -75,6 +77,7 @@ export const deleteComment = async (
       { status: false },
       { new: true }
     );
+    console.log(com + "backend");
     res.status(200).json({
       status: "success",
       data: com,
@@ -96,6 +99,7 @@ export const updateComment = async (
 
     // Find the parent comment
     const parentComment = await Comment.findById(commentId);
+    console.log(parentComment);
     if (!parentComment) {
       return res.status(404).json({ message: "Parent comment not found" });
     }
@@ -109,6 +113,7 @@ export const updateComment = async (
     });
 
     await childComment.save();
+    console.log(childComment);
 
     // Add the child comment to the parent's children array
     parentComment.children.push(childComment._id);
@@ -147,6 +152,7 @@ export const editComment = async (
     const commentId = req.params.commentId;
     const { contentProps, parentId } = req.body;
 
+    console.log(commentId, contentProps, parentId);
     // Find the parent comment
     const commentUpdate = await Comment.findByIdAndUpdate(
       commentId,
