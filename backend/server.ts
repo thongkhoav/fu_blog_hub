@@ -1,29 +1,30 @@
-import {Callback} from "mongoose";
+import { Callback } from "mongoose";
 import path from "path";
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 require("dotenv").config();
 
-process.on('uncaughtException', err => {
-    console.log('UNCAUGHT EXCEPTION!!! shutting down...');
-    console.log(err.name, err.message);
-    process.exit(1);
+process.on("uncaughtException", (err) => {
+  console.log("UNCAUGHT EXCEPTION!!! shutting down...");
+  console.log(err.name, err.message);
+  process.exit(1);
 });
 
-const app = require('./app');
+const app = require("./app");
 const port = process.env.PORT || 4000;
-const databaseUrl = process.env.DATABASE_URL
-
+const databaseUrl = process.env.DATABASE_URL;
 
 // Connect the database
-mongoose.connect(databaseUrl, {
+mongoose
+  .connect(databaseUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-}).then(() => {
-    console.log('DB connection Successfully!');
-});
+  })
+  .then(() => {
+    console.log("DB connection Successfully!");
+  });
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Application is running on port ${port}`);
+  console.log(`Application is running on port ${port}`);
 });

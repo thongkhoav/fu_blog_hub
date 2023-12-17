@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/628.9981f4ea.chunk.css","mappings":"AAAA,yBACI","sources":["pages/user/Login/login.module.scss"],"sourcesContent":[".loginBlock {\r\n    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;\r\n}"],"names":[],"sourceRoot":""}

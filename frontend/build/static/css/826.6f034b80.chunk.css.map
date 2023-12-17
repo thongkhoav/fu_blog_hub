@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/826.6f034b80.chunk.css","mappings":"AAAA,8DACI","sources":["pages/admin/manage-category/manage-category.scss"],"sourcesContent":[":where(.css-dev-only-do-not-override-1ck3jst).ant-btn-primary {\r\n    background-color: #1677ff !important;\r\n}"],"names":[],"sourceRoot":""}

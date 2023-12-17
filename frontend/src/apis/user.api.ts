@@ -25,15 +25,6 @@ export interface LoginUser {
   refreshToken: string;
 }
 
-interface ReqLogin {
-  email: string;
-  password: string;
-}
-
-export interface UserLoginRes extends AxiosResponse {
-  data: LoginUser;
-}
-
 interface AccessTokenRes extends AxiosResponse {
   data: {
     accessToken: string;
