@@ -81,7 +81,9 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
             </Link>
             <div className="flex-[3] flex flex-col justify-between">
               <div className="flex justify-between">
-                <span className="text-xs uppercase ">{blog.blogCateId.name}</span>
+                <Link to={`${PATH.BLOG}/${blog._id}`} className="text-xs uppercase cursor-pointer">
+                  {blog.blogCateId.name}
+                </Link>
                 <span className="text-xl cursor-pointer">
                   {userGlobal && bookmarkList.includes(blog._id) ? (
                     <Tooltip title="Remove bookmark">
@@ -124,7 +126,12 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
             </Link>
             <div className="flex flex-col justify-between relative gap-1 col-span-3">
               <div className="flex justify-between gap-1">
-                <h1 className="text-sm line-clamp-2 break-words">{blog.title}</h1>
+                <Link
+                  to={`${PATH.BLOG}/${blog._id}`}
+                  className="text-sm line-clamp-2 break-words font-bold"
+                >
+                  {blog.title}
+                </Link>
                 <span className="text-xl cursor-pointer">
                   {userGlobal && bookmarkList.includes(blog._id) ? (
                     <Tooltip title="Remove bookmark">

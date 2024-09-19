@@ -1,4 +1,5 @@
 export const DEFAULT_IMG =
-  "https://firebasestorage.googleapis.com/v0/b/blog-store-ed61e.appspot.com/o/default_image.png?alt=media&token=273f8354-c45c-4881-9016-a51e5645a0c0";
+  process.env.DEFAULT_IMG_URL ||
+  "https://firebasestorage.googleapis.com/v0/b/task-app-notification.appspot.com/o/download.jfif?alt=media&token=ed805524-28f3-4b46-befd-fdab956cb6ce";
 export const FE_HOST = "http://localhost:3000";
 export const limitBlogs = 10;

@@ -33,8 +33,8 @@ const Notification = () => {
 
   return (
     <div className="w-full py-5">
-      <h1>Danh sách thông báo</h1>
-      <div className="w-full">
+      <h1 className="text-center mb-5">Thông báo</h1>
+      <div className="w-full max-w-[1000px] mx-auto">
         {notification.map((item, index) => (
           <NotificationItem key={index} notificationItem={item} />
         ))}
@@ -50,7 +50,7 @@ const NotificationItem = (props: any) => {
 
   return (
     <div
-      className={`border rounded mb-2 p-4 shadow-mdm ${
+      className={`border rounded mb-4 p-4 shadow-mdm ${
         props.notificationItem.readed ? "bg-white" : "bg-red-300"
       }`}
     >

@@ -52,6 +52,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@editorjs/checklist": "^1.5.0",
     "@types/customize-cra": "^1.0.5",
     "@types/node": "^16.18.53",

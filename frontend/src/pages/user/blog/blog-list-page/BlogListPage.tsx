@@ -2,9 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import BlogList from "./blog-list/BlogList";
 import OptionSideBlogs from "./option-side-blogs/OptionSideBlogs";
-import { getAllPublicBlogs } from "~/apis/blog.api";
-import { toast } from "react-toastify";
-import { BlogItem } from "~/utils/models/blog.model";
 
 export interface FilterList {
   category: string[];

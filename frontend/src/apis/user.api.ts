@@ -31,7 +31,12 @@ interface AccessTokenRes extends AxiosResponse {
   };
 }
 
-export const loginApi = async (body: ReqLogin): Promise<UserLoginRes> =>
+export interface ReqLogin {
+  email: string;
+  password: string;
+}
+
+export const loginApi = async (body: ReqLogin): Promise<{ data: LoginUser }> =>
   await axios.post(`${HOST}/api/v1/users/login`, body);
 
 export const logoutApi = async (accessToken: string, refreshToken: string) => {
@@ -51,7 +56,7 @@ export const getAccessTokenApi = async (refreshToken: string): Promise<AccessTok
     refreshToken
   });
 
-export const loginGoogleApi = async (): Promise<UserLoginRes> => {
+export const loginGoogleApi = async () => {
   const res = await axios.get(`${HOST}/api/auth/google/success`, {
     withCredentials: true
   });

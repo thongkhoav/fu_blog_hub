@@ -1,5 +1,6 @@
 import axios from "axios";
-const BASE_URL = process.env.BASE_URL || "http://localhost:4000";
+import { getBaseUrl } from "~/utils/constants";
+const BASE_URL = getBaseUrl();
 
 export default axios.create({
   baseURL: BASE_URL

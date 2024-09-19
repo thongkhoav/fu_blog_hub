@@ -15,7 +15,7 @@ import Information from "~/pages/user/profile/information/Information";
 import SeriesDetail from "~/pages/user/profile/series/series-detail/SeriesDetail";
 import ChangePassword from "~/pages/user/profile/change-password/ChangePassword";
 import Notification from "~/pages/user/notification/Notification";
-const Home = lazy(() => import("~/pages/user/home/Home"));
+const Home = lazy(() => import("~/pages/user/Home/Home"));
 const BlogListPage = lazy(() => import("~/pages/user/blog/blog-list-page/BlogListPage"));
 const BlogDetailPage = lazy(() => import("~/pages/user/blog/blog-detail/BlogDetailPage"));
 const WaitingBlogList = lazy(() => import("~/pages/mentor/WaitingBlogList"));

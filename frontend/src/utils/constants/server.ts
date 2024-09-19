@@ -1,14 +1,16 @@
 import axios from "axios";
 
-const getBaseUrl = () => {
+export const getBaseUrl = () => {
   let url;
   switch (process.env.NODE_ENV) {
     case "production":
-      url = "https://stackoverflow.com";
+      url = process.env.REACT_APP_API_URL;
       break;
     case "development":
+      url = process.env.REACT_APP_API_URL;
+      break;
     default:
-      url = "https://google.com";
+      url = process.env.REACT_APP_API_URL || "http://localhost:4000";
   }
 
   return url;

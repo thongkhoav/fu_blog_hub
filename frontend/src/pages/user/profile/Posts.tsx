@@ -18,6 +18,8 @@ import toastOption from "~/utils/constants/toastOption";
 import { BiBookmark } from "react-icons/bi";
 import TimeAgo from "javascript-time-ago";
 import vi from "javascript-time-ago/locale/vi";
+// import IMG from "~/assets/images/default_img.pjpg";
+import { DEFAULT_IMG } from "~/utils/constants";
 TimeAgo.addDefaultLocale(vi);
 
 const BlogState = {
@@ -128,7 +130,7 @@ const BlogCard = (blog: BlogItem, onDelete: any, isEdit: boolean) => {
       ) : undefined}
       <img
         className="w-full h-[180px]"
-        src={blog.thumbnail ? blog.thumbnail : "/images/default.png"}
+        src={blog.thumbnail ? blog.thumbnail : DEFAULT_IMG}
         alt="blog thumbnail"
       />
       <div className="flex items-center justify-between mt-2">
