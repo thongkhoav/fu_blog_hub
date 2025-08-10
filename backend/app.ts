@@ -12,6 +12,7 @@ const passport = require("passport");
 const cookieSession = require("cookie-session");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
+import bcrypt from "bcryptjs";
 
 const uploadRouter = require("./routes/uploadRouter");
 const userRoutes = require("./routes/userRoutes");
@@ -34,7 +35,12 @@ import AppError from "./utils/appError";
 const app = express();
 
 // Allow Cross-Origin requests
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3005",
+    credentials: true,
+  })
+);
 
 // Configure passport middleware
 app.use(
@@ -83,6 +89,14 @@ app.use(xss());
 app.use(hpp());
 
 // Routes
+app.post(
+  "/api/signPW",
+  async (req: Request, res: Response, next: NextFunction) => {
+    let { password } = req.body;
+    const hashPassword = await bcrypt.hash(password, 12);
+    return res.json({ hashPassword });
+  }
+);
 app.use("/api/auth", googleRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);

@@ -16,16 +16,19 @@ googleRoutes.get(
 googleRoutes.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/login",
+    failureRedirect: process.env.FRONTEND_URL || "http://localhost:3005/login",
     failureMessage: true,
-    successRedirect: "http://localhost:3000",
+    successRedirect: process.env.FRONTEND_URL || "http://localhost:3005",
   })
 );
 
 googleRoutes.get("/google/success", (req: any, res: any) => {
   let user = req.user;
   if (user) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header(
+      "Access-Control-Allow-Origin",
+      process.env.FRONTEND_URL || "http://localhost:3005"
+    );
     res.header("Access-Control-Allow-Credentials", true);
     user.id = user._id;
     const accessToken = createNewAccessToken(user);
