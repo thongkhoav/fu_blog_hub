@@ -63,10 +63,12 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
   useEffect(() => {
     const handleFilter = async () => {
       setIsLoadingBlogs(true);
+      console.log("filtered: ", filters);
       if (filters.category.length === 0 && filters.tag.length === 0) {
+        // console.log("filtered 2: ", filters);
         setFilteredBlogs(fullBlogList);
         setShowedBlogs(
-          filteredBlogs.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs)
+          fullBlogList.slice((currentPage - 1) * limitBlogs, currentPage * limitBlogs)
         );
       } else {
         const filtered = fullBlogList.filter(blog => {
@@ -95,6 +97,8 @@ const BlogList = ({ filters, setFilters }: BlogListProps) => {
         console.log("asdasdd");
       }
       setIsLoadingBlogs(false);
+      // scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
     };
     handleFilter();
   }, [filters, fullBlogList]);
