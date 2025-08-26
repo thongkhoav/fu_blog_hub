@@ -132,11 +132,11 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
               setIsModalOpen(false);
               if (status === "draft") {
                 navigate(`${PATH.PROFILE}/me/draft`);
-                toast.success("Lưu bản nháp thành công", toastOption);
+                toast.success("Save draft successfully", toastOption);
                 return;
               }
               navigate(`${PATH.PROFILE}/me/waiting`);
-              toast.success("Thêm bài viết thành công", toastOption);
+              toast.success("Add blog post successfully", toastOption);
             })
             .catch(err => {
               toast.error(err.response.data.message, toastOption);
@@ -152,11 +152,11 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                 setIsModalOpen(false);
                 if (res.data.data.status === "draft") {
                   navigate(`${PATH.PROFILE}/me/draft`);
-                  toast.success("Lưu bản nháp thành công", toastOption);
+                  toast.success("Save draft successfully", toastOption);
                   return;
                 }
                 navigate(`${PATH.PROFILE}/me/waiting`);
-                toast.success("Cập nhật bài viết thành công", toastOption);
+                toast.success("Update blog post successfully", toastOption);
               })
               .catch(err => {
                 toast.error(err.response.data.message, toastOption);
@@ -201,7 +201,7 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
 
   useEffect(() => {
     setEditorLoaded(true);
-    const defaultData = "<p>Nội dung ...</p>";
+    const defaultData = "<p>Content ...</p>";
     setData(defaultData);
     getAllCategory();
     getAllTag();
@@ -258,37 +258,37 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             onClick={() => showModal(true)}
             className="h-[40px] bg-blue-500 hover:bg-blue-600 text-white px-4 rounded"
           >
-            Bước tiếp theo
+            Next step
           </Button>
         </div>
 
         <Modal
           forceRender
-          title="Thông tin khác"
+          title="Other information"
           style={{ maxWidth: "700px" }}
           open={isModalOpen}
           onCancel={() => showModal(false)}
           footer={[
             <Button key="customCancel" className="h-[40px]" onClick={() => showModal(false)}>
-              Quay lại
+              Back
             </Button>,
             <Button key="customOk" form="myForm" htmlType="submit" className="h-[40px]">
-              Tạo bài viết
+              Create post
             </Button>,
             <Button
               key="customDraft"
               className="h-[40px] bg-blue-500 text-white"
               onClick={() => handleSubmit("draft")}
             >
-              Lưu bản nháp
+              Save draft
             </Button>
           ]}
         >
           <Form form={form} requiredMark id="myForm" layout="vertical" onFinish={handleSubmit}>
             <Form.Item
-              label="Tiêu đề bài viết"
+              label="Title"
               name="title"
-              rules={[{ required: true, message: "Vui lòng nhập tiêu đề bài viết" }]}
+              rules={[{ required: true, message: "Please enter the title" }]}
             >
               <Input
                 maxLength={200}
@@ -302,9 +302,9 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             </Form.Item>
 
             <Form.Item
-              label="Mô tả bài viết"
+              label="Description"
               name="description"
-              rules={[{ required: true, message: "Vui lòng nhập mô tả bài viết" }]}
+              rules={[{ required: true, message: "Please enter the description" }]}
             >
               <TextArea rows={4} maxLength={300} />
             </Form.Item>
@@ -314,9 +314,9 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
             </Form.Item>
 
             <Form.Item
-              label="Danh mục blog"
+              label="Blog category"
               name="blogCateId"
-              rules={[{ required: true, message: "Vui lòng chọn danh mục cho Blog" }]}
+              rules={[{ required: true, message: "Please select a category for the blog" }]}
             >
               <Select
                 allowClear
@@ -380,16 +380,16 @@ export default function WriteBlog({ mode = ButtonTitle.CREATE }: Props) {
                   uploadButton
                 )}
               </Upload>
-              {imageUrl && <Button onClick={handleRemoveImage}>Xóa Ảnh</Button>}
+              {imageUrl && <Button onClick={handleRemoveImage}>Remove Image</Button>}
             </Form.Item>
 
             <Form.Item
-              label="Cài đặt khác"
+              label="Other settings"
               name="showComment"
               initialValue={true}
               valuePropName="checked"
             >
-              <Checkbox defaultChecked={true}> Hiển thị bình luận</Checkbox>
+              <Checkbox defaultChecked={true}>Show comments</Checkbox>
             </Form.Item>
           </Form>
         </Modal>

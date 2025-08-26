@@ -16,7 +16,7 @@ const BlogState = {
 
 const tabItems = [
   {
-    label: "Trang chủ",
+    label: "Profile",
     path: PATH.PROFILE + "/me"
   },
   {
@@ -24,17 +24,17 @@ const tabItems = [
     path: PATH.PROFILE + "/me/series"
   },
   {
-    label: "Bài nháp",
+    label: "Draft",
     path: PATH.PROFILE + `/me/${BlogState.DRAFT}`,
     icon: <BsPersonFillLock />
   },
   {
-    label: "Bài đang chờ duyệt",
+    label: "Pending",
     path: PATH.PROFILE + `/me/${BlogState.WAITING}`,
     icon: <BsPersonFillLock />
   },
   {
-    label: "Bài bị từ chối",
+    label: "Rejected",
     path: PATH.PROFILE + `/me/${BlogState.REJECTED}`,
     icon: <BsPersonFillLock />
   },
@@ -44,7 +44,7 @@ const tabItems = [
     icon: <BsPersonFillLock />
   },
   {
-    label: "Tài khoản",
+    label: "Account",
     path: PATH.PROFILE + "/me/information",
     icon: <BsPersonFillLock />
   }
@@ -133,7 +133,7 @@ export default function PersonalProfile() {
                   : "text-gray-500"
               } px-2 py-1 hover:bg-gray-100 transition-colors duration-300`}
             >
-              Đổi mật khẩu
+              Change Password
               <BsPersonFillLock />
             </NavLink>
           )}

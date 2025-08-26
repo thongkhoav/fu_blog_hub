@@ -18,7 +18,7 @@ import { UserProfile } from "~/utils/models/user.model";
 const genTabItems = (userId: string) => {
   return [
     {
-      label: "Trang chủ",
+      label: "Profile",
       path: userPath(PATH.PROFILE, userId)
     },
     {
@@ -42,11 +42,12 @@ export default function Profile() {
 
   const handleReportBlog = async () => {
     if (!userGlobal) {
-      toast.error("Bạn cần đăng nhập để report", toastOption);
+      toast.error("You need to log in to report", toastOption);
       return;
     }
 
-    if (!reportContent) return toast.error("Vui lòng nhập lý do báo cáo bài viết", toastOption);
+    if (!reportContent)
+      return toast.error("Please enter a reason for reporting the post", toastOption);
 
     try {
       axiosPrivate
@@ -57,7 +58,7 @@ export default function Profile() {
         })
         .then(res => {
           setIsModalOpen(false);
-          toast.success("Report tài khoản thành công", toastOption);
+          toast.success("Report user successfully", toastOption);
         })
         .catch(err => {
           toast.error(err.response.data.message, toastOption);
@@ -114,7 +115,7 @@ export default function Profile() {
     <div className="mt-12 gap-5 grid grid-cols-12 w-full justify-between">
       <div className="col-span-2 min-w-[200px]">
         <Modal
-          title="Báo cáo tài khoản"
+          title="Report user"
           open={isModalOpen}
           onOk={handleReportBlog}
           onCancel={handleCancel}
@@ -122,7 +123,7 @@ export default function Profile() {
         >
           <TextArea
             rows={4}
-            placeholder="Lý do báo cáo"
+            placeholder="Reason for reporting"
             maxLength={200}
             onChange={e => setReportContent(e.target.value)}
           />
@@ -157,14 +158,12 @@ export default function Profile() {
         text-xs rounded justify-center py-1"
         >
           {followingList.includes(idUser!) ? (
-            <span onClick={unFollowUser}>Bỏ theo dõi</span>
+            <span onClick={unFollowUser}>Unfollow</span>
           ) : (
-            <span onClick={followUser}>Theo dõi</span>
+            <span onClick={followUser}>Follow</span>
           )}
         </button>
-        <p className="text-center text-xs my-3 font-light">
-          {user?.userTitle || "Chưa có chức danh"}
-        </p>
+        <p className="text-center text-xs my-3 font-light">{user?.userTitle || "No title"}</p>
         <div className="flex p-3 justify-center gap-4 items-center">
           {user?.instagram && (
             <a href={user?.instagram}>
@@ -186,7 +185,7 @@ export default function Profile() {
           )}
         </div>
       </div>
-      {/* phan ben phai */}
+      {/* right section */}
       <div className="col-span-10">
         <div className="flex gap-2">
           {tabItems.map(item => (

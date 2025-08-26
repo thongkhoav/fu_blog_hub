@@ -46,11 +46,11 @@ function SeriesDetailPage() {
       if (toRemove) {
         await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
         setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
-        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+        toast.success("Removed from bookmarks", toastOption);
       } else {
         await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
         setBookmarkList((prev: any) => [...prev, blogId]);
-        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+        toast.success("Added to bookmarks", toastOption);
       }
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -141,7 +141,7 @@ function SeriesDetailPage() {
             </div>
           ))
         ) : (
-          <p className="text-center text-slate-500">"Chưa có bài viết nào trong series này"</p>
+          <p className="text-center text-slate-500">"No articles in this series"</p>
         )}
       </div>
     </div>

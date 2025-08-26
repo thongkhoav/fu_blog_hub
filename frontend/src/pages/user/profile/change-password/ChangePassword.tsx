@@ -31,8 +31,8 @@ function ChangePassword() {
       });
 
       if (res.data.status === "success") {
-        toast.success("Đổi mật khẩu thành công!", toastOption);
-        toast.success("Vui lòng đăng nhập lại!", toastOption);
+        toast.success("Password changed successfully!", toastOption);
+        toast.success("Please log in again!", toastOption);
       }
 
       await onLogout();
@@ -53,15 +53,15 @@ function ChangePassword() {
       >
         <Form.Item
           name="password"
-          label="Mật khẩu mới"
+          label="New Password"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập mật khẩu mới!"
+              message: "Please enter your new password!"
             },
             {
               min: 6,
-              message: "Mật khẩu phải có ít nhất 6 ký tự!"
+              message: "Password must be at least 6 characters!"
             }
           ]}
           hasFeedback
@@ -71,20 +71,20 @@ function ChangePassword() {
 
         <Form.Item
           name="confirm"
-          label="Nhập lại mật khẩu"
+          label="Confirm Password"
           dependencies={["password"]}
           hasFeedback
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập lại mật khẩu mới!"
+              message: "Please confirm your new password!"
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
                 if (!value || getFieldValue("password") === value) {
                   return Promise.resolve();
                 }
-                return Promise.reject(new Error("Mật khẩu nhập lại không giống!"));
+                return Promise.reject(new Error("Passwords do not match!"));
               }
             })
           ]}
@@ -97,7 +97,7 @@ function ChangePassword() {
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 w-1/2 rounded "
           >
-            Cập nhật
+            Update
           </button>
         </Form.Item>
       </Form>

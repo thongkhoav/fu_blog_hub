@@ -62,7 +62,7 @@ export default function Information() {
           instagram: infoUser.instagram,
           favoriteCates: infoUser.favoriteCates
         }));
-        toast.success("Cập nhật thông tin thành công!", toastOption);
+        toast.success("Update successful!", toastOption);
       }
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -157,7 +157,7 @@ export default function Information() {
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 w-1/2 rounded "
           >
-            Cập nhật
+            Update
           </button>
         </Form.Item>
       </Form>

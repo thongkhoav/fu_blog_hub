@@ -33,7 +33,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
     try {
       const res = await axiosPrivate.delete(`/api/v1/series/${id}`);
       setSeriesList(prev => prev.filter(seri => seri._id !== id));
-      toast.success("Delete series thành công", toastOption);
+      toast.success("Delete series successful", toastOption);
     } catch (error: any) {
       toast.error(error.message, toastOption);
     }
@@ -63,7 +63,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
       }
     };
     getSeries();
-  }, [idUser, userGlobal._id]);
+  }, [idUser, userGlobal?._id]);
 
   const handleAddSeries = async (values: any) => {
     try {
@@ -90,13 +90,13 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
       toast.error(error.message, toastOption);
     }
   };
-  // cảu tôi thì được sửa
+
   return (
     <Space direction="vertical" className="w-full">
       {isPersonalProfile && (
         <>
           <Modal
-            title="Thêm series"
+            title="Add Series"
             open={isModalOpen}
             onCancel={handleCancel}
             footer={(_, { OkBtn, CancelBtn }) => <CancelBtn />}
@@ -105,7 +105,7 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
             <AddSeriesModal handleAddSeries={handleAddSeries} series={updateSeries} />
           </Modal>
           <Space align="center" size="middle" className="my-4">
-            <Button onClick={showModal}>Thêm series</Button>
+            <Button onClick={showModal}>Add Series</Button>
           </Space>
         </>
       )}
@@ -123,22 +123,22 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
                         setUpdateSeries(series);
                       }}
                     >
-                      Chỉnh sửa
+                      Edit
                     </Button>
                     <Popconfirm
-                      title="Xoá series?"
-                      description="Bạn có chắc chắn muốn xoá series này?"
+                      title="Delete series?"
+                      description="Are you sure you want to delete this series?"
                       onConfirm={() => deleteSeries(series._id)}
                       onCancel={() => {}}
-                      okText="Có"
-                      cancelText="Không"
+                      okText="Yes"
+                      cancelText="No"
                       okButtonProps={{ danger: true, className: "text-red-500" }}
                     >
                       <Button
                         danger
                         className=" text-red-500 border-none p-0 h-fit w-full rounded-none"
                       >
-                        Xoá
+                        Delete
                       </Button>
                     </Popconfirm>
                   </div>
@@ -155,12 +155,12 @@ const Series = ({ isPersonalProfile = false }: { isPersonalProfile?: boolean }) 
             <p className="line-clamp-2 flex-1">{series.description}</p>
 
             <div className="flex justify-between items-center mt-2">
-              <span className="text-base ">{series.numBlog} bài viết</span>
+              <span className="text-base ">{series.numBlog} articles</span>
               <Link
                 to={pathname + "/" + series._id}
                 className=" bg-blue-200 items-center justify-center rounded-sm py-1 px-3"
               >
-                Chi tiết
+                Details
               </Link>
             </div>
           </Card>

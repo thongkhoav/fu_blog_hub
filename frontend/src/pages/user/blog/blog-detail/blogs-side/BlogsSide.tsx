@@ -2,7 +2,7 @@ import { Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { BiBookmark } from "react-icons/bi";
 import { BsBookmarkFill } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getAllPublicBlogs, getSameAuthorBlogs, getSameCateBlogs } from "~/apis/blog.api";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
@@ -11,14 +11,14 @@ import { PATH, DEFAULT_IMG } from "~/utils/constants";
 import toastOption from "~/utils/constants/toastOption";
 import { useAuth } from "~/utils/helpers";
 import { BlogDetail, BlogItem, BlogNavItem } from "~/utils/models/blog.model";
-
-// blog detail thì blog cùng tác giả và blogs cùng category
-// blog filter list thì blog nổi bật và blog mới
+// blog detail will shows blogs with same author and same category
+// blog filter list will shows featured blogs and new blogs
 
 function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
   const [authorBlogs, setAuthorBlogs] = useState<BlogNavItem[]>([]);
   const [cateBlogs, setCateBlogs] = useState<BlogNavItem[]>([]);
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const { userGlobal } = useAuth();
   const { bookmarkList, setBookmarkList } = useStoreContext();
 
@@ -42,16 +42,19 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
   }, [blogDetail.blogCateId._id, blogDetail.userId._id]);
 
   const toggleBookmark = async (blogId: string, toRemove: boolean) => {
-    if (!userGlobal) return;
+    if (!userGlobal) {
+      toast.info("Please login to bookmark", toastOption);
+      return;
+    }
     try {
       if (toRemove) {
         await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
         setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
-        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+        toast.success("Removed from bookmark list", toastOption);
       } else {
         await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
         setBookmarkList((prev: any) => [...prev, blogId]);
-        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+        toast.success("Added to bookmark list", toastOption);
       }
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -60,12 +63,9 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
 
   return (
     <div className="flex-1 flex flex-col gap-4 mt-2">
-      {/* cùng tác giả thì bỏ author avatar và name */}
-      <h1 className="text-base uppercase font-bold">
-        Viết bởi tác giả {blogDetail.userId.fullName}
-      </h1>
+      <h1 className="text-base uppercase font-bold">Author: {blogDetail.userId.fullName}</h1>
       {authorBlogs.length === 0 ? (
-        <p>Tác giả không có bài viết khác</p>
+        <p>No other posts from this author</p>
       ) : (
         authorBlogs.map(blog => (
           <div
@@ -110,10 +110,9 @@ function BlogsSide({ blogDetail }: { blogDetail: BlogDetail }) {
 
       <hr className="w-1px bg-slate-300 my-1" />
 
-      {/* cùng chủ đề thì bỏ  chủ đề trên cùng */}
-      <h1 className="text-base uppercase font-bold">Chủ đề: {blogDetail.blogCateId.name}</h1>
+      <h1 className="text-base uppercase font-bold">Category: {blogDetail.blogCateId.name}</h1>
       {cateBlogs.length === 0 ? (
-        <p>Không có bài viết cùng chủ đề</p>
+        <p>No other posts from this category</p>
       ) : (
         cateBlogs.map(blog => (
           <div key={blog._id} className="border rounded-md p-1 h-30 w-full grid grid-cols-4 gap-2">

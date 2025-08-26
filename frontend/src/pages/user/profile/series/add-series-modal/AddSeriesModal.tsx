@@ -95,12 +95,12 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries, series
     >
       <Form.Item
         name="title"
-        label="Tiêu đề"
+        label="Title"
         initialValue={series?.title}
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập tiêu đề!"
+            message: "Please enter a title!"
           }
         ]}
       >
@@ -109,14 +109,14 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries, series
 
       <Form.Item
         name="description"
-        label="Mô tả"
+        label="Description"
         initialValue={series?.description}
-        rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+        rules={[{ required: true, message: "Please enter a description!" }]}
       >
         <Input maxLength={200} />
       </Form.Item>
-      <Form.Item name="blogIds" label="Bài viết thêm">
-        <Select mode="multiple" placeholder="Chọn bài viết thêm vào">
+      <Form.Item name="blogIds" label="Additional Articles">
+        <Select mode="multiple" placeholder="Select additional articles">
           {blogsToChoose.map(blog => (
             <Option
               key={blog._id}
@@ -134,14 +134,14 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries, series
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
-            Cập nhật series
+            Update series
           </button>
         ) : (
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
           >
-            Tạo series
+            Create series
           </button>
         )}
       </Form.Item>

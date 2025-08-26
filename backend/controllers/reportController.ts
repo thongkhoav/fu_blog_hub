@@ -18,18 +18,16 @@ export const reportOne = async (
     if (req.body.type === "blog") {
       const blog = await Blog.findById(req.body.objectId);
       if (!blog) {
-        return next(new AppError(404, "fail", "Không tìm thấy bài viết"));
+        return next(new AppError(404, "fail", "Post not found"));
       }
 
       if (blog.userId.toString() === user._id.toString()) {
         console.log("ffdgf");
-        return next(
-          new AppError(400, "fail", "Không thể báo cáo bài viết của chính mình")
-        );
+        return next(new AppError(400, "fail", "Cannot report your own post"));
       }
     } else if (req.body.type === "user") {
       if (req.body.objectId === user._id.toString()) {
-        return next(new AppError(400, "fail", "Không thể báo cáo chính mình"));
+        return next(new AppError(400, "fail", "Cannot report yourself"));
       }
     }
 
@@ -59,7 +57,9 @@ export const resolveReport = async (
     const { content } = req.body;
 
     if (!content) {
-      return next(new AppError(400, "fail", "nhập nội dung xử lý"));
+      return next(
+        new AppError(400, "fail", "Please provide content for resolution")
+      );
     }
     const report = await Report.findByIdAndUpdate(
       req.params.id,

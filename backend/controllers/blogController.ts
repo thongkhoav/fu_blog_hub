@@ -38,19 +38,19 @@ export const createBlog = async (
     const user = (req as any).user;
     let blogSeries = null;
 
-    // Kiểm tra xem tiêu đề có hợp lệ hay không
+    // Check if title is valid
     if (title.length > 150 || title.length < 3) {
       const error = new AppError(403, "fail", "Title is not valid");
       return next(error);
     }
 
-    // Kiểm tra content có hợp lệ hay không
+    // Check if content is valid
     if (contentRaw.length < 10) {
       const error = new AppError(403, "fail", "Content is not valid");
       return next(error);
     }
 
-    // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
+    // Check if blogSeries exists and if it belongs to the user
     if (blogSeriesId) {
       blogSeries = await BlogSeries.findById(blogSeriesId);
       if (!blogSeries) {
@@ -64,8 +64,8 @@ export const createBlog = async (
       }
     }
 
-    // Bài viết mới tạo sẽ có thể là daft hoặc watting
-    // Đoạn này BlogState đang = undefined
+    // New blog posts can be either draft or waiting
+    // At this point, BlogState is undefined
     if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
       const error = new AppError(403, "fail", "Invalid status");
       next(error);
@@ -76,17 +76,17 @@ export const createBlog = async (
     const tagIds: Array<String> = [];
 
     if (!tags) {
-      next(new AppError(403, "fail", "Tag không được trống"));
+      next(new AppError(403, "fail", "Tags are required"));
     }
 
     for (const tag of tags) {
-      // Kiểm tra xem tag có quá dài hay không
+      // Check if tag is too long
       if (tag.length > 20) {
         const error = new AppError(403, "fail", "Tag is too long");
         return next(error);
       }
 
-      // Kiểm tra xem tag có chứa kí tự đặc biệt hay không
+      // Check if tag contains special characters
       const regex = /^[a-zA-Z0-9]+$/;
       if (!regex.test(tag)) {
         const error = new AppError(403, "fail", "Tag is not valid");
@@ -161,22 +161,20 @@ export const voteBlog = async (
   }
   if (blog.userId.toString() === user._id.toString()) {
     return next(
-      new AppError(
-        403,
-        "error",
-        "Bạn không thể vote cho bài viết của chính mình"
-      )
+      new AppError(403, "error", "You cannot vote for your own post")
     );
   }
   if (vote !== "up" && vote !== "down") {
-    return next(new Error("Vote không hợp lệ"));
+    return next(new Error("Invalid vote"));
   }
 
   if (
     blog.voteUpUser.includes(user._id) ||
     blog.voteDownUser.includes(user._id)
   ) {
-    return next(new AppError(403, "error", "Bạn đã vote cho bài viết này rồi"));
+    return next(
+      new AppError(403, "error", "You have already voted for this post")
+    );
   }
 
   if (vote === "up") {
@@ -230,13 +228,13 @@ export const softDeleteBlog = async (
   res: Response,
   next: NextFunction
 ) => {
-  // sử dụng khi user xoá hoặc admin xử lí report
+  // Used when user deletes or admin handles report
   const blog = await Blog.findById(req.params.id);
   blog.status = BlogState.REMOVED;
 
   const { resolveContent, objectId } = req.body;
 
-  // tìm tất cả các report về blog này và resolve nó, content là deleted
+  // Find all reports about this blog and resolve them, content is deleted
   const reports = await Report.find({
     objectId: req.params.id,
     resolved: false,
@@ -246,25 +244,25 @@ export const softDeleteBlog = async (
 
   for (const report of reports) {
     report.resolved = true;
-    report.resolveContent = "Bài viết bị xoá";
+    report.resolveContent = "Post has been deleted";
     report.resolvedAt = new Date();
     report.resolvedBy = (req as any).user._id;
 
     await report.save();
   }
 
-  // nếu admin xoá thì push noti qua user
+  // If admin deletes, push notification to user
   if ((req as any).user.role === "admin") {
     await Notification.create({
       userId: blog.userId,
-      content: `Bài viết ${blog.title} của bạn đã bị xoá do vi phạm`,
+      content: `Post ${blog.title} has been deleted due to violation`,
     });
   }
 
   await blog.save();
   res.status(200).json({
     status: "success",
-    message: "Blog đã được xoá",
+    message: "Post has been deleted",
     data: blog,
   });
 };
@@ -570,8 +568,8 @@ export const updateStatusBlog = async (
         userId: blog.userId,
         content:
           blog.status === "public"
-            ? `Bài viết ${blog.title} của bạn đã được mentor phê duyệt`
-            : `Bài viết ${blog.title} của bạn đã bị mentor từ chối`,
+            ? `The post ${blog.title} has been approved by the mentor`
+            : `The post ${blog.title} has been rejected by the mentor`,
       };
       if (req.body.status === "public") {
         newNoti["url"] = "/blogs/" + blog._id;
@@ -658,7 +656,7 @@ export const formatUpdateData = async (
   const blogInfo = await Blog.findById(req.params.id);
   const currentStatus = blogInfo.status;
 
-  // Nếu trạng thái của bài viết là draft thì chỉ được chuyển sang waiting chờ duyệt
+  // If the current status is draft, it can only be changed to waiting or draft
   if (
     currentStatus === BlogState.DRAFT &&
     status !== BlogState.WAITING &&
@@ -668,7 +666,7 @@ export const formatUpdateData = async (
     return next(error);
   }
 
-  // Nếu trạng thái đang là reject thì chỉ được chuyển sang waiting chờ duyệt hoặc draft
+  // If the current status is rejected, it can only be changed to waiting or draft
   if (
     currentStatus === BlogState.REJECTED &&
     status !== BlogState.WAITING &&
@@ -678,19 +676,19 @@ export const formatUpdateData = async (
     return next(error);
   }
 
-  // Kiểm tra xem tiêu đề có hợp lệ hay không
+  // Check if the title is valid
   if (!title || title.length > 150 || title.length < 3) {
     const error = new AppError(403, "fail", "Title is not valid");
     return next(error);
   }
 
-  // Kiểm tra content có hợp lệ hay không
+  // Check if the content is valid
   if (!contentRaw || contentRaw.length < 10) {
     const error = new AppError(403, "fail", "Content is not valid");
     return next(error);
   }
 
-  // Kiểm tra xem blogseries đó có tồn tại hay không, nếu có thì nó có phải blogseries của nguoi đăng không
+  // Check if the blog series exists, and if so, whether it belongs to the user
   if (blogSeriesId) {
     blogSeries = await BlogSeries.findById(blogSeriesId);
     if (!blogSeries) {
@@ -704,8 +702,8 @@ export const formatUpdateData = async (
     }
   }
 
-  // Bài viết mới tạo sẽ có thể là daft hoặc watting
-  // Đoạn này BlogState đang = undefined
+  // The newly created post can be either draft or waiting
+  // At this point, BlogState is undefined
   if (status && status !== BlogState.DRAFT && status !== BlogState.WAITING) {
     const error = new AppError(403, "fail", "Invalid status");
     next(error);
@@ -716,13 +714,13 @@ export const formatUpdateData = async (
   const tagIds: Array<String> = [];
 
   for (const tag of tags) {
-    // Kiểm tra xem tag có quá dài hay không
+    // Check if the tag is too long
     if (tag.length > 20) {
       const error = new AppError(403, "fail", "Tag is too long");
       return next(error);
     }
 
-    // Kiểm tra xem tag có chứa kí tự đặc biệt hay không
+    // Check if the tag contains special characters
     const regex = /^[a-zA-Z0-9]+$/;
     if (!regex.test(tag)) {
       const error = new AppError(403, "fail", "Tag is not valid");
@@ -731,7 +729,7 @@ export const formatUpdateData = async (
 
     const lowercasedTag = tag.toLowerCase();
     try {
-      // Tìm tag trong cơ sở dữ liệu
+      // Check if the tag exists in the database
       let tagExist = await Tag.findOne({ name: lowercasedTag });
 
       if (tagExist) {
@@ -739,19 +737,19 @@ export const formatUpdateData = async (
         await tagExist.save();
         tagIds.push(tagExist._id);
       } else {
-        // Nếu tag không tồn tại, tạo mới
+        // If the tag does not exist, create a new one
         const newTag = await Tag.create({ name: lowercasedTag });
         newTag.numBlog = 1;
         await newTag.save();
         tagIds.push(newTag._id);
       }
     } catch (error) {
-      // Xử lý lỗi nếu có
+      // Handle any errors
       return next(error);
     }
   }
 
-  // Gán lại các trường cần update
+  // Assign the fields to be updated
   updateField.title = title;
   updateField.description = description;
   updateField.contentRaw = contentRaw;
@@ -834,7 +832,7 @@ export const filterBloglist = async (
     : res.status(200).json({
         status: "fail",
         data: [],
-        msg: `Không có blogs phù hợp! Vui lòng chọn lại!`,
+        msg: `No blog found with that filter`,
       });
 };
 

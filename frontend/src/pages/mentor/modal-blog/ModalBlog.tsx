@@ -14,7 +14,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
     <Row>
       <Col span={16}>
         <p className="text-xl uppercase font-medium">
-          Viết bởi tác giả:{" "}
+          Author:{" "}
           <Link to={`/profile/${blogDetail?.userId?._id}`}>{blogDetail?.userId?.fullName}</Link>
         </p>
         <p style={{ color: "#00000078", fontSize: "12px", marginLeft: "6px" }}>
@@ -31,7 +31,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
               handleReject();
             }}
           >
-            Từ chối
+            Reject
           </Button>
         )}
         <Button
@@ -42,7 +42,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
             handleAccept();
           }}
         >
-          Duyệt
+          Approve
         </Button>
       </Col>
     </Row>
@@ -57,7 +57,7 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
       );
       if (res.data.status === "success") {
         handleUpdateBlog("rejected", blogDetail._id);
-        toast.success("Từ chối thành công!", toastOption);
+        toast.success("Rejected successfully!", toastOption);
       }
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -97,12 +97,12 @@ export default function ModalBlog({ blogDetail, onClose, handleUpdateBlog, ...pr
           {blogDetail.thumbnail ? (
             <img src={blogDetail.thumbnail} alt="" className="h-[500px] w-full mb-2" />
           ) : (
-            <p className="my-3 text-center"> Chưa có ảnh đại điện blog</p>
+            <p className="my-3 text-center">No blog thumbnail available</p>
           )}
           <h1 className="text-2xl">Title: {blogDetail.title}</h1>
           <div className="flex justify-between items-center">
             <h2 className="capitalize text-lg font-medium text-[#404040] opacity-80">
-              <span>Thể loại: {blogDetail.blogCateId?.name}</span>
+              <span>Category: {blogDetail.blogCateId?.name}</span>
             </h2>
           </div>
           <div className="mb-2">

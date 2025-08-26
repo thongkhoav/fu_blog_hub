@@ -17,7 +17,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     // 1) check if email and password exist
     if (!email || !password) {
       return next(
-        new AppError(404, "fail", "Nhập email và mật khẩu để đăng nhập")
+        new AppError(404, "fail", "Please input your email and password")
       );
     }
 
@@ -27,7 +27,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
     }).select("+password");
 
     if (!user || !(await user.correctPassword(password, user.password))) {
-      return next(new AppError(401, "fail", "Email hoặc mật khẩu không đúng"));
+      return next(new AppError(401, "fail", "Email or password is incorrect"));
     }
 
     if (user?.isBanned && user.ban.banUntil > Date.now()) {
@@ -35,7 +35,7 @@ exports.login = async (req: Request, res: Response, next: NextFunction) => {
         new AppError(
           401,
           "fail",
-          "Tài khoản của bạn đã bị khóa vì" + user.ban.bannedReason
+          "Your account has been locked because " + user.ban.bannedReason
         )
       );
     }
@@ -112,7 +112,7 @@ exports.addMentorAccount = async (
 
     res.status(201).json({
       status: "success",
-      message: "Thêm mentor thành công",
+      message: "Mentor account created successfully",
       user,
     });
   } catch (err) {

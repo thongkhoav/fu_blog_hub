@@ -68,11 +68,11 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries }) => {
     >
       <Form.Item
         name="title"
-        label="Tiêu đề"
+        label="Title"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập tiêu đề!"
+            message: "Please enter a title!"
           }
         ]}
       >
@@ -81,8 +81,8 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries }) => {
 
       <Form.Item
         name="description"
-        label="Mô tả"
-        rules={[{ required: true, message: "Vui lòng nhập mô tả!" }]}
+        label="Description"
+        rules={[{ required: true, message: "Please enter a description!" }]}
       >
         <Input maxLength={200} />
       </Form.Item>
@@ -91,7 +91,7 @@ const AddSeriesModal: React.FC<AddSeriesModalProps> = ({ handleAddSeries }) => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
         >
-          Tạo series
+          Add Series
         </button>
       </Form.Item>
     </Form>

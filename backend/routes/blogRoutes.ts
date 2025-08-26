@@ -13,7 +13,7 @@ const authController = require("./../controllers/authController");
 router.post("/getLastesBlog", blogController.getLastesBlog);
 router.get("/highlight", blogController.getHighlightBlogs);
 
-// dành cho bạn ở home
+// For you section on homepage
 router.get(
   "/for-you",
   authController.protect,
@@ -24,7 +24,7 @@ router.get(
   "/:id",
   blogController.checkBlogStatus("public"),
 
-  // Nếu anh em nào chưa cài redis thì comment dòng này đi nhé
+  // If you haven't installed Redis, comment this line
   // RedisController.increaseViewWithCache,
   blogController.getOnePublicBlog
 );

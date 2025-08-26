@@ -34,7 +34,7 @@ function OptionSideHome({ isBlogDetail = false }) {
     <div className=" flex-1 m-5 mr-0">
       {/* category contains blog category - chip list */}
       <div>
-        <h1 className="text-lg uppercase font-medium mb-2">Chủ đề</h1>
+        <h1 className="text-lg uppercase font-medium mb-2">Category</h1>
         <div className="flex flex-wrap">
           {categories.map(cate => (
             <Link

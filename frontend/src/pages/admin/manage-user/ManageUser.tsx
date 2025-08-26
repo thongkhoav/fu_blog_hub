@@ -119,8 +119,8 @@ const ManageUser = () => {
       render: (_, record) => (
         <p>
           <Popconfirm
-            title="Xoá user"
-            description={`Bạn có chắc xoá ${record.role} ${record.fullName}?`}
+            title="Confirm"
+            description={`Are you sure you want to delete ${record.role} ${record.fullName}?`}
             onConfirm={() => banUser(compareTime(record?.ban?.banUntil))}
             onCancel={() => {}}
             okText="Yes"

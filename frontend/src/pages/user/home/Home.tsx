@@ -17,23 +17,23 @@ export default function Home() {
       <div className="relative">
         <img src={thumbnail} alt="thumbnail" className="w-full max-h-96" />
         <div className="absolute flex flex-col gap-1 bottom-16 left-12 text-white p-5 rounded-lg">
-          <h1 className="text-3xl font-bold">Nền tảng chia sẻ bài viết dành cho FPTU</h1>
-          <p className="text-lg font-medium">Viết để hiểu</p>
-          <p className="text-lg font-medium">Chia sẻ để kết nối</p>
+          <h1 className="text-3xl font-bold">A blogging platform for FPTU community</h1>
+          <p className="text-lg font-medium">Post to understand</p>
+          <p className="text-lg font-medium">Sharing to connect</p>
         </div>
       </div>
-      {/* Nổi bật 4 cái - 3 slide*/}
+      {/* Featured 4 items - 3 slides*/}
       <div className="max-w-[1192px] mx-auto">
-        <h1 className="font-medium">Nổi bật</h1>
+        <h1 className="font-medium">Featured</h1>
         <HighlightBlogs />
         {/* Latest */}
-        <h1 className="font-medium">Tải lên gần đây</h1>
+        <h1 className="font-medium">Recently uploaded</h1>
         <LatestBlogs />
-        {/* Dành cho bạn gồm những chủ đề bạn yêu thích */}
-        <h1 className="font-medium">Dành cho bạn</h1>
+        {/* For you including your favorite topics */}
+        <h1 className="font-medium">For you</h1>
         <div className="flex gap-5">
           <div className="flex-[2]">
-            {/* danh sách blog theo chủ để đã chọn lúc mới đăng nhập hoặc có thể setting */}
+            {/* list of blogs by topics selected at initial login or via settings */}
             <ForYouBlogs />
           </div>
           <OptionSideHome />

@@ -26,7 +26,9 @@ const WaitingBlogList = () => {
 
   const getApproveBlogs = async (statusBlogs: string) => {
     try {
-      const res = await axiosPrivate.get(`/api/v1/blogs/mentor/waiting-blogs?status=${statusBlogs}`);
+      const res = await axiosPrivate.get(
+        `/api/v1/blogs/mentor/waiting-blogs?status=${statusBlogs}`
+      );
       if ((res.data.status = "success")) {
         const waitingBlogs = [...res.data.data].sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -61,15 +63,15 @@ const WaitingBlogList = () => {
         centered
         items={[
           {
-            label: <div style={{ color: "black" }}>Tất cả</div>,
+            label: <div style={{ color: "black" }}>All</div>,
             key: "all"
           },
           {
-            label: <div style={{ color: "#0c98ff" }}>Chờ duyệt</div>,
+            label: <div style={{ color: "#0c98ff" }}>Waiting</div>,
             key: "waiting"
           },
           {
-            label: <div style={{ color: "#ff7373" }}>Đã từ chối</div>,
+            label: <div style={{ color: "#ff7373" }}>Rejected</div>,
             key: "rejected"
           }
         ]}

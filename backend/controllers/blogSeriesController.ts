@@ -52,7 +52,7 @@ export const createSeries = async (
 
     res.status(200).json({
       status: "success",
-      message: "Thêm series thành công",
+      message: "Created blog series successfully",
       blogSeries,
     });
   } catch (error) {
@@ -85,7 +85,7 @@ export const updateSeries = async (
 
     // remove blogSeriesId of all blogs in this series
     // update blogSeriesId for new chosen blogs in this series
-    // vì có thể 1 blog remove ra khỏi series, 1 blog khác lại add vào series
+    // because one blog can be removed from the series, another blog can be added to the series
     await Blog.updateMany(
       { blogSeriesId: req.params.id },
       { $set: { blogSeriesId: "" } }
@@ -98,7 +98,7 @@ export const updateSeries = async (
 
     res.status(200).json({
       status: "success",
-      message: "Cập nhật series thành công",
+      message: "Updated blog series successfully",
       blogSeries,
     });
   } catch (error) {

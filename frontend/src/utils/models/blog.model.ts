@@ -36,6 +36,7 @@ export interface BlogItem {
   blogTagIds: { _id: string; name: string }[];
   numView: number;
   numComment: number;
+  contentRaw: string;
   slug: string;
   createdAt: string;
   status: string;

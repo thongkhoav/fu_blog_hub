@@ -41,7 +41,7 @@ const ManageBlog = () => {
 
   const columns: ColumnsType<BlogItem> = [
     {
-      title: "Bài viết",
+      title: "Post",
       render: (_, record: BlogItem) => (
         <Space>
           <img
@@ -56,7 +56,7 @@ const ManageBlog = () => {
       )
     },
     {
-      title: "Tác giả",
+      title: "Author",
       render: (_, record: BlogItem) => (
         <Space>
           <img
@@ -72,14 +72,14 @@ const ManageBlog = () => {
       title: "Action",
       dataIndex: "",
       key: "x",
-      render: (_, record) => <Button onClick={() => handleDeleteBlog(record)}>Xoá</Button>
+      render: (_, record) => <Button onClick={() => handleDeleteBlog(record)}>Delete</Button>
     }
   ];
 
   return (
     <Layout className="mt-5">
       <Typography.Title level={2} className="text-center">
-        Danh sách bài viết công khai
+        List of Public Posts
       </Typography.Title>
       <Table columns={columns} dataSource={blogs} />
     </Layout>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import { Link } from "react-router-dom";
 import TimeAgo from "javascript-time-ago";
-import vi from "javascript-time-ago/locale/vi";
-TimeAgo.addDefaultLocale(vi);
+import en from "javascript-time-ago/locale/en";
+TimeAgo.addLocale(en);
 
 interface NotificationProps {
   readed: boolean;
@@ -33,7 +33,7 @@ const Notification = () => {
 
   return (
     <div className="w-full py-5">
-      <h1 className="text-center mb-5">Thông báo</h1>
+      <h1 className="text-center mb-5">Notifications</h1>
       <div className="w-full max-w-[1000px] mx-auto">
         {notification.map((item, index) => (
           <NotificationItem key={index} notificationItem={item} />
@@ -46,7 +46,7 @@ const Notification = () => {
 export default Notification;
 
 const NotificationItem = (props: any) => {
-  const timeAgo = new TimeAgo("vi-VN");
+  const timeAgo = new TimeAgo("en");
 
   return (
     <div
@@ -58,7 +58,7 @@ const NotificationItem = (props: any) => {
         to={props.notificationItem.url.includes("/blogs/") && props.notificationItem.url}
         className="flex items-center justify-between mb-2"
       >
-        <div className="font-semibold text-lg">Thông báo</div>
+        <div className="font-semibold text-lg">Notifications</div>
         <div className="text-gray-600 text-sm">
           <span className="mr-1">{timeAgo.format(new Date(props.notificationItem.createdAt))}</span>
           <span className={`font-semibold `}></span>

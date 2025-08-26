@@ -114,12 +114,14 @@ export const followUser = async (
     });
 
     if (checkFollow) {
-      return next(new AppError(400, "fail", "Bạn đã follow user này rồi"));
+      return next(
+        new AppError(400, "fail", "You are already following this user")
+      );
     }
 
     const checkUser = await User.findById(req.params.followUserId);
     if (!checkUser) {
-      return next(new AppError(400, "fail", "Không tìm thấy user này"));
+      return next(new AppError(400, "fail", "User not found"));
     }
 
     const user = await FollowModel.create({
@@ -202,7 +204,7 @@ exports.changePassword = async (
     const { password, bannedReason } = req.body;
 
     if (!password) {
-      return next(new AppError(400, "fail", "Vui lòng nhập mật khẩu mới"));
+      return next(new AppError(400, "fail", "Please provide a new password"));
     }
     const hash = await bcrypt.hash(password, 12);
 
@@ -221,7 +223,7 @@ exports.changePassword = async (
 
     res.status(201).json({
       status: "success",
-      message: "Đổi mật khẩu thành công",
+      message: "Changed password successfully",
       user,
     });
   } catch (err) {
@@ -264,7 +266,9 @@ export const deleteUser = async (
   const { banUntil, bannedReason } = req.body;
 
   if (!bannedReason || bannedReason === "") {
-    return next(new AppError(400, "fail", "Vui lòng nhập lý do ban"));
+    return next(
+      new AppError(400, "fail", "Please provide a reason for banning")
+    );
   }
 
   try {
@@ -280,7 +284,7 @@ export const deleteUser = async (
       bannedReason,
     };
 
-    // tìm tất cả các report về blog này và resolve nó, content là deleted
+    // find all reports about this user and resolve them, content is deleted
     const reports = await Report.find({
       objectId: req.params.id,
       resolved: false,
@@ -290,18 +294,18 @@ export const deleteUser = async (
 
     for (const report of reports) {
       report.resolved = true;
-      report.resolveContent = "Người dùng đã bị ban";
+      report.resolveContent = "User has been banned";
       report.resolvedAt = new Date();
       report.resolvedBy = (req as any).user._id;
 
       await report.save();
     }
 
-    // nếu admin xoá thì push noti qua user
+    // if admin deletes then push noti to user
     if ((req as any).user.role === "admin") {
       await Notification.create({
         userId: user._id,
-        content: `Người dùng bị ban do ${bannedReason}`,
+        content: `User has been banned for ${bannedReason}`,
       });
     }
 

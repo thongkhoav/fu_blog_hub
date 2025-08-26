@@ -31,7 +31,7 @@ const Bookmark = () => {
       await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
       setBookmarks(prev => prev.filter(bookmark => bookmark.blogId._id !== blogId));
       setBookmarkList(prev => prev.filter(id => id !== blogId));
-      toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+      toast.success("Removed from bookmark list", toastOption);
     } catch (error: any) {
       toast.error(error.message, toastOption);
     }

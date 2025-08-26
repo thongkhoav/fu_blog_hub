@@ -3,7 +3,9 @@ import Avartar, { AvartarProps } from "./Avartar/Avartar";
 import { useAuth } from "~/utils/helpers";
 import useAxiosPrivate from "~/config/useAxiosPrivate";
 import moment from "moment";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import toastOption from "~/utils/constants/toastOption";
 
 export const RenderListContext = createContext<RenderListContextProps>({
   renderList: [],
@@ -21,6 +23,7 @@ export interface RenderListContextProps {
 
 export default function Comment({ idBlog }: { idBlog: string }) {
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
   const { userGlobal } = useAuth();
   const [Content, setContent] = useState("");
   const [ComId, SetComId] = useState(4);
@@ -73,7 +76,8 @@ export default function Comment({ idBlog }: { idBlog: string }) {
   const handleAddNewComment = async () => {
     try {
       if (!userGlobal) {
-        return redirect("/login");
+        toast.info("Please login to comment", toastOption);
+        return navigate("/login");
       }
 
       // Check if a comment was posted in the last 5 seconds

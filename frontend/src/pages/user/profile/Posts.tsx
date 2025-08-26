@@ -17,10 +17,11 @@ import { useStoreContext } from "~/contexts/StoreProvider";
 import toastOption from "~/utils/constants/toastOption";
 import { BiBookmark } from "react-icons/bi";
 import TimeAgo from "javascript-time-ago";
-import vi from "javascript-time-ago/locale/vi";
 // import IMG from "~/assets/images/default_img.pjpg";
 import { DEFAULT_IMG } from "~/utils/constants";
-TimeAgo.addDefaultLocale(vi);
+import en from "javascript-time-ago/locale/en";
+// import readingTime from "reading-time";
+TimeAgo.addLocale(en);
 
 const BlogState = {
   PUBLIC: "public",
@@ -38,7 +39,7 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
   const location = useLocation();
   const [status, setStatus] = useState<string | null>(null);
 
-  // Nếu params là 1 trong các giá trị của BlogState thì set status = params
+  // If params is one of the values of BlogState, set status = params
   useEffect(() => {
     const params = location.pathname.split("/")[3];
     const blogStateArr = Object.values(BlogState);
@@ -51,7 +52,7 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
   useEffect(() => {
     (async function () {
       try {
-        // Nếu status != null thì gọi api lấy blog theo status
+        // If status is not null, call the API to get blogs by status
         if (status != null) {
           const { data } = await axiosPrivate.get(
             `${HOST}/api/v1/blogs/user/private/${idUser || userGlobal?._id}?status=${status}`
@@ -95,7 +96,7 @@ const Posts = ({ isEdit = true }: { isEdit?: boolean }) => {
 export default Posts;
 
 const BlogCard = (blog: BlogItem, onDelete: any, isEdit: boolean) => {
-  const timeAgo = new TimeAgo("vi-VN");
+  const timeAgo = new TimeAgo("en");
   return (
     <div key={blog._id} className="h-auto relative w-full">
       {isEdit ? (
@@ -103,19 +104,19 @@ const BlogCard = (blog: BlogItem, onDelete: any, isEdit: boolean) => {
           content={
             <div className="flex flex-col p-0">
               <NavLink to={`/edit-blog/${blog._id}`}>
-                <Button className="text-blue-500 border-none h-fit rounded-none">Chỉnh sửa</Button>
+                <Button className="text-blue-500 border-none h-fit rounded-none">Edit</Button>
               </NavLink>
               <Popconfirm
-                title="Xoá blog?"
-                description="Bạn có chắc chắn muốn xoá blog này?"
+                title="Delete blog?"
+                description="Are you sure you want to delete this blog?"
                 onConfirm={() => onDelete(blog._id)}
                 onCancel={() => {}}
-                okText="Có"
-                cancelText="Không"
+                okText="Yes"
+                cancelText="No"
                 okButtonProps={{ danger: true, className: "text-red-500" }}
               >
                 <Button danger className=" text-red-500 border-none p-0 h-fit w-full rounded-none">
-                  Xoá
+                  Delete
                 </Button>
               </Popconfirm>
             </div>
@@ -134,10 +135,10 @@ const BlogCard = (blog: BlogItem, onDelete: any, isEdit: boolean) => {
         alt="blog thumbnail"
       />
       <div className="flex items-center justify-between mt-2">
-        <p className="opacity-50 text-[13px]">6 phút đọc</p>
+        {/* <p className="opacity-50 text-[13px]">{readingTime(blog?.contentRaw)?.text}</p> */}
         <div className="">
           <i className="fa-regular fa-bookmark mr-3"></i>
-          <i className="fa-soNavLinkd fa-elNavLinkpsis-vertical"></i>
+          <i className="fa-solid fa-ellipsis-vertical"></i>
         </div>
       </div>
       {BlogState.PUBLIC === blog.status ? (

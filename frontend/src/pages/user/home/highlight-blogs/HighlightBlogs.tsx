@@ -29,11 +29,11 @@ export default function HighlightBlogs() {
       if (toRemove) {
         await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
         setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
-        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+        toast.success("Removed from bookmark list", toastOption);
       } else {
         await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
         setBookmarkList((prev: any) => [...prev, blogId]);
-        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+        toast.success("Added to bookmark list", toastOption);
       }
     } catch (error: any) {
       toast.error(error.message, toastOption);

@@ -58,7 +58,7 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
   return (
     <div className="flex flex-col m-5 mr-0 sticky top-20">
       <div>
-        <h1 className="text-lg uppercase font-medium mb-2">Chủ đề</h1>
+        <h1 className="text-lg uppercase font-medium mb-2">Category</h1>
         <div className="flex flex-wrap">
           {categories.map(cate => (
             <span
@@ -95,7 +95,7 @@ function OptionSideBlogs({ filters, setFilters }: { filters: any; setFilters: an
         className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded w-[80%] self-center"
         onClick={hanleFilter}
       >
-        Lọc bài viết
+        Filter
       </button>
       <button
         className="bg-orange-500 mt-4 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded w-[80%] self-center"

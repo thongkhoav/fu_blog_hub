@@ -31,11 +31,11 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
       if (toRemove) {
         await axiosPrivate.put(`/api/v1/bookmarks/${blogId}/remove`);
         setBookmarkList((prev: string[]) => prev.filter(id => id !== blogId));
-        toast.success("Đã xóa khỏi danh sách bookmark", toastOption);
+        toast.success("Removed from bookmarks", toastOption);
       } else {
         await axiosPrivate.post(`/api/v1/bookmarks/${blogId}`);
         setBookmarkList((prev: any) => [...prev, blogId]);
-        toast.success("Đã thêm vào danh sách bookmark", toastOption);
+        toast.success("Added to bookmarks", toastOption);
       }
     } catch (error: any) {
       toast.error(error.message, toastOption);
@@ -59,11 +59,12 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
 
   const handleReportBlog = async () => {
     if (!userGlobal) {
-      toast.error("Bạn cần đăng nhập để report", toastOption);
+      toast.error("You need to log in to report", toastOption);
       return;
     }
 
-    if (!reportContent) return toast.error("Vui lòng nhập lý do báo cáo bài viết", toastOption);
+    if (!reportContent)
+      return toast.error("Please enter a reason for reporting the blog post", toastOption);
 
     try {
       axiosPrivate
@@ -74,7 +75,7 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
         })
         .then(res => {
           setIsModalOpen(false);
-          toast.success("Report bài viết thành công", toastOption);
+          toast.success("Report blog post successfully", toastOption);
         })
         .catch(err => {
           toast.error(err.response.data.message, toastOption);
@@ -117,7 +118,7 @@ function BlogInfoSide({ blogDetail }: { blogDetail: BlogDetail }) {
       >
         <TextArea
           rows={4}
-          placeholder="Lý do báo cáo"
+          placeholder="Reason for reporting"
           maxLength={200}
           onChange={e => setReportContent(e.target.value)}
         />
